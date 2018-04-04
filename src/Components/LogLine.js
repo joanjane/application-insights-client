@@ -17,12 +17,24 @@ export default class LogLineComponent extends Component {
     }
 
     formatDate() {
-        return this.state.date.toISOString().substring(0, 10) + ' ' + this.state.date.toLocaleTimeString();
+        return this.state.date.toISOString().substring(0, 10);
     }
+
+    formatTime() {
+        return `${this.formatTwoDigit(this.state.date.getHours())}:${this.formatTwoDigit(this.state.date.getMinutes())}:${this.formatTwoDigit(this.state.date.getSeconds())}`;
+    }
+
+    formatTwoDigit(number) {
+        if (number < 10) {
+            return `0${number}`;
+        }
+        return number;
+    }
+
     render() {
         return (
             <div className="ait-log_line">
-                <span className="ait-log_line-time">[{this.formatDate()}]</span>
+                <span className="ait-log_line-time">[{this.formatDate()} {this.formatTime()}]</span>
                 <span className="ait-log_line-message">{this.state.log.message}</span>
             </div>
         );
