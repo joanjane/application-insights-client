@@ -17,7 +17,7 @@ export default class LogLineComponent extends Component {
     }
 
     formatDate() {
-        return this.state.date.toISOString().substring(0, 10) + this.state.date.toLocaleTimeString();
+        return this.state.date.toISOString().substring(0, 10) + ' ' + this.state.date.toLocaleTimeString();
     }
     render() {
         return (
