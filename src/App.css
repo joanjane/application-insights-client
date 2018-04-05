@@ -32,3 +32,12 @@ body {
   padding-right: 1rem;
   color: lime;
 }
+
+.ait-log_line--error .ait-log_line-message,
+.ait-log_line--critical .ait-log_line-message {
+  color: red;
+}
+
+.ait-log_line--warning .ait-log_line-message {
+  color: yellow;
+}

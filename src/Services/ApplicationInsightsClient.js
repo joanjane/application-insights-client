@@ -25,8 +25,12 @@ export default class ApplicationInsightsClient {
         if (!response || !response.tables) {
             throw new Error('Unexpected response content from query');
         }
-        
-        const cols = response.tables[0].columns.filter( c => c.name === 'timestamp' || c.name === 'message');
+        const responseModel = {
+            'timestamp': null,
+            'message': null,
+            'severityLevel': null,
+        };
+        const cols = response.tables[0].columns.filter( c => Object.keys(responseModel).some(k => k === c.name));
         const colIndexes = cols.map(col => response.tables[0].columns.indexOf(col));
 
         return response.tables[0].rows.map(row => {
@@ -37,4 +41,8 @@ export default class ApplicationInsightsClient {
             return model;
         });
     }
+
+    /*
+
+    */
 }

@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import DateUtils from '../Utils/DateUtils'
+import SeverityLevel from '../Models/SeverityLevel'
 
 export default class LogLineComponent extends Component {
     constructor(props) {
         super(props);
+        this.formatDate = this.formatDate.bind(this);
+        this.getCssClass = this.getCssClass.bind(this);
 
         this.state = {
             log: props.log,
@@ -17,24 +21,20 @@ export default class LogLineComponent extends Component {
     }
 
     formatDate() {
-        return this.state.date.toISOString().substring(0, 10);
-    }
-
-    formatTime() {
-        return `${this.formatTwoDigit(this.state.date.getHours())}:${this.formatTwoDigit(this.state.date.getMinutes())}:${this.formatTwoDigit(this.state.date.getSeconds())}`;
-    }
-
-    formatTwoDigit(number) {
-        if (number < 10) {
-            return `0${number}`;
+        if (!this.state.date) {
+            return;
         }
-        return number;
+        return `${DateUtils.formatDate(this.state.date)} ${DateUtils.formatTime(this.state.date)}`;
+    }
+
+    getCssClass() {
+        return `ait-log_line ait-log_line--${SeverityLevel[this.state.log.severityLevel]}`;
     }
 
     render() {
         return (
-            <div className="ait-log_line">
-                <span className="ait-log_line-time">[{this.formatDate()} {this.formatTime()}]</span>
+            <div className={this.getCssClass()}>
+                <span className="ait-log_line-time">[{this.formatDate()}]</span>
                 <span className="ait-log_line-message">{this.state.log.message}</span>
             </div>
         );

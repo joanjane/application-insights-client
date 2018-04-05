@@ -18,7 +18,7 @@ class App extends Component {
         appId: '',
         apiKey: ''
       },
-      query: 'traces | limit 50',
+      query: 'traces | sort by timestamp desc | limit 50',
       logs: []
     };
 
@@ -46,6 +46,7 @@ class App extends Component {
 
     this.client.getLogs(this.state.credentials, this.state.query)
       .then(response => {
+        console.log(response);
         this.setState({ logs: response, loading: false });
       }, error => {
         this.setState({ loading: false });
