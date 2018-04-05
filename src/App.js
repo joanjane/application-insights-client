@@ -33,6 +33,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.printHelpOnConsole();
     this.getLogs();
   }
 
@@ -52,6 +53,7 @@ class App extends Component {
         this.setState({ loading: false });
         alert('Error when getting traces, see console for details');
         console.error(error);
+        error.json().then(err => console.error(err));
       });
   }
 
@@ -73,14 +75,35 @@ class App extends Component {
     this.setState({ query: value });
   }
 
+  printHelpOnConsole() {
+    console.log(`
+    Query documentation (https://docs.loganalytics.io/docs/Language-Reference/):
+    Severity levels:
+    0: 'verbose',
+    1: 'information',
+    2: 'warning',
+    3: 'error',
+    4: 'critical'
+
+    Query samples:
+    traces | where severityLevel != 2 | sort by timestamp desc | limit 200
+    traces | where message has 'Error' | sort by timestamp desc | limit 200
+    `);
+  }
+
   render() {
     return (
       <div className="ait">
         <div className="ait-top">
           <header className="ait-header">
-            <strong className="ait-title">ApplicationInsights Traces Client {this.state.loading ? '(Loading)' : ''}</strong>
+            <strong>
+              <a className="ait-title" href="https://docs.loganalytics.io/docs/Language-Reference/" target="_blank" rel="noopener noreferrer" >
+                ApplicationInsights Traces Client {this.state.loading ? '(Loading)' : ''}
+              </a>
+              </strong>
             <div className="api-credentials">
               <input
+                className="ait-query"
                 value={this.state.query}
                 placeholder='query'
                 onChange={(e) => this.setQuery(e.target.value)} />

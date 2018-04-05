@@ -17,6 +17,8 @@ body {
 }
 
 .ait-title {
+  color: white;
+  text-decoration: none;
   padding-right: 2rem;
 }
 
@@ -40,4 +42,8 @@ body {
 
 .ait-log_line--warning .ait-log_line-message {
   color: yellow;
+}
+
+.ait-query {
+  width: 600px;
 }

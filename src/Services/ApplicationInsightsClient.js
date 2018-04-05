@@ -1,7 +1,7 @@
 export default class ApplicationInsightsClient {
     getLogs(credentials, query) {
         query = query || 'traces | limit 50';
-        const uri = `https://api.applicationinsights.io/v1/apps/${credentials.appId}/query?query=${encodeURIComponent(query)}`;
+        const uri = `https://api.applicationinsights.io/v1/apps/${credentials.appId}/query?query=${encodeURIComponent(query)}&timespan=P7D`;
 
         return new Promise((resolve, reject) => {
             fetch(uri, {
