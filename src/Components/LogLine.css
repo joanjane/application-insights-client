@@ -1,0 +1,38 @@
+.ait-log {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.ait-log_line {
+    display: flex;
+}
+
+@media screen and (max-width: 767px) {
+    .ait-log_line {
+        flex-direction: column;
+        padding-bottom: 1rem;
+    }
+}
+
+.ait-log_line-time {
+    padding-right: 1rem;
+    color: lime;
+    flex: 0 1 auto;
+}
+
+.ait-log_line-message {
+    flex: 1 0 0;
+}
+
+.ait-log_line--error .ait-log_line-message,
+.ait-log_line--critical .ait-log_line-message {
+    color: red;
+}
+
+.ait-log_line--warning .ait-log_line-message {
+    color: yellow;
+}
+
+.ait-log_line--verbose .ait-log_line-message {
+    color: lime;
+    font-style: italic;
+}

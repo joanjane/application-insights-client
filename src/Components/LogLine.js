@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DateUtils from '../Utils/DateUtils'
 import SeverityLevel from '../Models/SeverityLevel'
+import './LogLine.css';
 
 export default class LogLineComponent extends Component {
     constructor(props) {

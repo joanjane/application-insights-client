@@ -53,7 +53,9 @@ class App extends Component {
         this.setState({ loading: false });
         alert('Error when getting traces, see console for details');
         console.error(error);
-        error.json().then(err => console.error(err));
+        if (error.json) {
+          error.json().then(err => console.error(err));
+        }
       });
   }
 
@@ -94,35 +96,35 @@ class App extends Component {
   render() {
     return (
       <div className="ait">
-        <div className="ait-top">
-          <header className="ait-header">
-            <strong>
-              <a className="ait-title" href="https://docs.loganalytics.io/docs/Language-Reference/" target="_blank" rel="noopener noreferrer" >
-                ApplicationInsights Traces Client {this.state.loading ? '(Loading)' : ''}
-              </a>
-              </strong>
-            <div className="api-credentials">
-              <input
-                className="ait-query"
-                value={this.state.query}
-                placeholder='query'
-                onChange={(e) => this.setQuery(e.target.value)} />
-              <input value={this.state.credentials.appId}
-                placeholder='App id'
-                onChange={(e) => this.setField('appId', e.target.value)} />
-              <input value={this.state.credentials.apiKey}
-                placeholder='API key'
-                onChange={(e) => this.setField('apiKey', e.target.value)} />
-              <button onClick={this.getLogs}>Get logs</button>
-            </div>
-          </header>
-        </div>
+        <header className="ait-header">
+          <strong>
+            <a className="ait-title" href="https://docs.loganalytics.io/docs/Language-Reference/" target="_blank" rel="noopener noreferrer" >
+              ApplicationInsights Traces Client {this.state.loading ? '(Loading)' : ''}
+            </a>
+            </strong>
+          <div className="api-credentials">
+            <input value={this.state.credentials.appId}
+              placeholder='App id'
+              onChange={(e) => this.setField('appId', e.target.value)} />
+            <input value={this.state.credentials.apiKey}
+              placeholder='API key'
+              onChange={(e) => this.setField('apiKey', e.target.value)} />
+          </div>
+        </header>
         <div className="ait-body">
           <div className="ait-log">
             {this.state.logs.map((item, i) =>
               <LogLine log={item} key={i} />
             )}
           </div>
+        </div>
+        <div className="ait-footer">
+          <textarea
+              className="ait-query"
+              value={this.state.query}
+              placeholder='query'
+              onChange={(e) => this.setQuery(e.target.value)} />
+          <button className="ait-search" onClick={this.getLogs}>Search</button>
         </div>
       </div>
     );

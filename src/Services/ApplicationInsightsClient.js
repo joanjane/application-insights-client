@@ -1,24 +1,27 @@
+import httpClientFactory from './httpClientFactory'
+
 export default class ApplicationInsightsClient {
+    constructor() {
+        this.httpClient = httpClientFactory();
+    }
+
     getLogs(credentials, query) {
         query = query || 'traces | limit 50';
-        const uri = `https://api.applicationinsights.io/v1/apps/${credentials.appId}/query?query=${encodeURIComponent(query)}&timespan=P7D`;
+        const uri = `${this.buildAppUri(credentials)}/query?query=${encodeURIComponent(query)}&timespan=P7D`;
 
-        return new Promise((resolve, reject) => {
-            fetch(uri, {
-                method: 'GET',
-                headers: {
-                    'x-api-key': credentials.apiKey
-                }
-            }).then(response => {
-                if (!response.ok) {
-                    reject(response);
-                    return;
-                }
-                response.json().then(content => {
-                    resolve(this.mapQueryResponse(content));
-                });
-            }, error => reject(error));
+        return this.httpClient.get(uri, this.buildHeaders(credentials)).then(response => {
+            return this.mapQueryResponse(response);
         });
+    }
+
+    buildAppUri(credentials) {
+        return `https://api.applicationinsights.io/v1/apps/${credentials.appId}`;
+    }
+
+    buildHeaders(credentials) {
+        return {
+            'x-api-key': credentials.apiKey
+        };
     }
 
     mapQueryResponse(response) {
@@ -41,8 +44,4 @@ export default class ApplicationInsightsClient {
             return model;
         });
     }
-
-    /*
-
-    */
 }
