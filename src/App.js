@@ -101,7 +101,7 @@ class App extends Component {
         <header className="ait-header">
           <strong>
             <a className="ait-title" href="https://docs.loganalytics.io/docs/Language-Reference/" target="_blank" rel="noopener noreferrer" >
-              ApplicationInsights Traces Client {this.state.loading ? '(Loading)' : ''}
+              Application Insights Log {this.state.loading ? '(Loading)' : ''}
             </a>
             </strong>
           <div className="api-credentials">
