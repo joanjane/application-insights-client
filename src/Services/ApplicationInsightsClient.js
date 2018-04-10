@@ -59,6 +59,16 @@ export default class ApplicationInsightsClient {
                 return null;
             }
             return model;
-        }).filter(r => r !== null);
+        })
+        .filter(r => r !== null)
+        .sort((a, b) => {
+            if (a.timestamp == b.timestamp) {
+                return 0;
+            } else if (a.timestamp > b.timestamp) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
     }
 }
