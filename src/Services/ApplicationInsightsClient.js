@@ -29,19 +29,36 @@ export default class ApplicationInsightsClient {
             throw new Error('Unexpected response content from query');
         }
         const responseModel = {
-            'timestamp': null,
-            'message': null,
-            'severityLevel': null,
+            trace: {
+                timestamp: 'timestamp',
+                message: 'message',
+                severityLevel: 'severityLevel',
+            },
+            exception: {
+                timestamp: 'timestamp',
+                message: 'outerMessage',
+                severityLevel: 'severityLevel',
+            }
         };
-        const cols = response.tables[0].columns.filter( c => Object.keys(responseModel).some(k => k === c.name));
-        const colIndexes = cols.map(col => response.tables[0].columns.indexOf(col));
 
+        const columnsIndexMap = {};
+        response.tables[0].columns
+            .forEach((c, i) => columnsIndexMap[c.name] = i);
+        
         return response.tables[0].rows.map(row => {
+            const itemType = row[columnsIndexMap['itemType']];
+
             var model = {};
-            colIndexes.forEach(colIndex => {
-                model[cols[colIndex].name] = row[colIndex];
-            });
+            if (responseModel[itemType]) {
+                Object.keys(responseModel[itemType]).forEach(prop => {
+                    const propToMap = responseModel[itemType][prop];
+                    const propIndex = columnsIndexMap[propToMap];
+                    model[prop] = row[propIndex];
+                });
+            } else {
+                return null;
+            }
             return model;
-        });
+        }).filter(r => r !== null);
     }
 }

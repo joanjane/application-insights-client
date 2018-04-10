@@ -90,6 +90,7 @@ class App extends Component {
     Query samples:
     traces | where severityLevel != 2 | sort by timestamp desc | limit 200
     traces | where message has 'Error' | sort by timestamp desc | limit 200
+    exceptions | sort by timestamp desc | limit 200
     `);
   }
 
