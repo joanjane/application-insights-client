@@ -35,6 +35,7 @@ class App extends Component {
   componentDidMount() {
     this.printHelpOnConsole();
     this.getLogs();
+    setInterval(() => this.getLogs(), 30000);
   }
 
   getLogs() {
