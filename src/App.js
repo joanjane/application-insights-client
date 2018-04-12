@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import './App.css';
 import ApplicationInsightsClient from './Services/ApplicationInsightsClient'
+import ProfileRepository from './Services/ProfileRepository';
 import LogLine from './Components/LogLine'
+import DateUtils from './Utils/DateUtils'
 
 class App extends Component {
   constructor() {
     super();
     this.client = new ApplicationInsightsClient();
+    this.profileRepository = new ProfileRepository();
 
     this.setField = this.setField.bind(this);
     this.setQuery = this.setQuery.bind(this);
@@ -19,14 +22,15 @@ class App extends Component {
         apiKey: ''
       },
       query: 'traces | sort by timestamp desc | limit 50',
-      logs: []
+      logs: [],
+      autoRefresh: true,
+      refreshInterval: null,
+      appName: null,
+      fetchTime: null
     };
 
-    const storedCredentials = localStorage.getItem('credentials');
-    if (storedCredentials) {
-      this.state.credentials = JSON.parse(storedCredentials);
-    }
-    const query = localStorage.getItem('query', this.state.query);
+    this.state.credentials = this.profileRepository.getCredentials();
+    const query = this.profileRepository.getQuery();
     if (query) {
       this.state.query = query;
     }
@@ -35,7 +39,22 @@ class App extends Component {
   componentDidMount() {
     this.printHelpOnConsole();
     this.getLogs();
-    setInterval(() => this.getLogs(), 30000);
+    this.registerAutoRefresh();
+  }
+
+  registerAutoRefresh() {
+    const interval = setInterval(() => {
+      if (!this.state.autoRefresh) {
+        clearInterval(this.state.refreshInterval);
+        return;
+      }
+      this.getLogs();
+    }, 30000);
+
+    this.setState({
+      refreshInterval: interval,
+      autoRefresh: true
+    });
   }
 
   getLogs() {
@@ -44,25 +63,44 @@ class App extends Component {
     }
     this.setState({ loading: true });
 
-    this.storeSearch();
-
     this.client.getLogs(this.state.credentials, this.state.query)
       .then(response => {
-        console.log(response);
-        this.setState({ logs: response, loading: false });
+        this.profileRepository.storeQuery(this.state.query);
+        this.profileRepository.storeCredentials(this.state.credentials, response.appName);
+
+        const forceScrollBottom = this.state.logs.length === 0;
+        this.setState({
+          logs: response.logs,
+          loading: false,
+          appName: response.appName,
+          fetchTime: response.fetchTime
+        });
+
+        if (forceScrollBottom || this.isScrollEnd()) {
+          this.scrollBottom();
+        }
       }, error => {
         this.setState({ loading: false });
-        alert('Error when getting traces, see console for details');
-        console.error(error);
-        if (error.json) {
-          error.json().then(err => console.error(err));
-        }
       });
   }
 
-  storeSearch() {
-    localStorage.setItem('credentials', JSON.stringify(this.state.credentials));
-    localStorage.setItem('query', this.state.query);
+  toggleAutoRefresh() {
+    if (!this.state.autoRefresh) {
+      this.registerAutoRefresh();
+    } else {
+      this.setState({ autoRefresh: false });
+    }
+  }
+
+  scrollBottom() {
+    document.querySelector('.ait-body').scrollTo(0, document.querySelector('.ait-body').scrollHeight);
+  }
+
+  isScrollEnd() {
+    const scrollPosition =
+      document.querySelector('.ait-body').scrollTop +
+      document.querySelector('.ait-body').offsetHeight;
+    return scrollPosition === document.querySelector('.ait-body').scrollHeight;
   }
 
   setField(field, value) {
@@ -70,7 +108,7 @@ class App extends Component {
       appId: this.state.credentials.appId,
       apiKey: this.state.credentials.apiKey
     };
-    credentials[field] = value;
+    credentials[field] = value.trim();
     this.setState({ credentials: credentials });
   }
 
@@ -78,8 +116,22 @@ class App extends Component {
     this.setState({ query: value });
   }
 
+  checkStoredAppCredentials(value) {
+    const credentials = this.profileRepository.findCredentialsCanditate(value);
+    if (!credentials) {
+      return;
+    }
+    this.setState({credentials: credentials});
+    this.profileRepository.storeCredentials(credentials);
+  }
+
   printHelpOnConsole() {
+    const availableAppNames = this.profileRepository.getStoredAppNamesCredentials();
+    if (availableAppNames.length > 0) {
+      console.log(`Discovered apps that can be used:\n${availableAppNames.join('\n')}`);
+    }
     console.log(`
+    Hello! Here are some tips you must think useful:
     Query documentation (https://docs.loganalytics.io/docs/Language-Reference/):
     Severity levels:
     0: 'verbose',
@@ -99,14 +151,27 @@ class App extends Component {
     return (
       <div className="ait">
         <header className="ait-header">
-          <strong>
-            <a className="ait-title" href="https://docs.loganalytics.io/docs/Language-Reference/" target="_blank" rel="noopener noreferrer" >
-              Application Insights Log {this.state.loading ? '(Loading)' : ''}
-            </a>
+          <div>
+            <strong>
+              <a className="ait-title" href="https://docs.loganalytics.io/docs/Language-Reference/" target="_blank" rel="noopener noreferrer" >
+                  Application Insights Log
+              </a>
             </strong>
-          <div className="api-credentials">
+            <br />
+            {
+              !this.state.loading ? (
+                <small className="u-pointer" onClick={(e) => this.toggleAutoRefresh()}>
+                  updated{this.state.autoRefresh ? ' (auto)' : ''}: {DateUtils.formatDateTime(this.state.fetchTime)}
+                </small>
+              ) : (
+                  'Loading...'
+                )
+            }
+          </div>
+          <div className="ait-credentials">
             <input value={this.state.credentials.appId}
               placeholder='App id'
+              onBlur={(e) => this.checkStoredAppCredentials(e.target.value)}
               onChange={(e) => this.setField('appId', e.target.value)} />
             <input value={this.state.credentials.apiKey}
               placeholder='API key'
@@ -114,18 +179,19 @@ class App extends Component {
           </div>
         </header>
         <div className="ait-body">
+          <h1>{this.state.appName ? this.state.appName : 'No results'}</h1>
           <div className="ait-log">
             {this.state.logs.map((item, i) =>
-              <LogLine log={item} key={i} />
+              <LogLine log={item} key={DateUtils.formatDate(this.state.fetchTime) + i} />
             )}
           </div>
         </div>
         <div className="ait-footer">
           <textarea
-              className="ait-query"
-              value={this.state.query}
-              placeholder='query'
-              onChange={(e) => this.setQuery(e.target.value)} />
+            className="ait-query"
+            value={this.state.query}
+            placeholder='query'
+            onChange={(e) => this.setQuery(e.target.value)} />
           <button className="ait-search" onClick={this.getLogs}>Search</button>
         </div>
       </div>

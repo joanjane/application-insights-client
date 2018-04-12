@@ -9,7 +9,7 @@
 
 .ait-body {
   flex: 1 1 auto;
-  padding: 0 4rem;
+  padding: 0 4rem 1rem;
   overflow-y: auto;
   height: 100%;
 }
@@ -43,11 +43,11 @@
 }
 
 @media screen and (max-width: 380px) {
-  .api-credentials {
+  .ait-credentials {
     flex-direction: column;
   }
 
-  .api-credentials input {
+  .ait-credentials input {
     flex: 1 0 auto;
     width: 100%;
   }
@@ -60,7 +60,6 @@
 .ait-title {
   color: white;
   text-decoration: none;
-  padding-right: 2rem;
 }
 
 .ait-query {
@@ -85,13 +84,13 @@
   background: #777;
 }
 
-.api-credentials {
+.ait-credentials {
   display: flex;
   flex: 1 1 0;
   justify-content: flex-end;
 }
 
-.api-credentials input {
+.ait-credentials input {
   border: none;
   padding: .5rem;
   margin: .1rem;

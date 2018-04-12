@@ -7,6 +7,13 @@ class DateUtils {
         return `${this.formatTwoDigit(date.getHours())}:${this.formatTwoDigit(date.getMinutes())}:${this.formatTwoDigit(date.getSeconds())}`;
     }
 
+    formatDateTime(date) {
+        if (!date) {
+            return '-';
+        }
+        return this.formatDate(date) + ' ' + this.formatTime(date);
+    }
+
     formatTwoDigit(number) {
         if (number < 10) {
             return `0${number}`;

@@ -6,7 +6,6 @@ import './LogLine.css';
 export default class LogLineComponent extends Component {
     constructor(props) {
         super(props);
-        this.formatDate = this.formatDate.bind(this);
         this.getCssClass = this.getCssClass.bind(this);
 
         this.state = {
@@ -21,13 +20,6 @@ export default class LogLineComponent extends Component {
         this.setState(props);
     }
 
-    formatDate() {
-        if (!this.state.date) {
-            return;
-        }
-        return `${DateUtils.formatDate(this.state.date)} ${DateUtils.formatTime(this.state.date)}`;
-    }
-
     getCssClass() {
         return `ait-log_line ait-log_line--${SeverityLevel[this.state.log.severityLevel]}`;
     }
@@ -35,7 +27,7 @@ export default class LogLineComponent extends Component {
     render() {
         return (
             <div className={this.getCssClass()}>
-                <span className="ait-log_line-time">[{this.formatDate()}]</span>
+                <span className="ait-log_line-time">[{DateUtils.formatDateTime(this.state.date)}]</span>
                 <span className="ait-log_line-message">{this.state.log.message}</span>
             </div>
         );

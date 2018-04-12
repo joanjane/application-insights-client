@@ -15,3 +15,7 @@ body, #root {
     display: none;
   }
 }
+
+.u-pointer {
+  cursor: pointer;
+}
