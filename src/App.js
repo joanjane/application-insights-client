@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
-import ApplicationInsightsClient from './Services/ApplicationInsightsClient'
+import ApplicationInsightsClient from './Services/ApplicationInsightsClient';
 import ProfileRepository from './Services/ProfileRepository';
-import LogLine from './Components/LogLine'
-import DateUtils from './Utils/DateUtils'
+import LogLine from './Components/LogLine';
+import DateUtils from './Utils/DateUtils';
+import ConsoleDoc from './Utils/ConsoleDoc';
 
 class App extends Component {
   constructor() {
@@ -26,7 +27,8 @@ class App extends Component {
       autoRefresh: true,
       refreshInterval: null,
       appName: null,
-      fetchTime: null
+      fetchTime: null,
+      availableApps: this.profileRepository.getStoredAppNamesCredentials()
     };
 
     const storedCredentials = this.profileRepository.getCredentials();
@@ -40,7 +42,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log(process.env.NODE_ENV);
     this.printHelpOnConsole();
     this.getLogs();
     this.registerAutoRefresh();
@@ -125,17 +126,27 @@ class App extends Component {
     if (!credentials) {
       return;
     }
-    this.setState({credentials: credentials});
+    this.setState({ credentials: credentials });
     this.profileRepository.storeCredentials(credentials);
+  }
+
+  clearData() {
+    this.profileRepository.clearData();
+    this.setState({
+      credentials: {appId: '', apiKey: ''},
+      autoRefresh: false,
+      logs: [],
+      appName: ''
+    });
   }
 
   render() {
     return (
       <div className="ait">
         <header className="ait-header">
-          <div className="u-pointer" onClick={(e) => this.toggleAutoRefresh()}>
+          <div className="u-pointer">
             <strong className="ait-title">
-                Application Insights Log
+              Application Insights Log
             </strong>
             <br />
             {
@@ -148,18 +159,45 @@ class App extends Component {
                 )
             }
           </div>
-          <div className="ait-credentials">
-            <input value={this.state.credentials.appId}
-              placeholder='App id'
-              onBlur={(e) => this.checkStoredAppCredentials(e.target.value)}
-              onChange={(e) => this.setField('appId', e.target.value)} />
-            <input value={this.state.credentials.apiKey}
-              placeholder='API key'
-              onChange={(e) => this.setField('apiKey', e.target.value)} />
+
+          <div className="ait-dropdown ait-credentials-menu">
+            <input type="checkbox" id="credentials" />
+            <label className="ait-dropdown-toggle" htmlFor="credentials">Credentials</label>
+            <div className="ait-dropdown-content">
+              <div className="ait-credentials-section ait-credentials">
+                <input className="ait-input" value={this.state.credentials.appId}
+                  placeholder='App id'
+                  onBlur={(e) => this.checkStoredAppCredentials(e.target.value)}
+                  onChange={(e) => this.setField('appId', e.target.value)} />
+                <input className="ait-input" value={this.state.credentials.apiKey}
+                  placeholder='API key'
+                  onChange={(e) => this.setField('apiKey', e.target.value)} />
+              </div>
+              <div className="ait-credentials-section">
+                <select className="ait-input" onChange={(e) => this.checkStoredAppCredentials(e.target.value)}>
+                  <option>Saved apps</option>
+                  {this.state.availableApps.map((appName, i) =>
+                    <option key={i} value={appName}>{appName}</option>
+                  )}
+                </select>
+              </div>
+              <div className="ait-credentials-section">
+                <label htmlFor="autorefresh" className="u-pointer">Auto refresh {this.state.autoRefresh ? '✔️' : '❌'}</label>
+                <input className="hidden" type="checkbox" id="autorefresh" checked={this.state.autoRefresh} onChange={(e) => this.toggleAutoRefresh()} />
+              </div>
+              <div className="ait-credentials-section u-textright">
+                <button onClick={()=>this.clearData()}>Clear data</button>
+              </div>
+            </div>
           </div>
         </header>
         <div className="ait-body">
-          <h1>{this.state.appName ? this.state.appName : 'No results'}</h1>
+          <h1>
+            {
+              this.state.appName ? this.state.appName :
+                this.state.credentials.appId ? 'No results' : 'Welcome, set your credentials on top menu'
+            }
+          </h1>
           <div className="ait-log">
             {this.state.logs.map((item, i) =>
               <LogLine log={item} key={DateUtils.formatDate(this.state.fetchTime) + i} />
@@ -179,27 +217,7 @@ class App extends Component {
   }
 
   printHelpOnConsole() {
-    const availableAppNames = this.profileRepository.getStoredAppNamesCredentials();
-    if (availableAppNames.length > 0) {
-      console.log(`Discovered apps that can be used:\n${availableAppNames.join('\n')}`);
-    }
-    console.log(`
-    Hello! Here are some tips you must think useful:
-    Query documentation (https://docs.loganalytics.io/docs/Language-Reference/):
-    Severity levels:
-    0: 'verbose',
-    1: 'information',
-    2: 'warning',
-    3: 'error',
-    4: 'critical'
-
-    Query samples:
-    traces | where severityLevel != 2 | sort by timestamp desc | limit 200
-    traces | where message has 'Error' | sort by timestamp desc | limit 200
-    exceptions | sort by timestamp desc | limit 200
-
-    Share a url: ${window.location.href}?app_id={your_app_id}&api_key={your_api_key}
-    `);
+    ConsoleDoc.printHelpOnConsole();
   }
 }
 

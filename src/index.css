@@ -12,10 +12,18 @@ body, #root {
   }
 
   .hidden-md-down {
-    display: none;
+    display: none !important;
   }
 }
 
+.hidden {
+  display: none !important;
+}
+
 .u-pointer {
-  cursor: pointer;
+  cursor: pointer !important;
+}
+
+.u-textright {
+  text-align: right;
 }

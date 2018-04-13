@@ -75,5 +75,10 @@ export default class ProfileRepository {
     return credentialsByApp[appName];
   }
 
+  clearData() {
+    sessionStorage.clear();
+    localStorage.clear();
+  }
+
   
 }
