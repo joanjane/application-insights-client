@@ -5,20 +5,16 @@ export default class ProfileRepository {
     if (storedCredentials) {
       return JSON.parse(storedCredentials);
     } else {
-      const credentialsByApp = this.getAllCredentials();
-      if (!credentialsByApp) {
-        return null;
-      }
-      const apps = Object.keys(credentialsByApp);
-      if (apps.length === 0) {
-        return null;
-      }
-      return credentialsByApp[apps[0]];
+      const lastUsedCredentials = localStorage.getItem('lruCredentials');
+      return lastUsedCredentials ?
+        JSON.parse(lastUsedCredentials) :
+        null;
     }
   }
 
   storeCredentials(credentials, appName) {
     sessionStorage.setItem('credentials', JSON.stringify(credentials));
+    localStorage.setItem('lruCredentials', JSON.stringify(credentials));
     if (appName) {
       this.storeAppCredentials(credentials, appName);
     }

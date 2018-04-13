@@ -38,35 +38,17 @@ export default class ApplicationInsightsClient {
             throw new Error('Unexpected response content from query');
         }
 
-        const responseModel = {
-            trace: {
-                timestamp: 'timestamp',
-                message: 'message',
-                severityLevel: 'severityLevel',
-            },
-            exception: {
-                timestamp: 'timestamp',
-                message: 'outerMessage',
-                severityLevel: 'severityLevel',
-            }
-        };
-
-        const columnsIndexMap = this.buildColumnIndexMap(response);
-
+        const colIndexPropertyMap = this.buildColumnIndexPropertyMap(response);
         const rows = response.tables[0].rows.map(row => {
-            const itemType = row[columnsIndexMap['itemType']];
-
-            if (!responseModel[itemType]) {
+            const itemType = row[colIndexPropertyMap['itemType']];
+            const reponseMapper = this.getResponseMapper(itemType);
+            if (!reponseMapper) {
                 // when item type is not supported, skip
                 return null;
             }
 
             var model = {};
-            Object.keys(responseModel[itemType]).forEach(prop => {
-                const propToMap = responseModel[itemType][prop];
-                const propIndex = columnsIndexMap[propToMap];
-                model[prop] = row[propIndex];
-            });
+            reponseMapper.forEach(propertyMapper => propertyMapper(row, colIndexPropertyMap, model));
             return model;
         })
         .filter(r => r !== null)
@@ -82,26 +64,58 @@ export default class ApplicationInsightsClient {
 
         return {
             logs: rows,
-            appName: this.getAppName(response, columnsIndexMap),
+            appName: this.getAppName(response, colIndexPropertyMap),
             fetchTime: new Date()
         };
+    }
+
+    getResponseMapper(itemType) {
+        return responseMapper[itemType];
     }
 
     /**
      * return a dictionary of property name and column index
      * {[columnName: string]: columnIndex: number} response 
      */
-    buildColumnIndexMap(response) {
+    buildColumnIndexPropertyMap(response) {
         const columnsIndexMap = {};
         response.tables[0].columns.forEach((c, i) => columnsIndexMap[c.name] = i);
         return columnsIndexMap;
     }
 
-    getAppName(response, columnsIndexMap) {
+    getAppName(response, columnsIndexPropertyMap) {
         if (response.tables[0].rows.length < 1) {
             return null;
         }
-        const appNameIndex = columnsIndexMap['appName'];
+        const appNameIndex = columnsIndexPropertyMap['appName'];
         return response.tables[0].rows[0][appNameIndex]
     }
 }
+
+const responseMapper = {
+    trace: [
+        (row, columnsIndexMap, model) => {
+            model.timestamp = new Date(row[columnsIndexMap['timestamp']]);
+        },
+        (row, columnsIndexMap, model) => {
+            model.message = row[columnsIndexMap['message']];
+        },
+        (row, columnsIndexMap, model) => {
+            model.severityLevel = row[columnsIndexMap['severityLevel']];
+        }
+    ],
+    exception: [
+        (row, columnsIndexMap, model) => {
+            model.timestamp = new Date(row[columnsIndexMap['timestamp']]);
+        },
+        (row, columnsIndexMap, model) => {
+            model.message = `${row[columnsIndexMap['problemId']]}: ${row[columnsIndexMap['outerMessage']]}`;
+            if (row[columnsIndexMap['outerMessage']] !== row[columnsIndexMap['innermostMessage']]) {
+                model.message += `\r\n${row[columnsIndexMap['innermostType']]}: ${row[columnsIndexMap['innermostMessage']]}.`;
+            }
+        },
+        (row, columnsIndexMap, model) => {
+            model.severityLevel = row[columnsIndexMap['severityLevel']];
+        }
+    ]
+};

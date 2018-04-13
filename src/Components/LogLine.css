@@ -21,6 +21,7 @@
 
 .ait-log_line-message {
     flex: 1 0 0;
+    white-space: pre-line;
 }
 
 .ait-log_line--error .ait-log_line-message,
