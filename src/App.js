@@ -29,7 +29,10 @@ class App extends Component {
       fetchTime: null
     };
 
-    this.state.credentials = this.profileRepository.getCredentials();
+    const storedCredentials = this.profileRepository.getCredentials();
+    if (storedCredentials) {
+      this.state.credentials = storedCredentials;
+    }
     const query = this.profileRepository.getQuery();
     if (query) {
       this.state.query = query;
