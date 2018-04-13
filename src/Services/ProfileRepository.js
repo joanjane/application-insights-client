@@ -63,6 +63,9 @@ export default class ProfileRepository {
 
   findCredentialsCanditate(appName) {
     const credentialsByApp = this.getAllCredentials();
+    if (!credentialsByApp) {
+      return null;
+    }
     return credentialsByApp[appName];
   }
 }
