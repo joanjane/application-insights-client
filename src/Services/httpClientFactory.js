@@ -1,9 +1,8 @@
-import HttpClient from './HttpClient';
 import MockHttpClient from './Mock/MockHttpClient';
-import environment from '../environment';
+import HttpClient from './HttpClient';
 
 export default function httpClientFactory() {
-    if (environment.name === 'test') {
+    if (process.env.NODE_ENV === 'test') {
         return new MockHttpClient();
     } else {
         return new HttpClient();

@@ -1,7 +1,17 @@
+import QueryStringUtils from '../Utils/QueryStringUtils';
+
 export default class ProfileRepository {
   getCredentials() {
-    const storedCredentials = sessionStorage.getItem('credentials');
+    const queryParams = QueryStringUtils.getParams();
+    if (queryParams['app_id'] && queryParams['api_key']) {
+      QueryStringUtils.removeParams();
+      return {
+        appId: queryParams['app_id'],
+        apiKey: queryParams['api_key'],
+      };
+    }
 
+    const storedCredentials = sessionStorage.getItem('credentials');
     if (storedCredentials) {
       return JSON.parse(storedCredentials);
     } else {
@@ -64,4 +74,6 @@ export default class ProfileRepository {
     }
     return credentialsByApp[appName];
   }
+
+  
 }

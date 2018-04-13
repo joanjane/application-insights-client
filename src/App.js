@@ -40,6 +40,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    console.log(process.env.NODE_ENV);
     this.printHelpOnConsole();
     this.getLogs();
     this.registerAutoRefresh();
@@ -132,16 +133,14 @@ class App extends Component {
     return (
       <div className="ait">
         <header className="ait-header">
-          <div>
-            <strong>
-              <a className="ait-title" href="https://docs.loganalytics.io/docs/Language-Reference/" target="_blank" rel="noopener noreferrer" >
-                  Application Insights Log
-              </a>
+          <div className="u-pointer" onClick={(e) => this.toggleAutoRefresh()}>
+            <strong className="ait-title">
+                Application Insights Log
             </strong>
             <br />
             {
               !this.state.loading ? (
-                <small className="u-pointer" onClick={(e) => this.toggleAutoRefresh()}>
+                <small>
                   updated{this.state.autoRefresh ? ' (auto)' : ''}: {DateUtils.formatDateTime(this.state.fetchTime)}
                 </small>
               ) : (
@@ -198,6 +197,8 @@ class App extends Component {
     traces | where severityLevel != 2 | sort by timestamp desc | limit 200
     traces | where message has 'Error' | sort by timestamp desc | limit 200
     exceptions | sort by timestamp desc | limit 200
+
+    Share a url: ${window.location.href}?app_id={your_app_id}&api_key={your_api_key}
     `);
   }
 }
