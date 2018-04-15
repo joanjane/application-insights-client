@@ -53,11 +53,11 @@ class MockStorage {
     }
 
     getItem(key) {
-        this.data[key];
+        return this.data[key];
     }
 
     setItem(key, value) {
-        return this.data[key] = value;
+        this.data[key] = value;
     }
 
     removeItem(key) {

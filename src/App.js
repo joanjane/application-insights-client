@@ -19,6 +19,7 @@ class App extends Component {
 
     this.state = {
       loading: false,
+      error: null,
       credentials: {
         appId: '',
         apiKey: ''
@@ -78,6 +79,7 @@ class App extends Component {
         this.setState({
           logs: response.logs,
           loading: false,
+          error: null,
           appName: response.appName,
           fetchTime: response.fetchTime
         });
@@ -86,7 +88,7 @@ class App extends Component {
           DomUtils.scrollBottom('.ait-body');
         }
       }, error => {
-        this.setState({ loading: false });
+        this.setState({ loading: false, error: 'Error when getting logs, see console' });
       });
   }
 
@@ -125,9 +127,12 @@ class App extends Component {
   }
 
   clearData() {
+    if (!window.confirm('Are you sure to clear all stored data?')) {
+      return;
+    }
     this.profileRepository.clearData();
     this.setState({
-      credentials: {appId: '', apiKey: ''},
+      credentials: { appId: '', apiKey: '' },
       autoRefresh: false,
       logs: [],
       appName: ''
@@ -138,27 +143,18 @@ class App extends Component {
     return (
       <div className="ait">
         <header className="ait-header">
-          <div className="u-pointer">
+          <div>
             <strong className="ait-title">
               Application Insights Log
             </strong>
-            <br />
-            {
-              !this.state.loading ? (
-                <small>
-                  updated{this.state.autoRefresh ? ' (auto)' : ''}: {DateUtils.formatDateTime(this.state.fetchTime)}
-                </small>
-              ) : (
-                  'Loading...'
-                )
-            }
           </div>
 
-          <div className="ait-dropdown ait-credentials-menu">
+          <div className="ait-dropdown ait-dropdown--floating ait-credentials-menu">
             <input type="checkbox" id="credentials" />
-            <label className="ait-dropdown-toggle" htmlFor="credentials">Credentials</label>
+            <label className="ait-dropdown-toggle" htmlFor="credentials">Settings</label>
             <div className="ait-dropdown-content">
               <div className="ait-credentials-section ait-credentials">
+                <label>Credentials</label>
                 <input className="ait-input" value={this.state.credentials.appId}
                   placeholder='App id'
                   onBlur={(e) => this.checkStoredAppCredentials(e.target.value)}
@@ -168,6 +164,7 @@ class App extends Component {
                   onChange={(e) => this.setField('apiKey', e.target.value)} />
               </div>
               <div className="ait-credentials-section">
+                <label>Switch apps</label>
                 <select className="ait-input" onChange={(e) => this.checkStoredAppCredentials(e.target.value)}>
                   <option>Saved apps</option>
                   {this.state.availableApps.map((appName, i) =>
@@ -176,11 +173,14 @@ class App extends Component {
                 </select>
               </div>
               <div className="ait-credentials-section">
-                <label htmlFor="autorefresh" className="u-pointer">Auto refresh {this.state.autoRefresh ? '✔️' : '❌'}</label>
-                <input className="hidden" type="checkbox" id="autorefresh" checked={this.state.autoRefresh} onChange={(e) => this.toggleAutoRefresh()} />
-              </div>
-              <div className="ait-credentials-section u-textright">
-                <button onClick={()=>this.clearData()}>Clear data</button>
+                <label>Settings</label>
+                <ul className="ait-btn-list">
+                  <li className="ait-toggle">
+                    <input className="hidden" type="checkbox" id="autorefresh" checked={this.state.autoRefresh} onChange={(e) => this.toggleAutoRefresh()} />
+                    <label htmlFor="autorefresh" className="ait-btn">Auto refresh</label>
+                  </li>
+                  <li className="ait-btn" onClick={() => this.clearData()}>Clear data</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -198,13 +198,33 @@ class App extends Component {
             )}
           </div>
         </div>
-        <div className="ait-footer">
-          <textarea
-            className="ait-query"
-            value={this.state.query}
-            placeholder='query'
-            onChange={(e) => this.setQuery(e.target.value)} />
-          <button className="ait-search" onClick={this.getLogs}>Search</button>
+        <div>
+          <div className="ait-footer-status">
+            <div className="ait-footer-status-item ait-footer-status--timestamp">
+              {
+                !this.state.loading ? (
+                  <div>
+                    updated{this.state.autoRefresh ? ' (auto)' : ''}: {DateUtils.formatDateTime(this.state.fetchTime)}
+                  </div>
+                ) : (
+                    'Loading...'
+                  )
+              }
+            </div>
+            {this.state.error ?
+              <div className="ait-footer-status-item ait-footer-status--error">
+                {this.state.error}
+              </div> : ''
+            }
+          </div>
+          <div className="ait-footer">
+            <textarea
+              className="ait-query"
+              value={this.state.query}
+              placeholder='query'
+              onChange={(e) => this.setQuery(e.target.value)} />
+            <button className="ait-search" onClick={this.getLogs}>Search</button>
+          </div>
         </div>
       </div>
     );

@@ -1,5 +1,5 @@
-export default class QueryStringUtils {
-    static getParams() {
+class QueryStringUtils {
+    getParams() {
         if (!window.location) {
             return {};
         }
@@ -18,10 +18,12 @@ export default class QueryStringUtils {
             }, {});
     }
 
-    static removeParams() {
+    removeParams() {
         if (!window.history) {
             return;
         }
         window.history.pushState({}, '', '/');
     }
 }
+
+export default new QueryStringUtils();

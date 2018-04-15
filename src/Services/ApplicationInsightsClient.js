@@ -14,7 +14,6 @@ export default class ApplicationInsightsClient {
             console.log(result);
             return result;
         }, error => {
-            alert('Error when getting traces, see console for details');
             console.error(error);
             if (error.json) {
                 error.json().then(err => console.error(err));
