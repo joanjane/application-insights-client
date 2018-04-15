@@ -1,6 +1,11 @@
 import QueryStringUtils from '../Utils/QueryStringUtils';
+import StorageRepository from './StorageRepository';
 
 export default class ProfileRepository {
+  constructor() {
+    this.storageRepository = new StorageRepository();
+  }
+
   getCredentials() {
     const queryParams = QueryStringUtils.getParams();
     if (queryParams['app_id'] && queryParams['api_key']) {
@@ -11,31 +16,29 @@ export default class ProfileRepository {
       };
     }
 
-    const storedCredentials = sessionStorage.getItem('credentials');
+    const storedCredentials = this.storageRepository.getSessionData('credentials', true);
     if (storedCredentials) {
-      return JSON.parse(storedCredentials);
+      return storedCredentials;
     } else {
-      const lastUsedCredentials = localStorage.getItem('lruCredentials');
-      return lastUsedCredentials ?
-        JSON.parse(lastUsedCredentials) :
-        null;
+      const lastUsedCredentials = this.storageRepository.getLocalData('lruCredentials', true);
+      return lastUsedCredentials;
     }
   }
 
   storeCredentials(credentials, appName) {
-    sessionStorage.setItem('credentials', JSON.stringify(credentials));
-    localStorage.setItem('lruCredentials', JSON.stringify(credentials));
+    this.storageRepository.saveSessionData('credentials', credentials, true);
+    this.storageRepository.saveLocalData('lruCredentials', credentials, true);
     if (appName) {
       this.storeAppCredentials(credentials, appName);
     }
   }
 
   getQuery() {
-    return sessionStorage.getItem('query');
+    return this.storageRepository.getSessionData('query');
   }
 
   storeQuery(query) {
-    sessionStorage.setItem('query', query);
+    this.storageRepository.saveSessionData('query', query);
   }
 
   storeAppCredentials(credentials, appName) {
@@ -44,18 +47,13 @@ export default class ProfileRepository {
       return;
     }
 
-    const credentialsByAppContent = localStorage.getItem('credentialsByApp');
-    const credentialsByApp = credentialsByAppContent ? JSON.parse(credentialsByAppContent) : {};
+    const credentialsByApp = this.getAllCredentials() || {};
     credentialsByApp[appName] = credentials;
-    localStorage.setItem('credentialsByApp', JSON.stringify(credentialsByApp));
+    this.storageRepository.saveLocalData('credentialsByApp', credentialsByApp, true);
   }
 
   getAllCredentials() {
-    const credentialsByAppContent = localStorage.getItem('credentialsByApp');
-    if (!credentialsByAppContent) {
-      return null;
-    }
-    return JSON.parse(credentialsByAppContent);
+    return this.storageRepository.getLocalData('credentialsByApp', true);
   }
 
   getStoredAppNamesCredentials() {
@@ -76,9 +74,7 @@ export default class ProfileRepository {
   }
 
   clearData() {
-    sessionStorage.clear();
-    localStorage.clear();
+    this.storageRepository.clearSessionData();
+    this.storageRepository.clearLocalData();
   }
-
-  
 }

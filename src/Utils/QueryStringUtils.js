@@ -1,5 +1,9 @@
 export default class QueryStringUtils {
     static getParams() {
+        if (!window.location) {
+            return {};
+        }
+
         const query = window.location.search;
         if (!query) {
             return {};
@@ -15,6 +19,9 @@ export default class QueryStringUtils {
     }
 
     static removeParams() {
+        if (!window.history) {
+            return;
+        }
         window.history.pushState({}, '', '/');
     }
 }

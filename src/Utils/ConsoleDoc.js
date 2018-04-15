@@ -1,5 +1,9 @@
 export default class ConsoleDoc {
     static printHelpOnConsole() {
+        if (process.env.NODE_ENV === 'test') {
+            return;
+        }
+        
         console.log(`
         Hello! Here are some tips you must think useful:
         Query documentation (https://docs.loganalytics.io/docs/Language-Reference/):

@@ -5,6 +5,7 @@ import ProfileRepository from './Services/ProfileRepository';
 import LogLine from './Components/LogLine';
 import DateUtils from './Utils/DateUtils';
 import ConsoleDoc from './Utils/ConsoleDoc';
+import DomUtils from './Utils/DomUtils';
 
 class App extends Component {
   constructor() {
@@ -81,8 +82,8 @@ class App extends Component {
           fetchTime: response.fetchTime
         });
 
-        if (forceScrollBottom || this.isScrollEnd()) {
-          this.scrollBottom();
+        if (forceScrollBottom || DomUtils.isScrollEnd('.ait-body')) {
+          DomUtils.scrollBottom('.ait-body');
         }
       }, error => {
         this.setState({ loading: false });
@@ -99,13 +100,6 @@ class App extends Component {
 
   scrollBottom() {
     document.querySelector('.ait-body').scrollTo(0, document.querySelector('.ait-body').scrollHeight);
-  }
-
-  isScrollEnd() {
-    const scrollPosition =
-      document.querySelector('.ait-body').scrollTop +
-      document.querySelector('.ait-body').offsetHeight;
-    return scrollPosition === document.querySelector('.ait-body').scrollHeight;
   }
 
   setField(field, value) {
