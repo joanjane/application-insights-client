@@ -1,4 +1,5 @@
 import HttpMock from './HttpMock';
+import { Observable } from 'rxjs/Observable';
 
 export default class MockHttpClient {
     get(uri, headers) {
@@ -18,12 +19,16 @@ export default class MockHttpClient {
     }
 
     request(method, uri, headers, body) {
-        return new Promise((resolve, reject) => {
-            if (HttpMock[uri]) {
-                resolve(HttpMock[uri]);
-            } else {
-                reject(`uri ${uri} not added to mock`);
-            }
+        console.debug(`MOCK [${method}] ${uri}`);
+        return Observable.create(observer => {
+            setTimeout(() => {
+                if (HttpMock[uri]) {
+                    observer.next(HttpMock[uri]);
+                } else {
+                    observer.error(HttpMock[uri]);
+                }
+                observer.complete();
+            }, 1500);
         });
     }
 }

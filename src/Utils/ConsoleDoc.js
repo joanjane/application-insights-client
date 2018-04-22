@@ -1,6 +1,6 @@
 class ConsoleDoc {
     printHelpOnConsole() {
-        if (process.env.NODE_ENV === 'test') {
+        if (true || process.env.NODE_ENV === 'test') {
             return;
         }
         

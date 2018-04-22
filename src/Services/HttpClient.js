@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export default class HttpClient {
     get(uri, headers) {
         return this.request('GET', uri, headers);
@@ -16,20 +18,18 @@ export default class HttpClient {
     }
 
     request(method, uri, headers, body) {
-        return new Promise((resolve, reject) => {
-            fetch(uri, {
-                method,
-                headers,
-                body,
-            }).then(response => {
-                if (!response.ok) {
-                    reject(response);
-                    return;
-                }
-                response.json().then(content => {
-                    resolve(content);
-                }, (error) => reject(error));
-            }, error => reject(error));
+        const requestHeaders = {
+            ...headers,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        };
+
+        return Observable.ajax({
+            url: uri,
+            method: method,
+            headers: requestHeaders,
+            responseType: 'json',
+            body: body
         });
     }
 }

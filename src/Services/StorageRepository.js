@@ -14,7 +14,11 @@ export default class StorageRepository {
     getSessionData(key, parseObject) {
         if (parseObject) {
             const content = this.sessionStorage.getItem(key);
-            return content ? JSON.parse(content) : null;
+            try {
+                return content ? JSON.parse(content) : null;
+            } catch (e) {
+                return null;
+            }
         }
         return this.sessionStorage.getItem(key);
     }
@@ -30,7 +34,11 @@ export default class StorageRepository {
     getLocalData(key, parseObject) {
         if (parseObject) {
             const content = this.localStorage.getItem(key);
-            return content ? JSON.parse(content) : null;
+            try {
+                return content ? JSON.parse(content) : null;
+            } catch (e) {
+                return null;
+            }
         }
         return this.localStorage.getItem(key);
     }

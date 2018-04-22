@@ -1,4 +1,5 @@
-import httpClientFactory from './httpClientFactory'
+import httpClientFactory from './httpClientFactory';
+import { Observable } from 'rxjs/Observable';
 
 export default class ApplicationInsightsClient {
     constructor() {
@@ -9,16 +10,11 @@ export default class ApplicationInsightsClient {
         query = query || 'traces | sort by timestamp desc | limit 50';
         const uri = `${this.buildAppUri(credentials)}/query?query=${encodeURIComponent(query)}&timespan=P7D`;
 
-        return this.httpClient.get(uri, this.buildHeaders(credentials)).then(response => {
-            const result = this.mapQueryResponse(response);
-            console.log(result);
-            return result;
-        }, error => {
+        return this.httpClient.get(uri, this.buildHeaders(credentials)).map(httpResponse =>
+            this.mapQueryResponse(httpResponse.response)
+        ).catch(error => {
             console.error(error);
-            if (error.json) {
-                error.json().then(err => console.error(err));
-            }
-            return Promise.reject(error);
+            return Observable.throw(error);
         });
     }
 

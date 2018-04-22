@@ -25,11 +25,11 @@ export default class ProfileRepository {
     }
   }
 
-  storeCredentials(credentials, appName) {
+  storeCredentials(credentials) {
     this.storageRepository.saveSessionData('credentials', credentials, true);
     this.storageRepository.saveLocalData('lruCredentials', credentials, true);
-    if (appName) {
-      this.storeAppCredentials(credentials, appName);
+    if (credentials.appName) {
+      this.storeAppCredentials(credentials, credentials.appName);
     }
   }
 
