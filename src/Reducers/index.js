@@ -1,75 +1,82 @@
 import {
-  SET_CREDENTIALS,
-  CLEAR_DATA,
-  SET_AUTOREFRESH,
-  SET_QUERY,
   GET_LOGS,
   SET_LOGS,
+  CLEAR_DATA,
+  PROFILE_LOADED,
+  SET_CREDENTIALS,
+  SET_AUTOREFRESH,
+  SET_QUERY,
   ERROR
 } from '../Actions/Types';
-import ProfileRepository from '../Services/ProfileRepository';
+
 import { AUTOREFRESH_GET_LOGS_SOURCE } from '../Actions';
+import { combineActiveReducers } from './combineActiveReducers';
 
-const profileRepository = new ProfileRepository();
-const storedCredentials = profileRepository.getCredentials();
-const availableApps = profileRepository.getStoredAppNamesCredentials();
-const query = profileRepository.getQuery();
-
-const initialState = (useStartupValues) => {
+const initialState = () => {
   return {
     logs: [],
-    credentials: useStartupValues && storedCredentials ?
-      storedCredentials :
-      {
-        appId: '',
-        apiKey: ''
-      },
-    query: useStartupValues && query ? query : 'traces | sort by timestamp desc | limit 50',
+    credentials: {
+      appId: '',
+      apiKey: ''
+    },
+    query: 'traces | sort by timestamp desc | limit 50',
     autoRefresh: true,
     refreshInterval: null,
     appName: null,
     fetchTime: null,
     error: null,
-    availableApps: useStartupValues && availableApps ? availableApps : []
+    availableApps: []
   }
 };
-const defaultState = initialState(true);
 
-const rootReducer = (state = defaultState, action) => {
-  switch (action.type) {
-    case SET_CREDENTIALS:
-      return setCredentialsReducer(state, action);
-    case CLEAR_DATA:
-      return clearDataReducer(state, action);
-    case SET_AUTOREFRESH:
-      return setAutoRefreshReducer(state, action);
-    case SET_LOGS:
-      return setLogsReducer(state, action);
-    case GET_LOGS:
-      return getLogsReducer(state, action);
-    case SET_QUERY:
-      return setQueryReducer(state, action);
-    case ERROR:
-      return errorReducer(state, action);
-    default:
-      return state;
+export const rootReducer = combineActiveReducers([
+  clearDataReducer,
+  profileLoadedReducer,
+  setCredentialsReducer,
+  setAutoRefreshReducer,
+  setQueryReducer,
+  setLogsReducer,
+  getLogsReducer,
+  errorReducer
+], initialState());
+
+function profileLoadedReducer(state, action) {
+  if (action.type !== PROFILE_LOADED) return;
+  const loadedProps = {};
+  if (action.payload.credentials) {
+    loadedProps.credentials = action.payload.credentials;
   }
-};
-export default rootReducer;
-
-function setCredentialsReducer(state, action) {
-  return { ...state, credentials: action.payload };
+  if (action.payload.query) {
+    loadedProps.query = action.payload.query;
+  }
+  if (action.payload.availableApps) {
+    loadedProps.availableApps = action.payload.availableApps;
+  }
+  return { ...state, ...loadedProps };
 }
 
 function clearDataReducer(state, action) {
+  if (action.type !== CLEAR_DATA) return;
   return { ...initialState() };
 }
 
+function setCredentialsReducer(state, action) {
+  if (action.type !== SET_CREDENTIALS) return;
+  return { ...state, credentials: action.payload };
+}
+
 function setAutoRefreshReducer(state, action) {
+  if (action.type !== SET_AUTOREFRESH) return;
   return { ...state, autoRefresh: action.payload };
 }
 
+function setQueryReducer(state, action) {
+  if (action.type !== SET_QUERY) return;
+  return { ...state, query: action.payload };
+}
+
 function setLogsReducer(state, action) {
+  if (action.type !== SET_LOGS) return;
   return {
     ...state,
     logs: action.payload.logs,
@@ -81,14 +88,12 @@ function setLogsReducer(state, action) {
 }
 
 function getLogsReducer(state, action) {
+  if (action.type !== GET_LOGS) return;
   const skipLoading = action.payload === AUTOREFRESH_GET_LOGS_SOURCE && state.error;
   return { ...state, loading: skipLoading ? false : true };
 }
 
-function setQueryReducer(state, action) {
-  return { ...state, query: action.payload };
-}
-
 function errorReducer(state, action) {
+  if (action.type !== ERROR) return;
   return { ...state, error: action.payload, loading: false };
 }

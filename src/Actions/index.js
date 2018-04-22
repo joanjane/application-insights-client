@@ -6,7 +6,9 @@ import {
     SET_QUERY,
     SET_LOGS,
     GET_LOGS,
-    ERROR
+    ERROR,
+    PROFILE_LOADED,
+    LOAD_PROFILE
 } from './Types';
 
 export function setCredentials(credentials) {
@@ -31,6 +33,21 @@ export function setAutoRefresh(enabled) {
 
 export function setQuery(query) {
     return { type: SET_QUERY, payload: query };
+}
+
+export function loadProfile() {
+    return { type: LOAD_PROFILE };
+}
+
+export function profileLoaded(credentials, query, availableApps) {
+    return {
+        type: PROFILE_LOADED, 
+        payload: {
+            credentials,
+            query,
+            availableApps
+        }
+    };
 }
 
 export function setLogs(logs) {

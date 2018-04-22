@@ -64,7 +64,7 @@ body, #root {
 
 /* buttons */
 .ait-btn {
-  border: 1px solid rgba(0, 0, 0, 0.63);
+  border: none;
   background: #ececec;
   color: #525252;
   border-radius: 2px;
@@ -75,6 +75,11 @@ body, #root {
 
 .ait-btn:hover {
   opacity: .95;
+}
+
+.ait-btn.disabled, .ait-btn[disabled] {
+  opacity: .8;
+  pointer-events: none;
 }
 
 .ait-toggle .ait-btn {

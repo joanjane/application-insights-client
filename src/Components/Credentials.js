@@ -47,7 +47,7 @@ class Credentials extends Component {
     handleChange(event) {
         let { credentials } = this.state;
         credentials = { ...credentials, [event.target.id]: event.target.value };
-        this.setState({credentials});
+        this.setState({ credentials });
     }
 
     handleSubmit(event) {
@@ -74,6 +74,10 @@ class Credentials extends Component {
         return credentials1.appId !== credentials2.appId || credentials1.apiKey !== credentials2.apiKey;
     }
 
+    validCredentials = () => {
+        return this.state.credentials.appId && this.state.credentials.apiKey;
+    }
+
     render() {
         return (
             <div className="ait-dropdown ait-dropdown--floating ait-credentials-menu">
@@ -91,7 +95,10 @@ class Credentials extends Component {
                                 id="apiKey"
                                 placeholder='API key'
                                 onChange={(e) => this.handleChange(e)} />
-                            <button className="ait-btn">Save</button>
+                            <button 
+                                className={`ait-btn u-w100 ${(!this.validCredentials() ? 'disabled' : '')}`}>
+                                Save
+                            </button>
                         </div>
                         {
                             this.props.availableApps.length === 0 ? '' :

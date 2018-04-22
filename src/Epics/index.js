@@ -8,7 +8,8 @@ import {
     setCredentialsEpic,
     findCredentialsCandidateEpic,
     setQueryEpic,
-    clearDataEpic
+    clearDataEpic,
+    loadProfileEpic
 } from './Profile';
 
 export const rootEpic = combineEpics(
@@ -17,5 +18,6 @@ export const rootEpic = combineEpics(
     setCredentialsEpic,
     findCredentialsCandidateEpic,
     setQueryEpic,
-    clearDataEpic
+    clearDataEpic,
+    loadProfileEpic
 );
