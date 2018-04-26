@@ -18,6 +18,8 @@ Query samples:
 traces | where severityLevel > 2 | sort by timestamp desc | limit 200
 traces | where message has 'Error' | sort by timestamp desc | limit 200
 exceptions | sort by timestamp desc | limit 200
+traces | where timestamp > todatetime("2018-04-26 10:20:00Z") | sort by timestamp desc | limit 100
+traces | where timestamp > ago(1h)
 
 Share a url: ${window.location.href}?app_id={your_app_id}&api_key={your_api_key}`);
     }
