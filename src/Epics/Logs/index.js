@@ -64,5 +64,5 @@ export const autoRefreshEpic = (action$, store) =>
 
 
 function anyCredentials(credentials) {
-    return credentials.appId && credentials.apiKey;
+    return credentials && credentials.appId && credentials.apiKey;
 }
