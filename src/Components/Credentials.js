@@ -106,7 +106,7 @@ class Credentials extends Component {
                                     <label>Switch apps</label>
                                     <select className="ait-input" onChange={(e) => this.checkStoredAppCredentials(e.target.value)}>
                                         <option>Saved apps</option>
-                                        {this.props.availableApps.map((appName, i) =>
+                                        {this.props.availableApps.sort().map((appName, i) =>
                                             <option key={i} value={appName}>{appName}</option>
                                         )}
                                     </select>
