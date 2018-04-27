@@ -1,8 +1,10 @@
 # Application Insights Log
 
-This is a responsive Application Insights log client that enables to query traces with analytics API. Setup the application id and generate an api key in azure. It's still a work in progress ;)
+This is a responsive Application Insights log client that enables to query traces with analytics API. Setup the application id and generate an api key in azure.
 
-This application is built with react, redux and redux-observable. It's not publicly deployed, but it will be soon.
+This application is built with react, redux and redux-observable.
+
+Try it here: https://joanjane.github.io/application-insights-client/
 
 ## Features
 * Query traces with a clean interface and logger style interface
@@ -16,11 +18,17 @@ Read the log analytics language reference: https://docs.loganalytics.io/docs/Lan
 
 Some simple samples:
 
-`traces | where severityLevel > 2 | sort by timestamp desc | limit 200`
+```
+traces | where severityLevel > 2 | sort by timestamp desc | limit 200
 
-`traces | where message has 'Error' | sort by timestamp desc | limit 200`
+traces | where message has 'Error' | sort by timestamp desc | limit 200
 
-`exceptions | sort by timestamp desc | limit 200`
+exceptions | sort by timestamp desc | limit 200
 
-## Running this app
+traces | where timestamp > todatetime("2018-01-01 00:00:00Z") | sort by timestamp desc | limit 100
+
+traces | where timestamp > ago(1h)
+```
+
+## Running this app for development
 Install dependencies with `npm install` and continue starting up the app with `npm start`. Open this url http://localhost:3000/ and enter the credentials on top and search for traces.

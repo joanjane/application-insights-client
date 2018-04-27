@@ -14,7 +14,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build -b gh-pages"
   },
   "private": false,
   "license": "MIT",
@@ -24,5 +26,9 @@
   },
   "repository": {
     "url": "https://github.com/joanjane/application-insights-client"
+  },
+  "homepage": "https://joanjane.github.io/application-insights-client",
+  "devDependencies": {
+    "gh-pages": "^1.1.0"
   }
 }
