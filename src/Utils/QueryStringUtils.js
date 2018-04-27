@@ -22,7 +22,8 @@ class QueryStringUtils {
         if (!window.history) {
             return;
         }
-        window.history.pushState({}, '', '/');
+        const url  = window.location.href.split('?');
+        window.history.pushState({}, '', url[0]);
     }
 }
 
