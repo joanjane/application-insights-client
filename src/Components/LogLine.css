@@ -23,6 +23,7 @@
 .ait-log_line-message {
     flex: 1 0 0;
     white-space: pre-line;
+    word-break: break-all;
 }
 
 .ait-log_line--error .ait-log_line-message,
