@@ -17,6 +17,7 @@
     padding-right: 1rem;
     color: lime;
     flex: 0 1 auto;
+    white-space: nowrap;
 }
 
 .ait-log_line-message {
