@@ -25,7 +25,10 @@ export default class MockHttpClient {
                 if (HttpMock[uri]) {
                     observer.next(HttpMock[uri]);
                 } else {
-                    observer.error(HttpMock[uri]);
+                    observer.error({
+                        status: 404,
+                        response: 'Not found'
+                    });
                 }
                 observer.complete();
             }, 1500);

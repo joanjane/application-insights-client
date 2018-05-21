@@ -7,7 +7,7 @@ import QueryBox from './Components/QueryBox';
 
 import {
   loadProfile
-} from './Actions'
+} from './Actions/Profile'
 import StatusBar from './Components/StatusBar';
 
 const mapStateToProps = state => {

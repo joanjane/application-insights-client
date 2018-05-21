@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {
     setQuery,
     getLogs
-} from '../Actions';
+} from '../Actions/Logs';
 
 const mapStateToProps = state => {
     return {

@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import {
     setCredentials,
     clearData,
-    tryFindCredentials,
-    setAutoRefresh
-} from '../Actions';
+    tryFindCredentials
+} from '../Actions/Profile';
+import { setAutoRefresh } from '../Actions/Logs';
 
 const mapStateToProps = state => {
     return {
@@ -31,7 +31,8 @@ class Credentials extends Component {
             credentials: {
                 appId: props.credentials.appId,
                 apiKey: props.credentials.apiKey
-            }
+            },
+            selectedStoredCredential: ''
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -40,7 +41,13 @@ class Credentials extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.credentialsChanged(nextProps.credentials, this.state.credentials)) {
-            this.setState({ credentials: { ...nextProps.credentials } });
+            this.setState({
+                credentials: {
+                    appId: nextProps.credentials.appId,
+                    apiKey: nextProps.credentials.apiKey
+                },
+                selectedStoredCredential: ''
+            });
         }
     }
 
@@ -57,6 +64,7 @@ class Credentials extends Component {
 
     checkStoredAppCredentials(appName) {
         this.props.tryFindCredentials(appName);
+        this.setState({selectedStoredCredential: appName})
     }
 
     clearData() {
@@ -95,7 +103,7 @@ class Credentials extends Component {
                                 id="apiKey"
                                 placeholder='API key'
                                 onChange={(e) => this.handleChange(e)} />
-                            <button 
+                            <button
                                 className={`ait-btn u-w100 ${(!this.validCredentials() ? 'disabled' : '')}`}>
                                 Save
                             </button>
@@ -104,7 +112,9 @@ class Credentials extends Component {
                             this.props.availableApps.length === 0 ? '' :
                                 <div className="ait-credentials-section">
                                     <label>Switch apps</label>
-                                    <select className="ait-input" onChange={(e) => this.checkStoredAppCredentials(e.target.value)}>
+                                    <select value={this.state.selectedStoredCredential}
+                                        className="ait-input"
+                                        onChange={(e) => this.checkStoredAppCredentials(e.target.value)}>
                                         <option>Saved apps</option>
                                         {this.props.availableApps.sort().map((appName, i) =>
                                             <option key={i} value={appName}>{appName}</option>
