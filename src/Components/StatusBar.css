@@ -1,0 +1,26 @@
+.ait-footer-status {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: .8rem;
+    border-top: 1px solid var(--border-dark);
+    display: flex;
+    justify-content: space-between;
+}
+
+.ait-footer-status-item {
+    padding: 0 0.5rem;
+}
+
+.ait-footer-status--timestamp {
+    background: green;
+    flex: 1 0 auto;
+}
+
+.ait-footer-status--error {
+    background: red;
+}
+
+@media screen and (max-width: 767px) {
+    .ait-footer-status {
+        flex-flow: column;
+    }
+}

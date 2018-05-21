@@ -1,10 +1,22 @@
-/* Layout */
 body, #root {
+  --bg-default: #f8f9fa;
+  --bg-default-alt: #212529;
+
+  --bg-primary: #cfb0ff;
+  --bg-primary-alt: #212529;
+  
+  --bg-success: #52af54;
+  --bg-success-alt: #e1e1e1;
+
+  --bg-danger: #e14e4e;
+  --bg-danger-alt: white;
+  
   margin: 0;
   padding: 0;
   font-family: sans-serif;
   height: 100vh;
   width: 100vw;
+  overflow-x: hidden;
 }
 
 @media screen and (max-width: 767px) {
@@ -13,93 +25,8 @@ body, #root {
   }
 }
 
-/* Visibility */
-.hidden {
-  display: none !important;
-}
-
-@media screen and (max-width: 767px) {
-  .hidden-md-down {
-    display: none !important;
-  }
-}
-
-/* Utilities*/
-.u-pointer {
-  cursor: pointer !important;
-}
-
-.u-textright {
-  text-align: right;
-}
-
-.u-w100 {
-  width: 100%;
-}
-
-/* dropdown */
-.ait-dropdown {
-  position: relative;
-}
-
-.ait-dropdown .ait-dropdown-toggle {
-  cursor: pointer;
-  user-select: none;
-}
-
-.ait-dropdown > input[type=checkbox],
-.ait-dropdown .ait-dropdown-content {
-  display: none;
-}
-
-.ait-dropdown input[type=checkbox]:checked ~ .ait-dropdown-content {
-  display: block;
-  position: absolute;
-}
-
-.ait-dropdown--floating input[type=checkbox]:checked ~ .ait-dropdown-content {
-  transform: translateX(-100%);
-  left: 100%;
-}
-
-/* buttons */
-.ait-btn {
-  border: none;
-  background: #ececec;
-  color: #525252;
-  border-radius: 2px;
-  padding: 0.4rem 1rem;
-  cursor: pointer;
-  text-align: center;
-}
-
-.ait-btn:hover {
-  opacity: .95;
-}
-
-.ait-btn.disabled, .ait-btn[disabled] {
-  opacity: .8;
-  pointer-events: none;
-}
-
-.ait-toggle .ait-btn {
-  background: red;
-  color: white;
-  display: block;
-}
-
-.ait-toggle--on .ait-btn,
-.ait-toggle input[type=checkbox]:checked ~ .ait-btn {
-  background: green;
-}
-
-.ait-btn-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.ait-btn-list .ait-btn {
-  border: none;
-  border-radius: 0;
-}
+@import './Styles/Utilities.css';
+@import './Styles/DropDown.css';
+@import './Styles/Buttons.css';
+@import './Styles/Toggles.css';
+@import './Styles/Inputs.css';

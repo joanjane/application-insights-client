@@ -1,0 +1,23 @@
+.ait-dropdown {
+    position: relative;
+}
+
+.ait-dropdown .ait-dropdown-toggle {
+    cursor: pointer;
+    user-select: none;
+}
+
+.ait-dropdown > input[type=checkbox],
+.ait-dropdown .ait-dropdown-content {
+    display: none;
+}
+
+.ait-dropdown input[type=checkbox]:checked ~ .ait-dropdown-content {
+    display: block;
+    position: absolute;
+}
+
+.ait-dropdown--floating input[type=checkbox]:checked ~ .ait-dropdown-content {
+    transform: translateX(-100%);
+    left: 100%;
+}

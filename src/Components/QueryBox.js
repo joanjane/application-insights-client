@@ -4,6 +4,7 @@ import {
     setQuery,
     getLogs
 } from '../Actions/Logs';
+import './QueryBox.css';
 
 const mapStateToProps = state => {
     return {

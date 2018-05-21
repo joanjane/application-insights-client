@@ -6,12 +6,16 @@ import {
     tryFindCredentials
 } from '../Actions/Profile';
 import { setAutoRefresh } from '../Actions/Logs';
+import './Credentials.css';
 
 const mapStateToProps = state => {
     return {
-        credentials: { ...state.credentials },
         autoRefresh: state.autoRefresh,
-        availableApps: [...state.availableApps]
+        availableApps: [...state.availableApps],
+        credentials: {
+            appId: state.credentials.appId,
+            apiKey: state.credentials.apiKey
+        }
     };
 };
 
@@ -32,7 +36,9 @@ class Credentials extends Component {
                 appId: props.credentials.appId,
                 apiKey: props.credentials.apiKey
             },
-            selectedStoredCredential: ''
+            availableApps: props.availableApps,
+            selectedStoredCredential: '',
+            editing: props.credentials.appId === null
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -40,7 +46,7 @@ class Credentials extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.credentialsChanged(nextProps.credentials, this.state.credentials)) {
+        if (!this.state.editing && this.credentialsChanged(nextProps.credentials, this.state.credentials)) {
             this.setState({
                 credentials: {
                     appId: nextProps.credentials.appId,
@@ -59,12 +65,18 @@ class Credentials extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        if (!this.state.editing) {
+            this.setState({ editing: !this.state.editing });
+            return;
+        }
         this.props.setCredentials(this.state.credentials);
+        this.setState({ editing: !this.state.editing });
     }
 
     checkStoredAppCredentials(appName) {
+        this.setState({ editing: false });
         this.props.tryFindCredentials(appName);
-        this.setState({selectedStoredCredential: appName})
+        this.setState({ selectedStoredCredential: appName })
     }
 
     clearData() {
@@ -86,53 +98,77 @@ class Credentials extends Component {
         return this.state.credentials.appId && this.state.credentials.apiKey;
     }
 
+    renderCredentialsForm() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <div className="ait-credentials-section ait-credentials">
+                    <label>Credentials</label>
+                    <input className="ait-input" value={this.state.credentials.appId}
+                        placeholder='App id'
+                        id="appId"
+                        disabled={!this.state.editing}
+                        onChange={(e) => this.handleChange(e)} />
+                    <input className="ait-input" value={this.state.credentials.apiKey}
+                        id="apiKey"
+                        placeholder='API key'
+                        disabled={!this.state.editing}
+                        onChange={(e) => this.handleChange(e)} />
+                    {
+                        this.state.editing ?
+                            <button className={`ait-btn ait-btn--success u-w100 u-mt-2 ${(!this.validCredentials() ? 'disabled' : '')}`}>
+                                Apply
+                            </button> :
+                            <button className={`ait-btn ait-btn--default u-w100 u-mt-2`}>Edit</button>
+                    }
+                </div>
+                {this.renderAppsDropDown()}
+            </form>
+        );
+    }
+
+    renderAppsDropDown() {
+        if (this.props.availableApps.length === 0) {
+            return '';
+        }
+
+        return (
+            <div className="ait-credentials-section">
+                <label>Switch apps</label>
+                <select value={this.state.selectedStoredCredential}
+                    className="ait-input"
+                    onChange={(e) => this.checkStoredAppCredentials(e.target.value)}>
+                    <option>Saved apps</option>
+                    {this.props.availableApps.sort().map((appName, i) =>
+                        <option key={i} value={appName}>{appName}</option>
+                    )}
+                </select>
+            </div>
+        );
+    }
+
+    renderGlobalOptions() {
+        return (
+            <div className="ait-credentials-section">
+                <label>Settings</label>
+                <ul className="ait-btn-list">
+                    <li className="ait-toggle">
+                        <input className="hidden" type="checkbox" id="autorefresh" checked={this.props.autoRefresh} onChange={(e) => this.toggleAutoRefresh()} />
+                        <label htmlFor="autorefresh" className="ait-btn">Auto refresh</label>
+                    </li>
+                    <li className="ait-btn ait-btn--default" onClick={() => this.clearData()}>Clear data</li>
+                </ul>
+            </div>
+        );
+    }
+
     render() {
         return (
             <div className="ait-dropdown ait-dropdown--floating ait-credentials-menu">
                 <input type="checkbox" id="credentials" />
                 <label className="ait-dropdown-toggle" htmlFor="credentials">Settings</label>
                 <div className="ait-dropdown-content">
-                    <form onSubmit={this.handleSubmit}>
-                        <div className="ait-credentials-section ait-credentials">
-                            <label>Credentials</label>
-                            <input className="ait-input" value={this.state.credentials.appId}
-                                placeholder='App id'
-                                id="appId"
-                                onChange={(e) => this.handleChange(e)} />
-                            <input className="ait-input" value={this.state.credentials.apiKey}
-                                id="apiKey"
-                                placeholder='API key'
-                                onChange={(e) => this.handleChange(e)} />
-                            <button
-                                className={`ait-btn u-w100 ${(!this.validCredentials() ? 'disabled' : '')}`}>
-                                Save
-                            </button>
-                        </div>
-                        {
-                            this.props.availableApps.length === 0 ? '' :
-                                <div className="ait-credentials-section">
-                                    <label>Switch apps</label>
-                                    <select value={this.state.selectedStoredCredential}
-                                        className="ait-input"
-                                        onChange={(e) => this.checkStoredAppCredentials(e.target.value)}>
-                                        <option>Saved apps</option>
-                                        {this.props.availableApps.sort().map((appName, i) =>
-                                            <option key={i} value={appName}>{appName}</option>
-                                        )}
-                                    </select>
-                                </div>
-                        }
-                    </form>
-                    <div className="ait-credentials-section">
-                        <label>Settings</label>
-                        <ul className="ait-btn-list">
-                            <li className="ait-toggle">
-                                <input className="hidden" type="checkbox" id="autorefresh" checked={this.props.autoRefresh} onChange={(e) => this.toggleAutoRefresh()} />
-                                <label htmlFor="autorefresh" className="ait-btn">Auto refresh</label>
-                            </li>
-                            <li className="ait-btn" onClick={() => this.clearData()}>Clear data</li>
-                        </ul>
-                    </div>
+                    {this.renderCredentialsForm()}
+                    {this.renderGlobalOptions()}
                 </div>
             </div>
         );

@@ -1,0 +1,13 @@
+
+.ait-toggle .ait-btn {
+    background: var(--bg-danger);
+    color: var(--bg-danger-alt);
+    display: block;
+}
+
+.ait-toggle--on .ait-btn,
+.ait-toggle input[type=checkbox]:checked ~ .ait-btn {
+    background: var(--bg-success);
+    color: var(--bg-success-alt);
+}
+  

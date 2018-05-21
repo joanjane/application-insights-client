@@ -1,0 +1,12 @@
+.ait-input {
+    padding: .5rem;
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 1px solid;
+    font-size: 1rem;
+}
+
+.ait-input[disabled] {
+    font-style: italic;
+}
