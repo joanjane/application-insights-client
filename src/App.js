@@ -24,31 +24,55 @@ const mapDispatchToProps = dispatch => {
 };
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      sidebar: false
+    };
+  }
+
   componentDidMount() {
     this.props.loadProfile();
   }
 
+  toggleSidebar() {
+    this.setState({ sidebar: !this.state.sidebar });
+  }
+
   render() {
     return (
-      <div className="ait">
-        <header className="ait-header">
-          <div>
+      <div className={`ait ${this.state.sidebar ? 'ait--sidebar-open' : ''}`}>
+        <div className="ait-container">
+          <header className="ait-header">
             <strong className="ait-title">
               Application Insights Log
             </strong>
+            <div className="ait-credentials-menu">
+              <div className={`ait-icon-menu ${this.state.sidebar ? 'open' : ''}`}
+                onClick={() => this.toggleSidebar()}>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </header>
+          <div className="ait-body">
+            {
+              !this.props.credentials.appId ?
+                <h1>Welcome! To start, first set your credentials on top menu.</h1> :
+                <Log />
+            }
           </div>
-          <Credentials />
-        </header>
-        <div className="ait-body">
-          {
-            !this.props.credentials.appId ?
-              <h1>Welcome! To start, first set your credentials on top menu.</h1> :
-              <Log />
-          }
+          <div>
+            <StatusBar />
+            <QueryBox />
+          </div>
         </div>
-        <div>
-          <StatusBar />
-          <QueryBox />
+        <div className="ait-sidebar">
+          <Credentials />
         </div>
       </div>
     );

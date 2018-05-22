@@ -1,11 +1,12 @@
 .ait {
-  --bg-darkest: #222;
-  --bg-dark: #363837;
-  --bg-secondary: #666;
-  --border-dark: rgba(102, 102, 102, 0.3);
-
   background-color: var(--bg-darkest);
   color: white;
+  height: 100%;
+  width: 100%;
+  display: flex;
+}
+
+.ait-container {
   height: 100%;
   width: 100%;
   display: flex;
@@ -35,10 +36,6 @@
 
 @media screen and (max-width: 767px) {
   .ait-header {
-    flex-direction: column;
-  }
-  
-  .ait-header {
     padding: 1.3rem 1rem;
   }
 
@@ -54,4 +51,5 @@
 .ait-title {
   color: white;
   text-decoration: none;
+  display: block;
 }

@@ -162,14 +162,20 @@ class Credentials extends Component {
     }
 
     render() {
+        /*
+        <div className="ait-dropdown ait-dropdown--floating ait-credentials-menu">
+            <input type="checkbox" id="credentials" />
+            <label className="ait-dropdown-toggle" htmlFor="credentials">Settings</label>
+            <div className="ait-dropdown-content">
+                {this.renderCredentialsForm()}
+                {this.renderGlobalOptions()}
+            </div>
+        </div>
+        */
         return (
-            <div className="ait-dropdown ait-dropdown--floating ait-credentials-menu">
-                <input type="checkbox" id="credentials" />
-                <label className="ait-dropdown-toggle" htmlFor="credentials">Settings</label>
-                <div className="ait-dropdown-content">
-                    {this.renderCredentialsForm()}
-                    {this.renderGlobalOptions()}
-                </div>
+            <div>
+                {this.renderCredentialsForm()}
+                {this.renderGlobalOptions()}
             </div>
         );
     }

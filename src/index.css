@@ -6,10 +6,15 @@ body, #root {
   --bg-primary-alt: #212529;
   
   --bg-success: #52af54;
-  --bg-success-alt: #e1e1e1;
+  --bg-success-alt: #ececec;
 
   --bg-danger: #e14e4e;
   --bg-danger-alt: white;
+
+  --bg-darkest: #222;
+  --bg-dark: #363837;
+  --bg-secondary: #666;
+  --border-dark: rgba(102, 102, 102, 0.3);
   
   margin: 0;
   padding: 0;
@@ -26,6 +31,7 @@ body, #root {
 }
 
 @import './Styles/Utilities.css';
+@import './Styles/Icons.css';
 @import './Styles/DropDown.css';
 @import './Styles/Buttons.css';
 @import './Styles/Toggles.css';
