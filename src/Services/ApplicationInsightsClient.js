@@ -6,9 +6,10 @@ export default class ApplicationInsightsClient {
         this.httpClient = httpClientFactory();
     }
 
-    getLogs(credentials, query) {
+    getLogs(credentials, query, timespan) {
         query = query || 'traces | sort by timestamp desc | limit 50';
-        const uri = `${this.buildAppUri(credentials)}/query?query=${encodeURIComponent(query)}&timespan=P7D`;
+        timespan = timespan || 'P7D';
+        const uri = `${this.buildAppUri(credentials)}/query?query=${encodeURIComponent(query)}&timespan=${timespan}`;
 
         return this.httpClient.get(uri, this.buildHeaders(credentials)).map(httpResponse =>
             this.mapQueryResponse(httpResponse.response)
