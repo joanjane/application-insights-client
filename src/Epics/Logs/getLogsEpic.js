@@ -16,7 +16,7 @@ export const getLogsEpic = (action$, store, { applicationInsightsClient, DomUtil
         .filter(action => {
             const state = store.getState();
             return anyCredentials(state.credentials) &&
-                !(action.payload === AUTOREFRESH_GET_LOGS_SOURCE && state.error);
+                !(action.payload.source === AUTOREFRESH_GET_LOGS_SOURCE && state.error);
         })
         .switchMap(q => {
             const forceScrollEnd = DomUtils.isScrollEnd('.ait-body');

@@ -10,6 +10,7 @@ export const initialState = () => {
         refreshInterval: null,
         appName: null,
         fetchTime: null,
+        loading: false,
         error: null,
         availableApps: []
     }
