@@ -1,5 +1,5 @@
 export const PROFILE_LOADED = 'PROFILE_LOADED';
-export function profileLoaded(credentials, query, availableApps) {
+export function profileLoadedAction(credentials, query, availableApps) {
     return {
         type: PROFILE_LOADED, 
         payload: {

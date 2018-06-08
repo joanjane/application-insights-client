@@ -1,12 +1,12 @@
 import { Observable } from 'rxjs/Observable';
 import { anyCredentials } from './utils';
-import { error } from '../../Actions';
+import { errorAction } from '../../Actions';
 import { 
-    setCredentials,
+    setCredentialsAction,
     PROFILE_LOADED
  } from '../../Actions/Profile';
 import {
-    setLogs,
+    setLogsAction,
     GET_LOGS,
     AUTOREFRESH_GET_LOGS_SOURCE
 } from '../../Actions/Logs';
@@ -24,15 +24,15 @@ export const getLogsEpic = (action$, store, { applicationInsightsClient, DomUtil
 
             return applicationInsightsClient.getLogs(state.credentials, state.query)
                 .flatMap(logs => Observable.of(
-                    setLogs(logs),
-                    setCredentials({ ...store.getState().credentials, appName: logs.appName }))
+                    setLogsAction(logs),
+                    setCredentialsAction({ ...store.getState().credentials, appName: logs.appName }))
                 )
                 .catch(err => {
                     let reason = null;
                     if (err.response && err.response.error) {
                         reason = err.response.error.message || err.message;
                     }
-                    return Observable.of(error(reason || 'Error when getting logs'));
+                    return Observable.of(errorAction(reason || 'Error when getting logs'));
                 })
                 .do(() => {
                     if (forceScrollEnd) {

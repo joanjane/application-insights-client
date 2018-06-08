@@ -1,4 +1,4 @@
 export const CLEAR_DATA = 'CLEAR_DATA';
-export function clearData() {
+export function clearDataAction() {
     return { type: CLEAR_DATA, payload: null };
 }

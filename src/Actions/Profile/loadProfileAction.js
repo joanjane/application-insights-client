@@ -1,4 +1,4 @@
 export const LOAD_PROFILE = 'LOAD_PROFILE';
-export function loadProfile() {
+export function loadProfileAction() {
     return { type: LOAD_PROFILE };
 }

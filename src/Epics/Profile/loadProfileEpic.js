@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Observable';
-import { profileLoaded, LOAD_PROFILE } from '../../Actions/Profile';
+import { profileLoadedAction, LOAD_PROFILE } from '../../Actions/Profile';
 
 export const loadProfileEpic = (action$, store, { profileRepository, ConsoleDoc }) =>
     action$.ofType(LOAD_PROFILE)
@@ -8,5 +8,5 @@ export const loadProfileEpic = (action$, store, { profileRepository, ConsoleDoc 
             const credentials = profileRepository.getCredentials();
             const availableApps = profileRepository.getStoredAppNamesCredentials();
             const query = profileRepository.getQuery();
-            return Observable.of(profileLoaded(credentials, query, availableApps));
+            return Observable.of(profileLoadedAction(credentials, query, availableApps));
         });

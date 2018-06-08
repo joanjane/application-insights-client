@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-    setCredentials,
-    clearData,
-    tryFindCredentials
+    setCredentialsAction,
+    clearDataAction,
+    tryFindCredentialsAction
 } from '../Actions/Profile';
-import { setAutoRefresh } from '../Actions/Logs';
+import { setAutoRefreshAction } from '../Actions/Logs';
 import './Credentials.css';
 
 const mapStateToProps = state => {
@@ -21,10 +21,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        setCredentials: credentials => dispatch(setCredentials(credentials)),
-        clearData: () => dispatch(clearData()),
-        tryFindCredentials: appName => dispatch(tryFindCredentials(appName)),
-        setAutoRefresh: enabled => dispatch(setAutoRefresh(enabled))
+        setCredentials: credentials => dispatch(setCredentialsAction(credentials)),
+        clearData: () => dispatch(clearDataAction()),
+        tryFindCredentials: appName => dispatch(tryFindCredentialsAction(appName)),
+        setAutoRefresh: enabled => dispatch(setAutoRefreshAction(enabled))
     };
 };
 

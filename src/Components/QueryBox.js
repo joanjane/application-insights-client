@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-    setQuery,
-    getLogs
+    setQueryAction,
+    getLogsAction
 } from '../Actions/Logs';
 import './QueryBox.css';
 
@@ -14,8 +14,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        getLogs: () => dispatch(getLogs()),
-        setQuery: query => dispatch(setQuery(query))
+        getLogs: () => dispatch(getLogsAction()),
+        setQuery: query => dispatch(setQueryAction(query))
     };
 };
 

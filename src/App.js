@@ -6,7 +6,7 @@ import Credentials from './Components/Credentials';
 import QueryBox from './Components/QueryBox';
 
 import {
-  loadProfile
+  loadProfileAction
 } from './Actions/Profile'
 import StatusBar from './Components/StatusBar';
 
@@ -19,7 +19,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadProfile: () => dispatch(loadProfile())
+    loadProfile: () => dispatch(loadProfileAction())
   };
 };
 

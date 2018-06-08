@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import { anyCredentials } from './utils';
-import { refreshLogs, SET_AUTOREFRESH, SET_LOGS } from '../../Actions/Logs';
-import { empty } from '../../Actions';
+import { refreshLogsAction, SET_AUTOREFRESH, SET_LOGS } from '../../Actions/Logs';
+import { emptyAction } from '../../Actions';
 import { PROFILE_LOADED } from '../../Actions/Profile';
 const refreshTimeThreshold = 30000;
 
@@ -15,7 +15,7 @@ export const autoRefreshEpic = (action$, store) =>
         .switchMap(q => {
             return Observable
                 .timer(refreshTimeThreshold)
-                .map(t => isAutoRefreshEnabled(store) ? refreshLogs() : empty());
+                .map(t => isAutoRefreshEnabled(store) ? refreshLogsAction() : emptyAction());
         });
 
 const isAutoRefreshEnabled = (store) => store.getState().autoRefresh;

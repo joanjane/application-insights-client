@@ -1,15 +1,15 @@
 import { Observable } from 'rxjs/Observable';
-import { empty } from '../../Actions';
-import { TRY_FIND_CREDENTIALS, setCredentials } from '../../Actions/Profile';
+import { emptyAction } from '../../Actions';
+import { TRY_FIND_CREDENTIALS, setCredentialsAction } from '../../Actions/Profile';
 
 export const findCredentialsCandidateEpic = (action$, store, { profileRepository }) =>
     action$.ofType(TRY_FIND_CREDENTIALS)
         .switchMap(q => {
             return Observable
-                .of(profileRepository.findCredentialsCanditate(q.payload))
+                .of(profileRepository.findCredentialsCanditate(q.payload.appName))
                 .filter(credentials => credentials !== null)
                 .map(credentials => {
-                    return credentials ? setCredentials(credentials) : empty();
+                    return credentials ? setCredentialsAction(credentials) : emptyAction();
                 });
         });
 
