@@ -18,10 +18,11 @@ export const getLogsEpic = (action$, store, { applicationInsightsClient, DomUtil
             return anyCredentials(state.credentials) &&
                 !(action.payload.source === AUTOREFRESH_GET_LOGS_SOURCE && state.error);
         })
-        .switchMap(q => {
-            const forceScrollEnd = DomUtils.isScrollEnd('.ait-body');
-            const state = store.getState();
+        .switchMap(action => {
+            // force scroll search is done by user or it is already at the end of scroll
+            const forceScrollEnd = hasToScroll(action, DomUtils);
 
+            const state = store.getState();
             return applicationInsightsClient.getLogs(state.credentials, state.query)
                 .flatMap(logs => Observable.of(
                     setLogsAction(logs),
@@ -40,3 +41,8 @@ export const getLogsEpic = (action$, store, { applicationInsightsClient, DomUtil
                     }
                 });
         });
+
+function hasToScroll(action, DomUtils) {
+    return action.payload.source !== AUTOREFRESH_GET_LOGS_SOURCE ||
+        DomUtils.isScrollEnd('.ait-body');
+}
