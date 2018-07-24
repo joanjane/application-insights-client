@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './App.css';
+import Header from './Components/Header';
 import Log from './Components/Log';
 import Credentials from './Components/Credentials';
 import QueryBox from './Components/QueryBox';
-
-import {
-  loadProfileAction
-} from './Actions/Profile'
+import { loadProfileAction } from './Actions/Profile';
 import StatusBar from './Components/StatusBar';
 
 const mapStateToProps = state => {
   return {
     query: state.query,
-    credentials: state.credentials
+    credentials: state.credentials,
+    appName: state.appName,
+    loading: state.loading
   };
 };
 
@@ -41,25 +41,14 @@ class App extends Component {
 
   render() {
     return (
-      <div className={`ait ${this.state.sidebar ? 'ait--sidebar-open' : ''}`}>
-        <div className="ait-container">
-          <header className="ait-header">
-            <strong className="ait-title">
-              Application Insights Log
-            </strong>
-            <div className="ait-credentials-menu">
-              <div className={`ait-icon-menu ${this.state.sidebar ? 'open' : ''}`}
-                onClick={() => this.toggleSidebar()}>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-            </div>
-          </header>
-          <div className="ait-body">
+      <div className={`ait ${this.state.sidebar ? 'ail--sidebar-open' : ''}`}>
+        <div className="ail-container">
+          <Header
+            sidebar={this.state.sidebar}
+            loading={this.props.loading}
+            toggleSidebar={() => this.toggleSidebar()}
+            appName={this.props.appName} />
+          <div className="ail-body">
             {
               !this.props.credentials.appId ?
                 <h1>Welcome! To start, first set your credentials on top menu.</h1> :
@@ -71,7 +60,7 @@ class App extends Component {
             <QueryBox />
           </div>
         </div>
-        <div className="ait-sidebar">
+        <div className="ail-sidebar">
           <Credentials />
         </div>
       </div>

@@ -1,64 +1,64 @@
 /* Visibility */
 .hidden {
-    display: none !important;
+  display: none !important;
 }
 
 @media screen and (max-width: 767px) {
-    .hidden-md-down {
-        display: none !important;
-    }
+  .hidden-md-down {
+      display: none !important;
+  }
 }
 
 /* Utilities*/
 .u-pointer {
-    cursor: pointer !important;
+  cursor: pointer !important;
 }
 
 .u-textright {
-    text-align: right !important;
+  text-align: right !important;
 }
 
 .u-w100 {
-    width: 100% !important;
+  width: 100% !important;
 }
 
 /* Positioning */
 .u-m-1 {
-    margin: 0.3rem;
+  margin: 0.3rem;
 }
 
 .u-m-2 {
-    margin: 0.6rem;
+  margin: 0.6rem;
 }
 
 .u-mt-1 {
-    margin-top: 0.3rem;
+  margin-top: 0.3rem;
 }
 
 .u-mt-2 {
-    margin-top: 0.6rem;
+  margin-top: 0.6rem;
 }
 
 .u-mb-1 {
-    margin-bottom: 0.3rem;
+  margin-bottom: 0.3rem;
 }
 
 .u-mb-2 {
-    margin-bottom: 0.6rem;
+  margin-bottom: 0.6rem;
 }
 
 .u-ml-1 {
-    margin-left: 0.3rem;
+  margin-left: 0.3rem;
 }
 
 .u-ml-2 {
-    margin-left: 0.6rem;
+  margin-left: 0.6rem;
 }
 
 .u-mr-1 {
-    margin-right: 0.3rem;
+  margin-right: 0.3rem;
 }
 
 .u-mr-2 {
-    margin-right: 0.6rem;
+  margin-right: 0.6rem;
 }

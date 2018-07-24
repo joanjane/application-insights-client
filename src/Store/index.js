@@ -10,16 +10,16 @@ import DomUtils from '../Utils/DomUtils';
 import ConsoleDoc from '../Utils/ConsoleDoc';
 
 const epicMiddleware = createEpicMiddleware(rootEpic, {
-    dependencies: {
-        applicationInsightsClient: new ApplicationInsightsClient(),
-        profileRepository: new ProfileRepository(),
-        DomUtils: DomUtils,
-        ConsoleDoc: ConsoleDoc
-    }
+  dependencies: {
+    applicationInsightsClient: new ApplicationInsightsClient(),
+    profileRepository: new ProfileRepository(),
+    DomUtils: DomUtils,
+    ConsoleDoc: ConsoleDoc
+  }
 });
 
 const store = createStore(
-    rootReducer,
-    applyMiddleware(epicMiddleware)
+  rootReducer,
+  applyMiddleware(epicMiddleware)
 );
 export default store;

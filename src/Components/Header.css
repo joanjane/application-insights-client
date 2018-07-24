@@ -1,0 +1,113 @@
+.ail-header {
+  font-size: 1.2rem;
+  padding: 1.3rem 4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-dark);
+  position: relative;
+}
+
+.ail-header-title {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: baseline;
+}
+
+.ail-header-app_name {
+  position: absolute;
+  right: 50%;
+  transform: translateX(50%);
+  bottom: -0.6rem;
+  background: var(--bg-secondary);
+  color: var(--bg-default);
+  padding: .1rem .8rem;
+  border-radius: 11px;
+  font-size: .9rem;
+  opacity: .2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80%;
+  white-space: nowrap;
+  transition: opacity ease-in .3s;
+}
+
+.ail-header-app_name.active,
+.ait:hover .ail-header-app_name {
+  opacity: 1;
+}
+
+
+@media screen and (max-width: 767px) {
+  .ail-header {
+    padding: 1.3rem 1rem;
+  }
+  .ail-body {
+    padding: 0 1rem;
+  }
+}
+
+/* Title icon */
+@keyframes bulb {
+  0% {
+    background-color: transparent;
+    box-shadow: 0;
+    opacity: 0;
+  }
+  75% {
+    box-shadow: 0px 0px 20px 20px yellow;
+    background-color: yellow;
+    opacity: .2;
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0;
+    opacity: 0;
+  }
+}
+
+.ail-header-title_icon {
+  position: relative;
+}
+
+.ail--sidebar-open .ail-header .ail-header-title_icon {
+  transform: translateY(60px) rotate(180deg);
+}
+
+.ail--sidebar-open .ail-header .ail-header-title_icon::before,
+.ail--sidebar-open .ail-header .ail-header-title_icon::after {
+  height: 0;
+  width: 0;
+  content: ' ';
+  transition: all .5s ease-in;
+  transition-delay: .3s;
+  opacity: 0;
+}
+
+.ail--sidebar-open .ail-header .ail-header-title_icon::before {
+  content: ' ';
+  border-right: 1px white solid;
+  position: absolute;
+  height: 7rem;
+  width: auto;
+  transform: translateX(50%);
+  right: 50%;
+  top: 1rem;
+  opacity: 1;
+}
+
+.ail--sidebar-open .ail-header .ail-header-title_icon::after,
+.ail-header-title_icon--loading::after {
+  content: ' ';
+  opacity: .4;
+  border-radius: 50%;
+  position: absolute;
+  transform: translateX(50%);
+  bottom: 20%;
+  right: 50%;
+  height: 1rem;
+  width: 1rem;
+  z-index: 100;
+  animation: bulb 2s infinite cubic-bezier(0.55, 0.06, 0.68, 0.19);
+}

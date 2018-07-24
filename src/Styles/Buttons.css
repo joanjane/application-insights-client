@@ -1,71 +1,79 @@
-.ait-btn {
-    border: none;
-    border: 1px solid transparent;
-    background: transparent;
-    border-radius: .3rem;
-    padding: 0.4rem 1rem;
-    cursor: pointer;
-    text-align: center;
-    font-size: 1rem;
+.ail-btn {
+  border: none;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: .3rem;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1rem;
 }
 
-.ait-btn:hover {
-    opacity: .95;
+.ail-btn:hover {
+  opacity: .95;
 }
 
 /* Default */
-.ait-btn--default {
-    color: var(--bg-default);
-    border-color: var(--bg-default);
-    transition: .1s ease-in all;
+
+.ail-btn--default {
+  color: var(--bg-default);
+  border-color: var(--bg-default);
+  transition: .1s ease-in all;
 }
 
-.ait-btn--default:hover {
-    color: var(--bg-default-alt);
-    border-color: var(--bg-default);
-    background: var(--bg-default);
+.ail-btn--default:hover {
+  color: var(--bg-default-alt);
+  border-color: var(--bg-default);
+  background: var(--bg-default);
 }
+
 /* Primary */
-.ait-btn--primary {
-    color: var(--bg-primary);
-    border-color: var(--bg-primary);
-    transition: .1s ease-in all;
+
+.ail-btn--primary {
+  color: var(--bg-primary);
+  border-color: var(--bg-primary);
+  transition: .1s ease-in all;
 }
 
-.ait-btn--primary:hover {
-    color: var(--bg-primary-alt);
-    border-color: var(--bg-primary);
-    background: var(--bg-primary);
+.ail-btn--primary:hover {
+  color: var(--bg-primary-alt);
+  border-color: var(--bg-primary);
+  background: var(--bg-primary);
 }
+
 /* Success */
-.ait-btn--success {
-    color: var(--bg-success);
-    border-color: var(--bg-success);
-    transition: .1s ease-in all;
+
+.ail-btn--success {
+  color: var(--bg-success);
+  border-color: var(--bg-success);
+  transition: .1s ease-in all;
 }
 
-.ait-btn--success:hover {
-    color: var(--bg-success-alt);
-    border-color: var(--bg-success);
-    background: var(--bg-success);
+.ail-btn--success:hover {
+  color: var(--bg-success-alt);
+  border-color: var(--bg-success);
+  background: var(--bg-success);
 }
 
 /* Disabled */
-.ait-btn.disabled, .ait-btn[disabled] {
-    opacity: .8;
-    pointer-events: none;
+
+.ail-btn.disabled,
+.ail-btn[disabled] {
+  opacity: .8;
+  pointer-events: none;
 }
 
 /* Button list */
-.ait-btn-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+
+.ail-btn-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.ait-btn-list .ait-btn {
-    border: none;
-    border-radius: 0;
-    color: var(--bg-default-alt);
-    background: var(--bg-default);
+.ail-btn-list .ail-btn {
+  border: none;
+  border-radius: 0;
+  color: var(--bg-default-alt);
+  background: var(--bg-default);
 }

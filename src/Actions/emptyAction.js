@@ -1,3 +1,3 @@
 export function emptyAction() {
-    return { type: 'never' };
+  return { type: 'never' };
 }

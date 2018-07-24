@@ -1,67 +1,67 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-    setQueryAction,
-    getLogsAction
+  setQueryAction,
+  getLogsAction
 } from '../Actions/Logs';
 import './QueryBox.css';
 
 const mapStateToProps = state => {
-    return {
-        query: state.query
-    };
+  return {
+    query: state.query
+  };
 };
 
 const mapDispatchToProps = dispatch => {
-    return {
-        getLogs: () => dispatch(getLogsAction()),
-        setQuery: query => dispatch(setQueryAction(query))
-    };
+  return {
+    getLogs: () => dispatch(getLogsAction()),
+    setQuery: query => dispatch(setQueryAction(query))
+  };
 };
 
 class QueryBox extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            query: props.query
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      query: props.query
+    };
+  }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.state.query !== nextProps.query) {
-            this.setState({ query: nextProps.query });
-        }
+  componentWillReceiveProps(nextProps) {
+    if (this.state.query !== nextProps.query) {
+      this.setState({ query: nextProps.query });
     }
+  }
 
-    setQuery = (event) => {
-        this.setState({ query: event.target.value });
-    }
+  setQuery = (event) => {
+    this.setState({ query: event.target.value });
+  }
 
-    handleSubmit = (event) => {
-        event.preventDefault();
-        this.props.setQuery(this.state.query);
-        this.props.getLogs();
-    }
+  handleSubmit = (event) => {
+    event.preventDefault();
+    this.props.setQuery(this.state.query);
+    this.props.getLogs();
+  }
 
-    onEnterPress = (event) => {
-        if (event.keyCode === 13 && event.ctrlKey === true) {
-            this.handleSubmit(event);
-        }
+  onEnterPress = (event) => {
+    if (event.keyCode === 13 && event.ctrlKey === true) {
+      this.handleSubmit(event);
     }
+  }
 
-    render() {
-        return (
-            <form className="ait-footer" onSubmit={this.handleSubmit}>
-                <textarea
-                    className="ait-query"
-                    value={this.state.query}
-                    placeholder="Write a query"
-                    onKeyDown={this.onEnterPress}
-                    onChange={this.setQuery} />
-                <button className="ait-search">Search</button>
-            </form>
-        );
-    }
+  render() {
+    return (
+      <form className="ail-footer" onSubmit={this.handleSubmit}>
+        <textarea
+          className="ail-query"
+          value={this.state.query}
+          placeholder="Write a query"
+          onKeyDown={this.onEnterPress}
+          onChange={this.setQuery} />
+        <button className="ail-search">Search</button>
+      </form>
+    );
+  }
 }
 
 QueryBox = connect(mapStateToProps, mapDispatchToProps)(QueryBox);

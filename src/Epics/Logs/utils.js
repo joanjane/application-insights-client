@@ -1,3 +1,3 @@
 export function anyCredentials(credentials) {
-    return credentials && credentials.appId && credentials.apiKey;
+  return credentials && credentials.appId && credentials.apiKey;
 }

@@ -1,4 +1,4 @@
-.ait-icon-menu {
+.ail-icon-menu {
   --icon-menu-width: 2rem;
   --icon-menu-color: white;
 
@@ -17,7 +17,7 @@
   cursor: pointer;
 }
 
-.ait-icon-menu span {
+.ail-icon-menu span {
   display: block;
   position: absolute;
   height: .06em;
@@ -34,71 +34,71 @@
   transition: .25s ease-in-out;
 }
 
-.ait-icon-menu span:nth-child(even) {
+.ail-icon-menu span:nth-child(even) {
   left: 48%;
 }
 
-.ait-icon-menu span:nth-child(odd) {
+.ail-icon-menu span:nth-child(odd) {
   left: 0;
 }
 
-.ait-icon-menu span:nth-child(1),
-.ait-icon-menu span:nth-child(2) {
+.ail-icon-menu span:nth-child(1),
+.ail-icon-menu span:nth-child(2) {
   top: 0;
 }
 
-.ait-icon-menu span:nth-child(3),
-.ait-icon-menu span:nth-child(4) {
+.ail-icon-menu span:nth-child(3),
+.ail-icon-menu span:nth-child(4) {
   top: .3em;
 }
 
-.ait-icon-menu span:nth-child(5),
-.ait-icon-menu span:nth-child(6) {
+.ail-icon-menu span:nth-child(5),
+.ail-icon-menu span:nth-child(6) {
   top: .6em;
 }
 
-.ait-icon-menu.open span:nth-child(1),
-.ait-icon-menu.open span:nth-child(6) {
+.ail-icon-menu.open span:nth-child(1),
+.ail-icon-menu.open span:nth-child(6) {
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
 }
 
-.ait-icon-menu.open span:nth-child(2),
-.ait-icon-menu.open span:nth-child(5) {
+.ail-icon-menu.open span:nth-child(2),
+.ail-icon-menu.open span:nth-child(5) {
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
 
-.ait-icon-menu.open span:nth-child(1) {
+.ail-icon-menu.open span:nth-child(1) {
   left: .083em;
   top: .15em;
 }
 
-.ait-icon-menu.open span:nth-child(2) {
+.ail-icon-menu.open span:nth-child(2) {
   left: calc(50% - 0.09em);
   top: .15em;
 }
 
-.ait-icon-menu.open span:nth-child(3) {
+.ail-icon-menu.open span:nth-child(3) {
   left: -50%;
   opacity: 0;
 }
 
-.ait-icon-menu.open span:nth-child(4) {
+.ail-icon-menu.open span:nth-child(4) {
   left: 100%;
   opacity: 0;
 }
 
-.ait-icon-menu.open span:nth-child(5) {
+.ail-icon-menu.open span:nth-child(5) {
   left: .083em;
   top: 0.48em;
 }
 
-.ait-icon-menu.open span:nth-child(6) {
+.ail-icon-menu.open span:nth-child(6) {
   left: calc(50% - 0.09em);
   top: 0.48em;
 }
