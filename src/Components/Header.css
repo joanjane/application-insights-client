@@ -69,20 +69,27 @@
 
 .ail-header-title_icon {
   position: relative;
+  transform: rotate(0deg);
 }
 
 .ail--sidebar-open .ail-header .ail-header-title_icon {
-  transform: translateY(60px) rotate(180deg);
+  transform: translateY(0.5rem) rotate(180deg);
 }
 
-.ail--sidebar-open .ail-header .ail-header-title_icon::before,
-.ail--sidebar-open .ail-header .ail-header-title_icon::after {
+@media screen and (max-width: 991px) {
+  .ail--sidebar-open .ail-header .ail-header-title_icon {
+    transform: translateY(3rem) rotate(180deg);
+  }
+}
+
+.ail-header .ail-header-title_icon::before,
+.ail-header .ail-header-title_icon::after {
+  transition: opacity .5s ease-in;
+  transition-delay: .1s;
+  opacity: 0;
   height: 0;
   width: 0;
   content: ' ';
-  transition: all .5s ease-in;
-  transition-delay: .3s;
-  opacity: 0;
 }
 
 .ail--sidebar-open .ail-header .ail-header-title_icon::before {
