@@ -14,9 +14,20 @@ export default class ApplicationInsightsClient {
     return this.httpClient.get(uri, this.buildHeaders(credentials)).map(httpResponse =>
       this.mapQueryResponse(httpResponse.response)
     ).catch(error => {
-      console.error(error);
+      console.error(error.response);
+      if (error.response.error) {
+        const reason = this.mapError('', error.response.error);
+        return Observable.throw(reason);
+      }
       return Observable.throw(error);
     });
+  }
+
+  mapError(message, error) {
+    if (!error || !error.message) {
+      return `${message}`;
+    }
+    return this.mapError(`${message}${error.message}. `, error.innererror);
   }
 
   buildAppUri(credentials) {

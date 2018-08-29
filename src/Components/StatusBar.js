@@ -26,7 +26,7 @@ let StatusBar = (props) => (
     </div>
     {props.error ?
       <div className="ail-footer-status-item ail-footer-status--error">
-        [ERROR] {props.error}
+        {props.error}
       </div> : ''
     }
   </div>

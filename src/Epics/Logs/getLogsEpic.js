@@ -29,11 +29,8 @@ export const getLogsEpic = (action$, store, { applicationInsightsClient, DomUtil
           setCredentialsAction({ ...store.getState().credentials, appName: logs.appName }))
         )
         .catch(err => {
-          let reason = null;
-          if (err.response && err.response.error) {
-            reason = err.response.error.message || err.message;
-          }
-          return Observable.of(errorAction(reason || 'Error when getting logs'));
+          let reason = typeof(err) === 'string' ? err : 'Error when getting logs';
+          return Observable.of(errorAction(reason));
         })
         .do(() => {
           if (forceScrollEnd) {

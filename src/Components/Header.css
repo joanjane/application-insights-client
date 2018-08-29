@@ -25,19 +25,12 @@
   padding: .1rem .8rem;
   border-radius: 11px;
   font-size: .9rem;
-  opacity: .2;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 80%;
   white-space: nowrap;
   transition: opacity ease-in .3s;
 }
-
-.ail-header-app_name.active,
-.ait:hover .ail-header-app_name {
-  opacity: 1;
-}
-
 
 @media screen and (max-width: 767px) {
   .ail-header {
