@@ -10,8 +10,7 @@ import StatusBar from './Components/StatusBar';
 
 const mapStateToProps = state => {
   return {
-    query: state.query,
-    credentials: state.credentials,
+    hasCredentials: state.credentials && state.credentials.appId,
     appName: state.appName,
     loading: state.loading
   };
@@ -50,7 +49,7 @@ class App extends Component {
             appName={this.props.appName} />
           <div className="ail-body">
             {
-              !this.props.credentials.appId ?
+              !this.props.hasCredentials ?
                 <h1>Welcome! To start, first set your credentials on top menu.</h1> :
                 <Log />
             }

@@ -6,6 +6,7 @@ export const initialState = () => {
       apiKey: ''
     },
     query: 'traces | sort by timestamp desc | limit 50',
+    searchPeriod: 'P7D',
     autoRefresh: true,
     refreshInterval: null,
     appName: null,

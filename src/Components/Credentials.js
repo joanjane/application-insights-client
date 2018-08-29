@@ -5,12 +5,13 @@ import {
   clearDataAction,
   tryFindCredentialsAction
 } from '../Actions/Profile';
-import { setAutoRefreshAction } from '../Actions/Logs';
+import { setAutoRefreshAction, setSearchPeriodAction } from '../Actions/Logs';
 import './Credentials.css';
 
 const mapStateToProps = state => {
   return {
     autoRefresh: state.autoRefresh,
+    searchPeriod: state.searchPeriod,
     availableApps: [...state.availableApps],
     credentials: {
       appId: state.credentials.appId,
@@ -24,7 +25,8 @@ const mapDispatchToProps = dispatch => {
     setCredentials: credentials => dispatch(setCredentialsAction(credentials)),
     clearData: () => dispatch(clearDataAction()),
     tryFindCredentials: appName => dispatch(tryFindCredentialsAction(appName)),
-    setAutoRefresh: enabled => dispatch(setAutoRefreshAction(enabled))
+    setAutoRefresh: enabled => dispatch(setAutoRefreshAction(enabled)),
+    setSearchPeriod: searchPeriod => dispatch(setSearchPeriodAction(searchPeriod)),
   };
 };
 
@@ -61,6 +63,10 @@ class Credentials extends Component {
     let { credentials } = this.state;
     credentials = { ...credentials, [event.target.id]: event.target.value };
     this.setState({ credentials });
+  }
+
+  handlePeriodChange(event) {
+    this.props.setSearchPeriod(event.target.value);
   }
 
   handleSubmit(event) {
@@ -117,7 +123,7 @@ class Credentials extends Component {
             this.state.editing ?
               <button className={`ail-btn ail-btn--success u-w100 u-mt-2 ${(!this.validCredentials() ? 'disabled' : '')}`}>
                 Apply
-                            </button> :
+              </button> :
               <button className={`ail-btn ail-btn--default u-w100 u-mt-2`}>Edit</button>
           }
         </div>
@@ -161,11 +167,24 @@ class Credentials extends Component {
     );
   }
 
+  renderPeriod() {
+    return (
+      <div className="ail-credentials-section">
+        <label>Search period</label>
+        <input className="ail-input" value={this.props.searchPeriod}
+            placeholder='P7D'
+            id="searchPeriod"
+            onChange={(e) => this.handlePeriodChange(e)} />
+      </div>
+    );
+  }
+
   render() {
     return (
       <div>
         {this.renderCredentialsForm()}
         {this.renderGlobalOptions()}
+        {this.renderPeriod()}
       </div>
     );
   }

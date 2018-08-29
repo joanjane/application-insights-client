@@ -2,7 +2,8 @@ import {
   getLogsReducer,
   setAutoRefreshReducer,
   setLogsReducer,
-  setQueryReducer
+  setQueryReducer,
+  setSearchPeriodReducer
 } from './Logs';
 import {
   clearDataReducer,
@@ -21,6 +22,7 @@ export const rootReducer = combineActiveReducers([
   setCredentialsReducer,
   setAutoRefreshReducer,
   setQueryReducer,
+  setSearchPeriodReducer,
   setLogsReducer,
   getLogsReducer,
   errorReducer

@@ -23,7 +23,7 @@ export const getLogsEpic = (action$, store, { applicationInsightsClient, DomUtil
       const forceScrollEnd = hasToScroll(action, DomUtils);
 
       const state = store.getState();
-      return applicationInsightsClient.getLogs(state.credentials, state.query)
+      return applicationInsightsClient.getLogs(state.credentials, state.query, state.searchPeriod)
         .flatMap(logs => Observable.of(
           setLogsAction(logs),
           setCredentialsAction({ ...store.getState().credentials, appName: logs.appName }))
