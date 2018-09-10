@@ -6,7 +6,7 @@ const Header = (props) => {
   const titleIconClass = `ail-header-title_icon ${(loading ? 'ail-header-title_icon--loading' : '')}`;
   return (
     <header className="ail-header">
-      <div className="ail-header-app_name">{appName}</div>
+      <div className="ail-header-app_name" hidden={!appName}>{appName}</div>
       <strong className="ail-header-title">
         <span className={titleIconClass} role="img" aria-labelledby="ail-header-title">💡 </span>
         <span id="ail-header-title">Application Insights Log</span>

@@ -172,7 +172,7 @@ class Credentials extends Component {
       <div className="ail-credentials-section">
         <label>Search period</label>
         <input className="ail-input" value={this.props.searchPeriod}
-            placeholder='P7D'
+            placeholder='Specify period (P7D, PT1H...)'
             id="searchPeriod"
             onChange={(e) => this.handlePeriodChange(e)} />
       </div>

@@ -55,10 +55,10 @@ class QueryBox extends Component {
         <textarea
           className="ail-query"
           value={this.state.query}
-          placeholder="Write a query"
+          placeholder="Write a query..."
           onKeyDown={this.onEnterPress}
           onChange={this.setQuery} />
-        <button className="ail-search">Search</button>
+        <button className="ail-search" disabled={!this.state.query}>Search</button>
       </form>
     );
   }

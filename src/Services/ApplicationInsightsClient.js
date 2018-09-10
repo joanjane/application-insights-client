@@ -7,17 +7,24 @@ export default class ApplicationInsightsClient {
   }
 
   getLogs(credentials, query, timespan) {
-    query = query || 'traces | sort by timestamp desc | limit 50';
-    timespan = timespan || 'P7D';
-    const uri = `${this.buildAppUri(credentials)}/query?query=${encodeURIComponent(query)}&timespan=${timespan}`;
+    const queryParams = [{ name: 'query', value: query }];
+    if (timespan) {
+      queryParams.push({ name: 'timespan', value: timespan });
+    }
 
-    return this.httpClient.get(uri, this.buildHeaders(credentials)).map(httpResponse =>
-      this.mapQueryResponse(httpResponse.response)
-    ).catch(error => {
+    return this.httpClient.get(
+      `${this.buildAppUri(credentials)}/query`,
+      this.buildHeaders(credentials),
+      queryParams
+    )
+    .map(httpResponse => this.mapQueryResponse(httpResponse.response))
+    .catch(error => {
       console.error(error.response);
       if (error.response.error) {
         const reason = this.mapError('', error.response.error);
         return Observable.throw(reason);
+      } else if (typeof (error.response) === 'string') {
+        return Observable.throw(`${error.status}: ${error.response}`);
       }
       return Observable.throw(error);
     });

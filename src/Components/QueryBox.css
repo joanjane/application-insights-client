@@ -19,3 +19,8 @@
 .ail-search:hover {
   opacity: .95;
 }
+
+.ail-search:disabled {
+  opacity: .5;
+  cursor: default;
+}
