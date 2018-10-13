@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Observable';
+import { ajax } from 'rxjs/ajax';
 
 export default class HttpClient {
   get(uri, headers, query) {
@@ -28,7 +28,7 @@ export default class HttpClient {
     }
 
     const queryString = buildQuery(query);
-    return Observable.ajax({
+    return ajax({
       url: queryString ? `${uri}?${queryString}` : uri,
       method: method,
       headers: requestHeaders,

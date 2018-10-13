@@ -1,5 +1,6 @@
 import httpClientFactory from './httpClientFactory';
-import { Observable } from 'rxjs/Observable';
+import { throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 export default class ApplicationInsightsClient {
   constructor() {
@@ -13,21 +14,23 @@ export default class ApplicationInsightsClient {
     }
 
     return this.httpClient.get(
-      `${this.buildAppUri(credentials)}/query`,
-      this.buildHeaders(credentials),
-      queryParams
-    )
-    .map(httpResponse => this.mapQueryResponse(httpResponse.response))
-    .catch(error => {
-      console.error(error.response);
-      if (error.response.error) {
-        const reason = this.mapError('', error.response.error);
-        return Observable.throw(reason);
-      } else if (typeof (error.response) === 'string') {
-        return Observable.throw(`${error.status}: ${error.response}`);
-      }
-      return Observable.throw(error);
-    });
+        `${this.buildAppUri(credentials)}/query`,
+        this.buildHeaders(credentials),
+        queryParams
+      )
+      .pipe(
+        map(httpResponse => this.mapQueryResponse(httpResponse.response)),
+        catchError(error => {
+          console.error(error.response);
+          if (error.response.error) {
+            const reason = this.mapError('', error.response.error);
+            return throwError(reason);
+          } else if (typeof (error.response) === 'string') {
+            return throwError(`${error.status}: ${error.response}`);
+          }
+          return throwError(error);
+        })
+      );
   }
 
   mapError(message, error) {
@@ -54,17 +57,17 @@ export default class ApplicationInsightsClient {
 
     const colIndexPropertyMap = this.buildColumnIndexPropertyMap(response);
     const rows = response.tables[0].rows.map(row => {
-      const itemType = row[colIndexPropertyMap['itemType']];
-      const reponseMapper = this.getResponseMapper(itemType);
-      if (!reponseMapper) {
-        // when item type is not supported, skip
-        return null;
-      }
+        const itemType = row[colIndexPropertyMap['itemType']];
+        const reponseMapper = this.getResponseMapper(itemType);
+        if (!reponseMapper) {
+          // when item type is not supported, skip
+          return null;
+        }
 
-      var model = {};
-      reponseMapper.forEach(propertyMapper => propertyMapper(row, colIndexPropertyMap, model));
-      return model;
-    })
+        var model = {};
+        reponseMapper.forEach(propertyMapper => propertyMapper(row, colIndexPropertyMap, model));
+        return model;
+      })
       .filter(r => r !== null)
       .sort((a, b) => {
         if (a.timestamp === b.timestamp) {

@@ -1,5 +1,5 @@
 import HttpMock from './HttpMock';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 export default class MockHttpClient {
   get(uri, headers, query) {

@@ -1,4 +1,3 @@
-import 'rxjs';
 import { createStore, applyMiddleware } from 'redux';
 import { createEpicMiddleware } from 'redux-observable';
 import { rootReducer } from '../Reducers';
@@ -9,7 +8,7 @@ import ApplicationInsightsClient from '../Services/ApplicationInsightsClient';
 import DomUtils from '../Utils/DomUtils';
 import ConsoleDoc from '../Utils/ConsoleDoc';
 
-const epicMiddleware = createEpicMiddleware(rootEpic, {
+const epicMiddleware = createEpicMiddleware({
   dependencies: {
     applicationInsightsClient: new ApplicationInsightsClient(),
     profileRepository: new ProfileRepository(),
@@ -22,4 +21,7 @@ const store = createStore(
   rootReducer,
   applyMiddleware(epicMiddleware)
 );
+
+epicMiddleware.run(rootEpic);
+
 export default store;
