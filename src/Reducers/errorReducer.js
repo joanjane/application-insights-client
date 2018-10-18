@@ -1,4 +1,4 @@
-import { ERROR } from '../Actions';
+import { ERROR } from 'Actions';
 
 export function errorReducer(state, action) {
   if (action.type !== ERROR) return;

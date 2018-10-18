@@ -1,4 +1,4 @@
-import { PROFILE_LOADED } from '../../Actions/Profile';
+import { PROFILE_LOADED } from 'Actions/Profile';
 
 export function profileLoadedReducer(state, action) {
   if (action.type !== PROFILE_LOADED) return;

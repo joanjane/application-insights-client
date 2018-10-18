@@ -2,16 +2,16 @@ import { of } from 'rxjs';
 import { filter, switchMap, mergeMap, catchError, tap } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { anyCredentials } from './utils';
-import { errorAction } from '../../Actions';
+import { errorAction } from 'Actions';
 import {
   setCredentialsAction,
   PROFILE_LOADED
-} from '../../Actions/Profile';
+} from 'Actions/Profile';
 import {
   setLogsAction,
   GET_LOGS,
   AUTOREFRESH_GET_LOGS_SOURCE
-} from '../../Actions/Logs';
+} from 'Actions/Logs';
 
 export const getLogsEpic = (action$, state$, { applicationInsightsClient, DomUtils }) =>
   action$

@@ -1,4 +1,4 @@
-import { SET_CREDENTIALS } from '../../Actions/Profile';
+import { SET_CREDENTIALS } from 'Actions/Profile';
 
 export function setCredentialsReducer(state, action) {
   if (action.type !== SET_CREDENTIALS) return;

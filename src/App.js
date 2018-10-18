@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import './App.css';
 import Header from './Components/Header';
 import Log from './Components/Log';
-import Credentials from './Components/Credentials';
+import Credentials from './Components/Settings/Credentials';
 import QueryBox from './Components/QueryBox';
 import { loadProfileAction } from './Actions/Profile';
 import StatusBar from './Components/StatusBar';
@@ -12,7 +12,8 @@ const mapStateToProps = state => {
   return {
     hasCredentials: state.credentials && state.credentials.appId,
     appName: state.appName,
-    loading: state.loading
+    loading: state.loading,
+    activeTheme: state.ui.theme
   };
 };
 
@@ -40,7 +41,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className={`ait ${this.state.sidebar ? 'ail--sidebar-open' : ''}`}>
+      <div className={`ait ${this.props.activeTheme} ${this.state.sidebar ? 'ail--sidebar-open' : ''}`}>
         <div className="ail-container">
           <Header
             sidebar={this.state.sidebar}

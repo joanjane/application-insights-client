@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import DateUtils from '../Utils/DateUtils';
+import DateUtils from 'Utils/DateUtils';
 import './StatusBar.css';
 
 const mapStateToProps = state => {

@@ -1,4 +1,4 @@
-import { SET_QUERY } from '../../Actions/Logs';
+import { SET_QUERY } from 'Actions/Logs';
 
 export function setQueryReducer(state, action) {
   if (action.type !== SET_QUERY) return;

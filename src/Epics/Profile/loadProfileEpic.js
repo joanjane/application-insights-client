@@ -1,7 +1,7 @@
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
-import { profileLoadedAction, LOAD_PROFILE } from '../../Actions/Profile';
+import { profileLoadedAction, LOAD_PROFILE } from 'Actions/Profile';
 
 export const loadProfileEpic = (action$, store, { profileRepository, ConsoleDoc }) =>
   action$.pipe(

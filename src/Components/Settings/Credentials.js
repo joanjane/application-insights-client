@@ -4,9 +4,10 @@ import {
   setCredentialsAction,
   clearDataAction,
   tryFindCredentialsAction
-} from '../Actions/Profile';
-import { setAutoRefreshAction, setSearchPeriodAction } from '../Actions/Logs';
+} from 'Actions/Profile';
+import { setAutoRefreshAction, setSearchPeriodAction } from 'Actions/Logs';
 import './Credentials.css';
+import UISettings from './UISettings';
 
 const mapStateToProps = state => {
   return {
@@ -185,6 +186,7 @@ class Credentials extends Component {
         {this.renderCredentialsForm()}
         {this.renderGlobalOptions()}
         {this.renderPeriod()}
+        <UISettings />
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import QueryStringUtils from '../Utils/QueryStringUtils';
+import QueryStringUtils from 'Utils/QueryStringUtils';
 import StorageRepository from './StorageRepository';
 
 export default class ProfileRepository {
@@ -71,6 +71,14 @@ export default class ProfileRepository {
       return null;
     }
     return credentialsByApp[appName];
+  }
+
+  getUITheme() {
+    return this.storageRepository.getLocalData('ui-theme');
+  }
+
+  setUITheme(theme) {
+    this.storageRepository.saveLocalData('ui-theme', theme);
   }
 
   clearData() {

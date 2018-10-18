@@ -9,7 +9,7 @@
 }
 
 .ail-header-title {
-  color: white;
+  color: var(--bg-darkest-alt);
   text-decoration: none;
   display: flex;
   align-items: baseline;
@@ -87,7 +87,7 @@
 
 .ail--sidebar-open .ail-header .ail-header-title_icon::before {
   content: ' ';
-  border-right: 1px white solid;
+  border-right: 1px var(--bg-darkest-alt) solid;
   position: absolute;
   height: 7rem;
   width: auto;

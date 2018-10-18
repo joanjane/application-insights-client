@@ -12,12 +12,14 @@
 }
 
 .ail-footer-status--timestamp {
-  background: green;
+  background: var(--bg-success);
+  color: var(--bg-success-alt);
   flex: 1 0 auto;
 }
 
 .ail-footer-status--error {
-  background: red;
+  background: var(--bg-danger);
+  color: var(--bg-danger-alt);
   font-style: italic;
   padding: .5rem;
 }

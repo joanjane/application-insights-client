@@ -12,7 +12,7 @@
   border: none;
   background: var(--bg-secondary);
   font-size: 1.2rem;
-  color: white;
+  color: var(--bg-secondary-alt);
   cursor: pointer;
 }
 

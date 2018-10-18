@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {
   setQueryAction,
   getLogsAction
-} from '../Actions/Logs';
+} from 'Actions/Logs';
 import './QueryBox.css';
 
 const mapStateToProps = state => {

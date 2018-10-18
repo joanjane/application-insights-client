@@ -1,6 +1,6 @@
 import React from 'react';
-import DateUtils from '../Utils/DateUtils'
-import SeverityLevel from '../Models/SeverityLevel'
+import DateUtils from 'Utils/DateUtils'
+import SeverityLevel from 'Models/SeverityLevel'
 import './LogLine.css';
 
 const LogLine = (props) => {

@@ -11,6 +11,7 @@ import {
   setCredentialsReducer,
   availableAppsReducer
 } from './Profile';
+import { changeThemeReducer } from './UI';
 import { initialState } from './initialState';
 import { errorReducer } from './errorReducer';
 import { combineActiveReducers } from './combineActiveReducers';
@@ -25,5 +26,6 @@ export const rootReducer = combineActiveReducers([
   setSearchPeriodReducer,
   setLogsReducer,
   getLogsReducer,
+  changeThemeReducer,
   errorReducer
 ], initialState());

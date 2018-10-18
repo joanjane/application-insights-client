@@ -1,6 +1,6 @@
 .ait {
   background-color: var(--bg-darkest);
-  color: white;
+  color: var(--bg-darkest-alt);
   height: 100%;
   width: 100%;
   display: flex;

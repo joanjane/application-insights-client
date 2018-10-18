@@ -1,4 +1,4 @@
-import { SET_AUTOREFRESH } from '../../Actions/Logs';
+import { SET_AUTOREFRESH } from 'Actions/Logs';
 
 export function setAutoRefreshReducer(state, action) {
   if (action.type !== SET_AUTOREFRESH) return;

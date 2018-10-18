@@ -13,6 +13,9 @@ export const initialState = () => {
     fetchTime: null,
     loading: false,
     error: null,
-    availableApps: []
+    availableApps: [],
+    ui: {
+      theme: 'theme-default'
+    }
   }
 };

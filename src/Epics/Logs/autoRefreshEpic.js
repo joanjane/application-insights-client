@@ -1,9 +1,9 @@
 import { timer } from 'rxjs';
 import { filter, switchMap, map } from 'rxjs/operators';
 import { anyCredentials } from './utils';
-import { refreshLogsAction, SET_AUTOREFRESH, SET_LOGS } from '../../Actions/Logs';
-import { emptyAction } from '../../Actions';
-import { PROFILE_LOADED } from '../../Actions/Profile';
+import { refreshLogsAction, SET_AUTOREFRESH, SET_LOGS } from 'Actions/Logs';
+import { emptyAction } from 'Actions';
+import { PROFILE_LOADED } from 'Actions/Profile';
 const refreshTimeThreshold = 30000;
 
 export const autoRefreshEpic = (action$, $state) =>

@@ -1,4 +1,4 @@
-import { SET_LOGS } from '../../Actions/Logs';
+import { SET_LOGS } from 'Actions/Logs';
 
 export function setLogsReducer(state, action) {
   if (action.type !== SET_LOGS) return;

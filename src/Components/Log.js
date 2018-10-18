@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import DateUtils from '../Utils/DateUtils';
+import DateUtils from 'Utils/DateUtils';
 import LogLine from './LogLine';
 
 const mapStateToProps = state => {

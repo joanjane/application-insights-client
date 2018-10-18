@@ -1,6 +1,6 @@
 .ail-icon-menu {
   --icon-menu-width: 2rem;
-  --icon-menu-color: white;
+  --icon-menu-color: var(--bg-secondary-alt);
 
   font-size: var(--icon-menu-width);
   width: 1em;

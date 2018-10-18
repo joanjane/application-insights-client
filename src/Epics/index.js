@@ -12,12 +12,21 @@ import {
     loadProfileEpic
 } from './Profile';
 
+import {
+    changeThemeEpic,
+    loadUISettingsEpic
+} from './UI'
+
 export const rootEpic = combineEpics(
     getLogsEpic,
     autoRefreshEpic,
+    
     setCredentialsEpic,
     findCredentialsCandidateEpic,
     setQueryEpic,
     clearDataEpic,
-    loadProfileEpic
+    loadProfileEpic,
+
+    changeThemeEpic,
+    loadUISettingsEpic
 );

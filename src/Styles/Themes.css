@@ -1,0 +1,51 @@
+/* Default theme */
+.ait {
+    /* UI */
+    --bg-default: #f8f9fa;
+    --bg-default-alt: #212529;
+    --bg-primary: #cfb0ff;
+    --bg-primary-alt: #212529;
+    --bg-darkest: #222;
+    --bg-darkest-alt: white;
+    --bg-dark: #363837;
+    --bg-secondary: #666;
+    --bg-secondary-alt: white;
+    --border-dark: rgba(102, 102, 102, 0.3);
+    
+    /* States */
+    --bg-success: #46a248;
+    --bg-success-alt: #ececec;
+    --bg-warning: yellow;
+    --bg-warning-alt: #ececec;
+    --bg-danger: #e14e4e;
+    --bg-danger-alt: white;
+
+    /* Log colors */
+    --log-success: lime;
+    --log-warning: yellow;
+    --log-error: red;
+}
+
+/* Light theme */
+.ait.theme-light {
+    /* UI */
+    --bg-default: #212529;
+    --bg-default-alt: #f8f9fa;
+    --bg-primary: #212529;
+    --bg-primary-alt: #cfb0ff;
+    --bg-darkest: white;
+    --bg-darkest-alt: #222;
+    --bg-dark: #363837;
+    --bg-secondary: #e9e9e9;
+    --bg-secondary-alt: #666;
+    --border-dark: rgba(102, 102, 102, 0.3);  
+      
+    /* Log colors */
+    --log-success: #129cbb;
+    --log-warning: #c39d0c;
+    --log-error: red;
+}
+
+.theme-light .ail-log_line-message {
+    font-weight: 600;
+}

@@ -15,7 +15,7 @@
 
 .ail-log_line-time {
   padding-right: 1rem;
-  color: lime;
+  color: var(--log-success);
   flex: 0 1 auto;
   white-space: nowrap;
 }
@@ -28,14 +28,14 @@
 
 .ail-log_line--error .ail-log_line-message,
 .ail-log_line--critical .ail-log_line-message {
-  color: red;
+  color: var(--log-error);
 }
 
 .ail-log_line--warning .ail-log_line-message {
-  color: yellow;
+  color: var(--log-warning);
 }
 
 .ail-log_line--verbose .ail-log_line-message {
-  color: lime;
+  color: var(--log-success);
   font-style: italic;
 }
