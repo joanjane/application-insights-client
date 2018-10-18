@@ -1,13 +1,13 @@
 {
-  "main.css": "/application-insights-client/static/css/main.8058ddd9.chunk.css",
-  "main.js": "/application-insights-client/static/js/main.bfe5b5fd.chunk.js",
-  "main.js.map": "/application-insights-client/static/js/main.bfe5b5fd.chunk.js.map",
-  "static/js/1.b7223b7d.chunk.js": "/application-insights-client/static/js/1.b7223b7d.chunk.js",
-  "static/js/1.b7223b7d.chunk.js.map": "/application-insights-client/static/js/1.b7223b7d.chunk.js.map",
+  "main.css": "/application-insights-client/static/css/main.1b0b9048.chunk.css",
+  "main.js": "/application-insights-client/static/js/main.a8ad3c85.chunk.js",
+  "main.js.map": "/application-insights-client/static/js/main.a8ad3c85.chunk.js.map",
+  "static/js/1.b325fd95.chunk.js": "/application-insights-client/static/js/1.b325fd95.chunk.js",
+  "static/js/1.b325fd95.chunk.js.map": "/application-insights-client/static/js/1.b325fd95.chunk.js.map",
   "runtime~main.js": "/application-insights-client/static/js/runtime~main.903ad0c8.js",
   "runtime~main.js.map": "/application-insights-client/static/js/runtime~main.903ad0c8.js.map",
-  "static/css/main.8058ddd9.chunk.css.map": "/application-insights-client/static/css/main.8058ddd9.chunk.css.map",
+  "static/css/main.1b0b9048.chunk.css.map": "/application-insights-client/static/css/main.1b0b9048.chunk.css.map",
   "index.html": "/application-insights-client/index.html",
-  "precache-manifest.0466900ee248c65eb912411651d622c5.js": "/application-insights-client/precache-manifest.0466900ee248c65eb912411651d622c5.js",
+  "precache-manifest.2f07174a058a68d85ff16aa1cba019f6.js": "/application-insights-client/precache-manifest.2f07174a058a68d85ff16aa1cba019f6.js",
   "service-worker.js": "/application-insights-client/service-worker.js"
 }
