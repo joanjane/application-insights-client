@@ -26,5 +26,5 @@ class QueryStringUtils {
     window.history.pushState({}, '', url[0]);
   }
 }
-
-export default new QueryStringUtils();
+const queryStringUtils = new QueryStringUtils();
+export default queryStringUtils;

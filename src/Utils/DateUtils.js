@@ -21,5 +21,5 @@ class DateUtils {
     return number;
   }
 }
-
-export default new DateUtils();
+const dateUtils = new DateUtils();
+export default dateUtils;

@@ -25,5 +25,5 @@ traces | where timestamp > ago(1h)
 Share a url: ${window.location.href.split('?')[0]}?app_id={your_app_id}&api_key={your_api_key}`);
   }
 }
-
-export default new ConsoleDoc();
+const consoleDoc = new ConsoleDoc();
+export default consoleDoc;

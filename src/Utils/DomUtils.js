@@ -9,6 +9,17 @@ class DomUtils {
       document.querySelector(selector).offsetHeight;
     return scrollPosition === document.querySelector(selector).scrollHeight;
   }
-}
 
-export default new DomUtils();
+  listenViewHeightChanges() {
+    function calcViewHeight() {
+      const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+      document.body.style.height = `${viewHeight}px`;
+    }
+
+    calcViewHeight();
+    window.addEventListener('onorientationchange', calcViewHeight, true);
+    window.addEventListener('resize', calcViewHeight, true);
+  }
+}
+const domUtils = new DomUtils();
+export default domUtils;
