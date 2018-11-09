@@ -1,13 +1,13 @@
 {
   "main.css": "/application-insights-client/static/css/main.ebda82de.chunk.css",
-  "main.js": "/application-insights-client/static/js/main.7820666d.chunk.js",
-  "main.js.map": "/application-insights-client/static/js/main.7820666d.chunk.js.map",
+  "main.js": "/application-insights-client/static/js/main.3c495ab9.chunk.js",
+  "main.js.map": "/application-insights-client/static/js/main.3c495ab9.chunk.js.map",
   "static/js/1.3ef14992.chunk.js": "/application-insights-client/static/js/1.3ef14992.chunk.js",
   "static/js/1.3ef14992.chunk.js.map": "/application-insights-client/static/js/1.3ef14992.chunk.js.map",
   "runtime~main.js": "/application-insights-client/static/js/runtime~main.903ad0c8.js",
   "runtime~main.js.map": "/application-insights-client/static/js/runtime~main.903ad0c8.js.map",
   "static/css/main.ebda82de.chunk.css.map": "/application-insights-client/static/css/main.ebda82de.chunk.css.map",
   "index.html": "/application-insights-client/index.html",
-  "precache-manifest.cd73a6d825b03a79844455019c665093.js": "/application-insights-client/precache-manifest.cd73a6d825b03a79844455019c665093.js",
+  "precache-manifest.4473dfbd31204d03a078f2842b1cbbd0.js": "/application-insights-client/precache-manifest.4473dfbd31204d03a078f2842b1cbbd0.js",
   "service-worker.js": "/application-insights-client/service-worker.js"
 }
