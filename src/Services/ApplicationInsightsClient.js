@@ -22,7 +22,7 @@ export default class ApplicationInsightsClient {
         map(httpResponse => this.mapQueryResponse(httpResponse.response)),
         catchError(error => {
           console.error(error.response);
-          if (error.response.error) {
+          if (error.response && error.response.error) {
             const reason = this.mapError('', error.response.error);
             return throwError(reason);
           } else if (typeof (error.response) === 'string') {
