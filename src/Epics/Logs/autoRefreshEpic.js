@@ -22,5 +22,5 @@ export const autoRefreshEpic = (action$, $state) =>
       })
     );
 
-const isAutoRefreshEnabled = ($state) => $state.value.autoRefresh;
+const isAutoRefreshEnabled = ($state) => $state.value.autoRefresh && !$state.value.loading;
 const profileLoaded = (action) => action.type === PROFILE_LOADED && anyCredentials(action.payload.credentials);
