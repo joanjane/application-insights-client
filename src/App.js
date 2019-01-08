@@ -11,7 +11,7 @@ import StatusBar from './Components/StatusBar';
 const mapStateToProps = state => {
   return {
     hasCredentials: state.credentials && state.credentials.appId,
-    appName: state.appName,
+    appName: !state.appName && state.logs.length > 0 ? 'You must project appName property in the query' : state.appName,
     loading: state.loading,
     activeTheme: state.ui.theme
   };
