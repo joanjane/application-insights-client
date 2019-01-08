@@ -1,6 +1,7 @@
 import httpClientFactory from './httpClientFactory';
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { buildColumnPropertyIndex, getRowMapper } from './ResponseMappers';
 
 export default class ApplicationInsightsClient {
   constructor() {
@@ -14,10 +15,10 @@ export default class ApplicationInsightsClient {
     }
 
     return this.httpClient.get(
-        `${this.buildAppUri(credentials)}/query`,
-        this.buildHeaders(credentials),
-        queryParams
-      )
+      `${this.buildAppUri(credentials)}/query`,
+      this.buildHeaders(credentials),
+      queryParams
+    )
       .pipe(
         map(httpResponse => this.mapQueryResponse(httpResponse.response)),
         catchError(error => {
@@ -55,49 +56,33 @@ export default class ApplicationInsightsClient {
       throw new Error('Unexpected response content from query');
     }
 
-    const colIndexPropertyMap = this.buildColumnIndexPropertyMap(response);
+    const colPropertiesIndex = buildColumnPropertyIndex(response);
     const rows = response.tables[0].rows.map(row => {
-        const itemType = row[colIndexPropertyMap['itemType']];
-        const reponseMapper = this.getResponseMapper(itemType);
-        if (!reponseMapper) {
-          // when item type is not supported, skip
-          return null;
-        }
+      const reponseMapper = getRowMapper(row, colPropertiesIndex);
+      if (!reponseMapper) {
+        // when item type is not supported, skip
+        return null;
+      }
 
-        var model = {};
-        reponseMapper.forEach(propertyMapper => propertyMapper(row, colIndexPropertyMap, model));
-        return model;
-      })
-      .filter(r => r !== null)
-      .sort((a, b) => {
-        if (a.timestamp === b.timestamp) {
-          return 0;
-        } else if (a.timestamp > b.timestamp) {
-          return 1;
-        } else {
-          return -1;
-        }
-      });
+      var model = reponseMapper(row, colPropertiesIndex);
+      return model;
+    })
+    .filter(r => r !== null)
+    .sort((a, b) => {
+      if (a.timestamp === b.timestamp) {
+        return 0;
+      } else if (a.timestamp > b.timestamp) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
 
     return {
       logs: rows,
-      appName: this.getAppName(response, colIndexPropertyMap),
+      appName: this.getAppName(response, colPropertiesIndex),
       fetchTime: new Date()
     };
-  }
-
-  getResponseMapper(itemType) {
-    return responseMapper[itemType];
-  }
-
-  /**
-   * return a dictionary of property name and column index
-   * {[columnName: string]: columnIndex: number} response
-   */
-  buildColumnIndexPropertyMap(response) {
-    const columnsIndexMap = {};
-    response.tables[0].columns.forEach((c, i) => columnsIndexMap[c.name] = i);
-    return columnsIndexMap;
   }
 
   getAppName(response, columnsIndexPropertyMap) {
@@ -108,31 +93,3 @@ export default class ApplicationInsightsClient {
     return response.tables[0].rows[0][appNameIndex]
   }
 }
-
-const responseMapper = {
-  trace: [
-    (row, columnsIndexMap, model) => {
-      model.timestamp = new Date(row[columnsIndexMap['timestamp']]);
-    },
-    (row, columnsIndexMap, model) => {
-      model.message = row[columnsIndexMap['message']];
-    },
-    (row, columnsIndexMap, model) => {
-      model.severityLevel = row[columnsIndexMap['severityLevel']];
-    }
-  ],
-  exception: [
-    (row, columnsIndexMap, model) => {
-      model.timestamp = new Date(row[columnsIndexMap['timestamp']]);
-    },
-    (row, columnsIndexMap, model) => {
-      model.message = `${row[columnsIndexMap['problemId']]}: ${row[columnsIndexMap['outerMessage']]}`;
-      if (row[columnsIndexMap['outerMessage']] !== row[columnsIndexMap['innermostMessage']]) {
-        model.message += `\r\n${row[columnsIndexMap['innermostType']]}: ${row[columnsIndexMap['innermostMessage']]}.`;
-      }
-    },
-    (row, columnsIndexMap, model) => {
-      model.severityLevel = row[columnsIndexMap['severityLevel']];
-    }
-  ]
-};
