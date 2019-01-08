@@ -41,7 +41,7 @@
     --border-dark: rgba(102, 102, 102, 0.3);  
       
     /* Log colors */
-    --log-success: #129cbb;
+    --log-success: #3412bb;
     --log-warning: #c39d0c;
     --log-error: red;
 }
