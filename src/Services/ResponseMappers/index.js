@@ -6,7 +6,7 @@ const traceMapper = (row, colPropertiesIndex) => {
   model.timestamp = new Date(row[colPropertiesIndex['timestamp']]);
   model.severityLevel = row[colPropertiesIndex['severityLevel']] || 0;
   model.message = row[colPropertiesIndex['message']];
-  
+
   return model;
 };
 
@@ -17,14 +17,14 @@ const exceptionMapper = (row, colPropertiesIndex) => {
   const model = { };
   model.timestamp = new Date(row[colPropertiesIndex['timestamp']]);
   model.severityLevel = row[colPropertiesIndex['severityLevel']] || 0;
-  model.message = 
+  model.message =
   [
     row[colPropertiesIndex['problemId']],
     row[colPropertiesIndex['outerMessage']]
   ]
   .filter(v => v != null)
   .join(': ');
-  
+
   if (row[colPropertiesIndex['outerMessage']] !== row[colPropertiesIndex['innermostMessage']] && row[colPropertiesIndex['innermostMessage']]) {
     model.message += '\r\n' +
     [
@@ -37,10 +37,30 @@ const exceptionMapper = (row, colPropertiesIndex) => {
   return model;
 };
 
+const propsMapper = (row, colPropertiesIndex) => {
+  if (!hasRequiredProperties(['timestamp'], row, colPropertiesIndex)) {
+    return null;
+  }
+  const model = { };
+  model.timestamp = new Date(row[colPropertiesIndex['timestamp']]);
+  model.severityLevel = row[colPropertiesIndex['severityLevel']] || 0;
+  model.message = '';
+
+  Object.keys(colPropertiesIndex)
+    .filter(prop => prop !== 'timestamp' && prop !== 'severityLevel')
+    .forEach(prop => {
+      model.message += `${prop}: ${row[colPropertiesIndex[prop]]}\n`;
+    });
+
+  return model;
+};
+
+
 const responseMappers = {
   'trace': traceMapper,
   'exception': exceptionMapper,
-  'log': traceMapper
+  'log': traceMapper,
+  'props': propsMapper
 };
 
 export function getRowMapper(row, colPropertiesIndex) {
@@ -51,7 +71,7 @@ export function getRowMapper(row, colPropertiesIndex) {
   if (hasRequiredProperties(['timestamp', 'message'], row, colPropertiesIndex)) {
     return responseMappers['log'];
   }
-  return null;
+  return responseMappers['props'];
 }
 
 /**
