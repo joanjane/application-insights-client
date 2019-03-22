@@ -2,14 +2,16 @@ import httpClientFactory from './httpClientFactory';
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { buildColumnPropertyIndex, getRowMapper } from './ResponseMappers';
+import AadAuthService from './AadAuthService';
 
 export default class ApplicationInsightsClient {
   constructor() {
     this.httpClient = httpClientFactory();
+    this.aadAuthService = new AadAuthService();
   }
 
   getLogs(credentials, query, timespan) {
-    const queryParams = [{ name: 'query', value: query }];
+    const queryParams = [{ name: 'query', value: query }, { name: 'api-version', value: '2018-04-20'}];
     if (timespan) {
       queryParams.push({ name: 'timespan', value: timespan });
     }
@@ -19,19 +21,19 @@ export default class ApplicationInsightsClient {
       this.buildHeaders(credentials),
       queryParams
     )
-      .pipe(
-        map(httpResponse => this.mapQueryResponse(httpResponse.response)),
-        catchError(error => {
-          console.error(error.response);
-          if (error.response && error.response.error) {
-            const reason = this.mapError('', error.response.error);
-            return throwError(reason);
-          } else if (typeof (error.response) === 'string') {
-            return throwError(`${error.status}: ${error.response}`);
-          }
-          return throwError(error);
-        })
-      );
+    .pipe(
+      map(httpResponse => this.mapQueryResponse(httpResponse.response)),
+      catchError(error => {
+        console.error(error.response);
+        if (error.response && error.response.error) {
+          const reason = this.mapError('', error.response.error);
+          return throwError(reason);
+        } else if (typeof (error.response) === 'string') {
+          return throwError(`${error.status}: ${error.response}`);
+        }
+        return throwError(error);
+      })
+    );
   }
 
   mapError(message, error) {
@@ -46,6 +48,13 @@ export default class ApplicationInsightsClient {
   }
 
   buildHeaders(credentials) {
+    const aadAccessToken = this.aadAuthService.getToken();
+    if (aadAccessToken) {
+      return {
+        'Authorization': `Bearer ${aadAccessToken}`
+      };
+    }
+
     return {
       'x-api-key': credentials.apiKey
     };

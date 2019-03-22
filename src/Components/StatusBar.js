@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import DateUtils from 'Utils/DateUtils';
 import './StatusBar.css';
+import AadAuthService from 'Services/AadAuthService';
+const aadAuthService = new AadAuthService();
 
 const mapStateToProps = state => {
   return {
@@ -24,6 +26,11 @@ let StatusBar = (props) => (
         ) : 'Loading...'
       }
     </div>
+    {
+      aadAuthService.isAuthenticated() ?
+      <div style={{cursor: 'pointer', padding: '.5rem'}} className="ali-footer-login" onClick={() => aadAuthService.logout()}>Click here to logout</div> :
+      <div style={{cursor: 'pointer', padding: '.5rem'}} className="ali-footer-login" onClick={() => aadAuthService.redirectToSso()}>Click here to login</div>
+    }
     {props.error ?
       <div className="ail-footer-status-item ail-footer-status--error">
         {props.error}
