@@ -1,15 +1,13 @@
-import QueryStringUtils from 'Utils/QueryStringUtils';
-import StorageRepository from './StorageRepository';
-
-export default class ProfileRepository {
-  constructor() {
-    this.storageRepository = new StorageRepository();
+export class ProfileRepository {
+  constructor(storageRepository, queryStringUtils) {
+    this.storageRepository = storageRepository;
+    this.queryStringUtils = queryStringUtils;
   }
 
   getCredentials() {
-    const queryParams = QueryStringUtils.getParams();
+    const queryParams = this.queryStringUtils.getParams();
     if (queryParams['app_id'] && queryParams['api_key']) {
-      QueryStringUtils.removeParams();
+      this.queryStringUtils.removeParams();
       return {
         appId: queryParams['app_id'],
         apiKey: queryParams['api_key'],

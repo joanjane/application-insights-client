@@ -1,6 +1,6 @@
 import { ajax } from 'rxjs/ajax';
 
-export default class HttpClient {
+export class HttpClient {
   get(uri, headers, query) {
     return this.request('GET', uri, headers, query);
   }

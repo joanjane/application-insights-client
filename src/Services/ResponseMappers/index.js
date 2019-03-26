@@ -80,8 +80,40 @@ export function getRowMapper(row, colPropertiesIndex) {
  */
 export function buildColumnPropertyIndex(response) {
   const colPropertiesIndex = {};
-  response.tables[0].columns.forEach((c, i) => colPropertiesIndex[c.name] = i);
+  response.tables[0].columns.forEach((c, i) => {
+    const propName = c.name || c.columnName;
+    colPropertiesIndex[propName] = i;
+  });
   return colPropertiesIndex;
+}
+
+export function toCamelCase(object) {
+  if (Array.isArray(object)) {
+    return object.map((value) => {
+        if (typeof value === 'object') {
+          value = toCamelCase(value);
+        }
+        return value;
+    });
+  } else if (typeof object === 'object') {
+    let mappedObject = null;
+    for (const objectProp in object) {
+      if (!mappedObject) {
+        mappedObject = {};
+      }
+      if (object.hasOwnProperty(objectProp)) {
+        const newKey = (objectProp.charAt(0).toLowerCase() + objectProp.slice(1) || objectProp).toString();
+        let value = object[objectProp];
+        if (value instanceof Array || (value != null && value.constructor === Object)) {
+          value = toCamelCase(value);
+        }
+        mappedObject[newKey] = value;
+      }
+    }
+    return mappedObject;
+  } else {
+    return object;
+  }
 }
 
 function hasRequiredProperties(properties, row, colPropertiesIndex) {

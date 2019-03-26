@@ -4,8 +4,9 @@ import { ofType } from 'redux-observable';
 import { emptyAction } from 'Actions';
 import { CHANGE_UI_THEME } from 'Actions/UI';
 
-export const changeThemeEpic = (action$, $state, { profileRepository }) =>
-  action$
+export const changeThemeEpic = (action$, $state, { inject }) => {
+  const profileRepository = inject('ProfileRepository');
+  return action$
     .pipe(
       ofType(CHANGE_UI_THEME),
       switchMap(q => {
@@ -13,4 +14,4 @@ export const changeThemeEpic = (action$, $state, { profileRepository }) =>
         return of(emptyAction());
       })
     );
-
+}

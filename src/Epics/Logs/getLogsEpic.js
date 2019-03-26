@@ -13,8 +13,11 @@ import {
   AUTOREFRESH_GET_LOGS_SOURCE
 } from 'Actions/Logs';
 
-export const getLogsEpic = (action$, state$, { applicationInsightsClient, DomUtils }) =>
-  action$
+export const getLogsEpic = (action$, state$, { inject }) => {
+  const applicationInsightsClient = inject('ApplicationInsightsClient');
+  const domUtils = inject('DomUtils');
+
+  return action$
     .pipe(
       ofType(GET_LOGS, PROFILE_LOADED),
       filter(action => {
@@ -24,7 +27,7 @@ export const getLogsEpic = (action$, state$, { applicationInsightsClient, DomUti
       }),
       switchMap(action => {
         // force scroll search is done by user or it is already at the end of scroll
-        const forceScrollEnd = hasToScroll(action, DomUtils);
+        const forceScrollEnd = hasToScroll(action, domUtils);
 
         const state = state$.value;
         return applicationInsightsClient.getLogs(state.credentials, state.query, state.searchPeriod)
@@ -39,15 +42,16 @@ export const getLogsEpic = (action$, state$, { applicationInsightsClient, DomUti
             }),
             tap(() => {
               if (forceScrollEnd) {
-                DomUtils.scrollBottom('.ail-body');
+                domUtils.scrollBottom('.ail-body');
               }
             })
           );
       })
     )
   ;
+}
 
-function hasToScroll(action, DomUtils) {
+function hasToScroll(action, domUtils) {
   return action.payload.source !== AUTOREFRESH_GET_LOGS_SOURCE ||
-    DomUtils.isScrollEnd('.ail-body');
+    domUtils.isScrollEnd('.ail-body');
 }

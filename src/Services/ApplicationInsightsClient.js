@@ -1,17 +1,15 @@
-import httpClientFactory from './httpClientFactory';
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { buildColumnPropertyIndex, getRowMapper } from './ResponseMappers';
-import AadAuthService from './AadAuthService';
+import { buildColumnPropertyIndex, getRowMapper, toCamelCase } from './ResponseMappers';
 
-export default class ApplicationInsightsClient {
-  constructor() {
-    this.httpClient = httpClientFactory();
-    this.aadAuthService = new AadAuthService();
+export class ApplicationInsightsClient {
+  constructor(httpClient, aadAuthService) {
+    this.httpClient = httpClient;
+    this.aadAuthService = aadAuthService;
   }
 
   getLogs(credentials, query, timespan) {
-    const queryParams = [{ name: 'query', value: query }, { name: 'api-version', value: '2018-04-20'}];
+    const queryParams = [{ name: 'query', value: query }, { name: 'api-version', value: '2018-05-01-preview'}];
     if (timespan) {
       queryParams.push({ name: 'timespan', value: timespan });
     }
@@ -61,6 +59,7 @@ export default class ApplicationInsightsClient {
   }
 
   mapQueryResponse(response) {
+    response = toCamelCase(response);
     if (!response || !response.tables) {
       throw new Error('Unexpected response content from query');
     }
@@ -100,5 +99,13 @@ export default class ApplicationInsightsClient {
     }
     const appNameIndex = columnsIndexPropertyMap['appName'];
     return response.tables[0].rows[0][appNameIndex]
+  }
+
+
+  listAppInsightsAccounts(subscriptionId) {
+    const queryParams = [{ name: 'api-version', value: '2015-05-01'}];
+    let uri = `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.Insights/components`;
+
+    return this.httpClient.get(uri, this.buildHeaders(null), queryParams);
   }
 }

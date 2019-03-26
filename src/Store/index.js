@@ -2,18 +2,11 @@ import { createStore, applyMiddleware } from 'redux';
 import { createEpicMiddleware } from 'redux-observable';
 import { rootReducer } from 'Reducers';
 import { rootEpic } from 'Epics';
-
-import ProfileRepository from 'Services/ProfileRepository';
-import ApplicationInsightsClient from 'Services/ApplicationInsightsClient';
-import DomUtils from 'Utils/DomUtils';
-import ConsoleDoc from 'Utils/ConsoleDoc';
+import { resolveDepenency } from './container';
 
 const epicMiddleware = createEpicMiddleware({
   dependencies: {
-    applicationInsightsClient: new ApplicationInsightsClient(),
-    profileRepository: new ProfileRepository(),
-    DomUtils: DomUtils,
-    ConsoleDoc: ConsoleDoc
+    inject: resolveDepenency
   }
 });
 

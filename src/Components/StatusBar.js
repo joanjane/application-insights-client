@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import DateUtils from 'Utils/DateUtils';
 import './StatusBar.css';
-import AadAuthService from 'Services/AadAuthService';
-const aadAuthService = new AadAuthService();
+import { resolveDepenency } from 'Store/container';
+const aadAuthService = resolveDepenency('AadAuthService');
 
 const mapStateToProps = state => {
   return {

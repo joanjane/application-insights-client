@@ -1,15 +1,17 @@
+export class AadAuthService {
+  constructor(storageRepository) {
+    this.storageRepository = storageRepository;
 
-export default class AadAuthService {
-  constructor() {
     const fragmentParams = this.parseFragmentParams();
     if (!fragmentParams) {
       return;
     }
     if (fragmentParams['error']) {
-      console.error(`Error: ${fragmentParams['error']}\nDetails: ${fragmentParams['error_description']}`);
+      const err = `Error: ${fragmentParams['error']}\nDetails: ${fragmentParams['error_description']}`;
+      console.error(err);
+      alert(err);
     } else if (fragmentParams['access_token']) {
       sessionStorage.setItem('access_token', fragmentParams['access_token']);
-      // console.log(fragmentParams['access_token']);
     }
     document.location.hash = '';
   }
@@ -53,7 +55,8 @@ export default class AadAuthService {
   redirectToSso() {
     const tenant = sessionStorage.getItem('aad.tenant');
     const clientId = sessionStorage.getItem('aad.clientid');
-    const audience = 'https://api.applicationinsights.io';
+    // const audience = 'https://api.applicationinsights.io';
+    const audience = 'https://management.azure.com/';
     const redirectUrl = `https://login.microsoftonline.com/${tenant}/oauth2/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(document.location.origin)}&resource=${encodeURIComponent(audience)}&scopes=user_impersonation`;
 
     console.log(`Redirecting to ${redirectUrl}`);

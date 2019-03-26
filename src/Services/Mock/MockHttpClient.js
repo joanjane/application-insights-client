@@ -1,7 +1,7 @@
 import HttpMock from './HttpMock';
 import { Observable } from 'rxjs';
 
-export default class MockHttpClient {
+export class MockHttpClient {
   get(uri, headers, query) {
     return this.request('GET', uri, headers, query);
   }

@@ -1,14 +1,7 @@
-export default class StorageRepository {
-  constructor() {
-    const isTest = process.env.NODE_ENV === 'test';
-
-    this.localStorage = isTest ?
-      new MockStorage(mockLocalStorage) :
-      window.localStorage;
-
-    this.sessionStorage = isTest ?
-      new MockStorage(mockSessionStorage) :
-      window.sessionStorage;
+export class StorageRepository {
+  constructor(localStorage, sessionStorage) {
+    this.localStorage = localStorage;
+    this.sessionStorage = sessionStorage;
   }
 
   getSessionData(key, parseObject) {
@@ -52,10 +45,7 @@ export default class StorageRepository {
   }
 }
 
-const mockLocalStorage = {};
-const mockSessionStorage = {};
-
-class MockStorage {
+export class MockStorage {
   constructor(data) {
     this.data = data;
   }

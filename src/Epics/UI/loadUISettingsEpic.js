@@ -5,8 +5,9 @@ import { emptyAction} from 'Actions';
 import { LOAD_PROFILE } from 'Actions/Profile';
 import { changeThemeAction} from 'Actions/UI';
 
-export const loadUISettingsEpic = (action$, store, { profileRepository, ConsoleDoc }) =>
-  action$.pipe(
+export const loadUISettingsEpic = (action$, store, { inject }) => {
+  const profileRepository = inject('ProfileRepository');
+  return action$.pipe(
     ofType(LOAD_PROFILE),
     switchMap(q => {
       const theme = profileRepository.getUITheme();
@@ -16,3 +17,4 @@ export const loadUISettingsEpic = (action$, store, { profileRepository, ConsoleD
       return of(emptyAction());
     })
   );
+}

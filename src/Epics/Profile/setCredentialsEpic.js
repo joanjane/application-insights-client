@@ -3,8 +3,9 @@ import { switchMap } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { SET_CREDENTIALS, availableAppsLoadedAction } from 'Actions/Profile';
 
-export const setCredentialsEpic = (action$, store, { profileRepository }) =>
-  action$
+export const setCredentialsEpic = (action$, store, { inject }) => {
+  const profileRepository = inject('ProfileRepository');
+  return action$
     .pipe(
       ofType(SET_CREDENTIALS),
       switchMap(q => {
@@ -13,3 +14,4 @@ export const setCredentialsEpic = (action$, store, { profileRepository }) =>
         return of(availableAppsLoadedAction(availableApps));
       })
     );
+}
