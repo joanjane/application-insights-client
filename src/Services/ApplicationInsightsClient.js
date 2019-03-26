@@ -42,6 +42,9 @@ export class ApplicationInsightsClient {
   }
 
   buildAppUri(credentials) {
+    if (credentials.appId.startsWith('subscriptions/')) {
+      return `https://management.azure.com/${credentials.appId}`;
+    }
     return `https://api.applicationinsights.io/v1/apps/${credentials.appId}`;
   }
 
@@ -101,11 +104,13 @@ export class ApplicationInsightsClient {
     return response.tables[0].rows[0][appNameIndex]
   }
 
-
   listAppInsightsAccounts(subscriptionId) {
     const queryParams = [{ name: 'api-version', value: '2015-05-01'}];
     let uri = `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.Insights/components`;
 
-    return this.httpClient.get(uri, this.buildHeaders(null), queryParams);
+    return this.httpClient.get(uri, this.buildHeaders(null), queryParams)
+      .pipe(map(r => r.response.value.map(resource => {
+        return { id: resource.id, name: resource.name };
+      })));
   }
 }

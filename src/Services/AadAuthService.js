@@ -11,13 +11,13 @@ export class AadAuthService {
       console.error(err);
       alert(err);
     } else if (fragmentParams['access_token']) {
-      sessionStorage.setItem('access_token', fragmentParams['access_token']);
+      this.storageRepository.saveSessionData('access_token', fragmentParams['access_token']);
     }
     document.location.hash = '';
   }
 
   getToken() {
-    return sessionStorage.getItem('access_token');
+    return this.storageRepository.getSessionData('access_token');
   }
 
   isAuthenticated() {
@@ -29,7 +29,7 @@ export class AadAuthService {
   }
 
   logout() {
-    sessionStorage.removeItem('access_token');
+    this.storageRepository.removeSessionData('access_token');
     window.location.reload();
   }
 

@@ -20,6 +20,10 @@ export class StorageRepository {
     this.sessionStorage.setItem(key, serializeObject ? JSON.stringify(value) : value);
   }
 
+  removeSessionData(key) {
+    this.sessionStorage.removeItem(key);
+  }
+
   clearSessionData() {
     this.sessionStorage.clear();
   }
@@ -38,6 +42,10 @@ export class StorageRepository {
 
   saveLocalData(key, value, serializeObject) {
     this.localStorage.setItem(key, serializeObject ? JSON.stringify(value) : value);
+  }
+
+  removeLocalData(key) {
+    this.localStorage.removeItem(key);
   }
 
   clearLocalData() {
