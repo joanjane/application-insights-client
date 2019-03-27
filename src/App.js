@@ -7,10 +7,11 @@ import Credentials from './Components/Settings/Credentials';
 import QueryBox from './Components/QueryBox';
 import { loadProfileAction } from './Actions/Profile';
 import StatusBar from './Components/StatusBar';
+import AuthenticationType from 'Models/AuthenticationType';
 
 const mapStateToProps = state => {
   return {
-    hasCredentials: state.credentials && state.credentials.appId,
+    hasCredentials: state.credentials.authenticationType !== AuthenticationType.none,
     appName: !state.appName && state.logs.length > 0 ? 'You must project appName property in the query' : state.appName,
     loading: state.loading,
     activeTheme: state.ui.theme

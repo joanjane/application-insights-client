@@ -1,3 +1,5 @@
+import AuthenticationType from 'Models/AuthenticationType';
+
 export function anyCredentials(credentials) {
-  return credentials && credentials.appId && credentials.apiKey;
+  return credentials.authenticationType !== AuthenticationType.apiKey;
 }

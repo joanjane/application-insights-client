@@ -1,6 +1,7 @@
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { buildColumnPropertyIndex, getRowMapper, toCamelCase } from './ResponseMappers';
+import AuthenticationType from 'Models/AuthenticationType';
 
 export class ApplicationInsightsClient {
   constructor(httpClient, aadAuthService) {
@@ -9,29 +10,33 @@ export class ApplicationInsightsClient {
   }
 
   getLogs(credentials, query, timespan) {
-    const queryParams = [{ name: 'query', value: query }, { name: 'api-version', value: '2018-05-01-preview'}];
+    const queryParams = [{ name: 'query', value: query }, { name: 'api-version', value: '2018-05-01-preview' }];
     if (timespan) {
       queryParams.push({ name: 'timespan', value: timespan });
     }
+    try {
+      return this.httpClient.get(
+        `${this.buildAppUri(credentials)}/query`,
+        this.buildHeaders(credentials),
+        queryParams
+      )
+      .pipe(
+        map(httpResponse => this.mapQueryResponse(httpResponse.response)),
+        catchError(error => {
+          console.error(error.response);
+          if (error.response && error.response.error) {
+            const reason = this.mapError('', error.response.error);
+            return throwError(reason);
+          } else if (typeof (error.response) === 'string') {
+            return throwError(`${error.status}: ${error.response}`);
+          }
+          return throwError(error);
+        })
+      );
 
-    return this.httpClient.get(
-      `${this.buildAppUri(credentials)}/query`,
-      this.buildHeaders(credentials),
-      queryParams
-    )
-    .pipe(
-      map(httpResponse => this.mapQueryResponse(httpResponse.response)),
-      catchError(error => {
-        console.error(error.response);
-        if (error.response && error.response.error) {
-          const reason = this.mapError('', error.response.error);
-          return throwError(reason);
-        } else if (typeof (error.response) === 'string') {
-          return throwError(`${error.status}: ${error.response}`);
-        }
-        return throwError(error);
-      })
-    );
+    } catch (e) {
+      return throwError(e);
+    }
   }
 
   mapError(message, error) {
@@ -42,22 +47,24 @@ export class ApplicationInsightsClient {
   }
 
   buildAppUri(credentials) {
-    if (credentials.appId.startsWith('subscriptions/')) {
-      return `https://management.azure.com/${credentials.appId}/api`;
+    if (credentials.authenticationType === AuthenticationType.aad) {
+      return `https://management.azure.com/${credentials.aad.resourceId}/api`;
+    } else if (credentials.authenticationType === AuthenticationType.aad) {
+      return `https://api.applicationinsights.io/v1/apps/${credentials.api.appId}`;
     }
-    return `https://api.applicationinsights.io/v1/apps/${credentials.appId}`;
+    throw new Error('You must setup an authentication to fetch logs');
   }
 
   buildHeaders(credentials) {
-    const aadAccessToken = this.aadAuthService.getToken();
-    if (aadAccessToken) {
+    if (credentials.authenticationType === AuthenticationType.aad) {
+      const aadAccessToken = this.aadAuthService.getToken();
       return {
         'Authorization': `Bearer ${aadAccessToken}`
       };
     }
 
     return {
-      'x-api-key': credentials.apiKey
+      'x-api-key': credentials.api.apiKey
     };
   }
 
@@ -78,16 +85,16 @@ export class ApplicationInsightsClient {
       var model = reponseMapper(row, colPropertiesIndex);
       return model;
     })
-    .filter(r => r !== null)
-    .sort((a, b) => {
-      if (a.timestamp === b.timestamp) {
-        return 0;
-      } else if (a.timestamp > b.timestamp) {
-        return 1;
-      } else {
-        return -1;
-      }
-    });
+      .filter(r => r !== null)
+      .sort((a, b) => {
+        if (a.timestamp === b.timestamp) {
+          return 0;
+        } else if (a.timestamp > b.timestamp) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
 
     return {
       logs: rows,
@@ -105,7 +112,7 @@ export class ApplicationInsightsClient {
   }
 
   listAppInsightsAccounts(subscriptionId) {
-    const queryParams = [{ name: 'api-version', value: '2015-05-01'}];
+    const queryParams = [{ name: 'api-version', value: '2015-05-01' }];
     let uri = `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.Insights/components`;
 
     return this.httpClient.get(uri, this.buildHeaders(null), queryParams)

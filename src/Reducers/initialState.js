@@ -1,9 +1,19 @@
+import AuthenticationType from 'Models/AuthenticationType';
+
 export const initialState = () => {
   return {
     logs: [],
     credentials: {
-      appId: '',
-      apiKey: ''
+      api: {
+        appId: '',
+        apiKey: '',
+      },
+      aad: {
+        aadTenant: '',
+        subscriptionId: '',
+        resourceId: '',
+      },
+      authenticationType: AuthenticationType.none
     },
     query: 'traces | sort by timestamp desc | limit 50',
     searchPeriod: '',

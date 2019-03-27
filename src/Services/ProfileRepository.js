@@ -1,3 +1,5 @@
+import AuthenticationType from 'Models/AuthenticationType';
+
 export class ProfileRepository {
   constructor(storageRepository, queryStringUtils) {
     this.storageRepository = storageRepository;
@@ -5,28 +7,31 @@ export class ProfileRepository {
   }
 
   getCredentials() {
-    const queryParams = this.queryStringUtils.getParams();
-    if (queryParams['app_id'] && queryParams['api_key']) {
-      this.queryStringUtils.removeParams();
-      return {
-        appId: queryParams['app_id'],
-        apiKey: queryParams['api_key'],
-      };
+    const queryCredentials = this.getCredentialsFromQuery();
+    if (queryCredentials) {
+      return queryCredentials;
     }
 
     const storedCredentials = this.storageRepository.getSessionData('credentials', true);
-    if (storedCredentials) {
+    if (storedCredentials && storedCredentials.authenticationType) {
       return storedCredentials;
     } else {
+      this.storageRepository.removeSessionData('credentials');
       const lastUsedCredentials = this.storageRepository.getLocalData('lruCredentials', true);
-      return lastUsedCredentials;
+      if (lastUsedCredentials && lastUsedCredentials.authenticationType) {
+        return lastUsedCredentials;
+      }
+      this.storageRepository.removeLocalData('lruCredentials');
     }
+    return {
+      authenticationType: AuthenticationType.none
+    };
   }
 
   storeCredentials(credentials) {
     this.storageRepository.saveSessionData('credentials', credentials, true);
     this.storageRepository.saveLocalData('lruCredentials', credentials, true);
-    if (credentials.appName) {
+    if (credentials.authenticationType === AuthenticationType.api && credentials.appName) {
       this.storeAppCredentials(credentials, credentials.appName);
     }
   }
@@ -40,8 +45,7 @@ export class ProfileRepository {
   }
 
   storeAppCredentials(credentials, appName) {
-    if (!appName || !credentials.appId || !credentials.apiKey ||
-      credentials.appId === appName) {
+    if (!appName || !credentials.appId || !credentials.apiKey || credentials.appId === appName) {
       return;
     }
 
@@ -68,7 +72,10 @@ export class ProfileRepository {
     if (!credentialsByApp) {
       return null;
     }
-    return credentialsByApp[appName];
+    return {
+      authenticationType: AuthenticationType.api,
+      api: credentialsByApp[appName]
+    };
   }
 
   getUITheme() {
@@ -77,6 +84,21 @@ export class ProfileRepository {
 
   setUITheme(theme) {
     this.storageRepository.saveLocalData('ui-theme', theme);
+  }
+
+  getCredentialsFromQuery() {
+    const queryParams = this.queryStringUtils.getParams();
+    if (queryParams['app_id'] && queryParams['api_key']) {
+      this.queryStringUtils.removeParams();
+      return {
+        authenticationType: AuthenticationType.apiKey,
+        api: {
+          appId: queryParams['app_id'],
+          apiKey: queryParams['api_key'],
+        }
+      };
+    }
+    return null;
   }
 
   clearData() {

@@ -31,17 +31,13 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-class Credentials extends Component {
+class AadResourcePicker extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      credentials: {
-        appId: props.credentials.appId,
-        apiKey: props.credentials.apiKey
-      },
+      credentials: props.credentials,
       availableApps: props.availableApps,
-      selectedStoredCredential: '',
-      editing: props.credentials.appId === null
+      selectedStoredCredential: ''
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -49,7 +45,7 @@ class Credentials extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.state.editing && this.credentialsChanged(nextProps.credentials, this.state.credentials)) {
+    if (this.credentialsChanged(nextProps.credentials, this.state.credentials)) {
       this.setState({
         credentials: {
           appId: nextProps.credentials.appId,
@@ -76,10 +72,7 @@ class Credentials extends Component {
       this.setState({ editing: !this.state.editing });
       return;
     }
-    this.props.setCredentials({
-      authenticationType: AuthenticationType.api,
-      api: this.state.credentials
-    });
+    this.props.setCredentials(this.state.credentials);
     this.setState({ editing: !this.state.editing });
   }
 
@@ -194,5 +187,5 @@ class Credentials extends Component {
     );
   }
 }
-Credentials = connect(mapStateToProps, mapDispatchToProps)(Credentials);
-export default Credentials;
+AadResourcePicker = connect(mapStateToProps, mapDispatchToProps)(AadResourcePicker);
+export default AadResourcePicker;
