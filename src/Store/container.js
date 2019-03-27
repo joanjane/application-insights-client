@@ -1,7 +1,7 @@
-import DomUtils from 'Utils/DomUtils';
-import ConsoleDoc from 'Utils/ConsoleDoc';
-import QueryStringUtils from 'Utils/QueryStringUtils';
-import DateUtils from 'Utils/DateUtils';
+import { DomUtils } from 'Utils/DomUtils';
+import { ConsoleDoc } from 'Utils/ConsoleDoc';
+import { QueryStringUtils } from 'Utils/QueryStringUtils';
+import { DateUtils } from 'Utils/DateUtils';
 import { ProfileRepository } from 'Services/ProfileRepository';
 import { StorageRepository, MockStorage } from 'Services/StorageRepository';
 import { ApplicationInsightsClient } from 'Services/ApplicationInsightsClient';
@@ -16,10 +16,10 @@ const dependencies = {
     c('AadAuthService')
   ),
   ProfileRepository: (c) => new ProfileRepository(c('StorageRepository'), c('QueryStringUtils')),
-  DomUtils: () => DomUtils,
-  ConsoleDoc: () => ConsoleDoc,
-  QueryStringUtils: () => QueryStringUtils,
-  DateUtils: () => DateUtils,
+  DomUtils: () => new DomUtils(),
+  ConsoleDoc: () => new ConsoleDoc(),
+  QueryStringUtils: () => new QueryStringUtils(),
+  DateUtils: () => new DateUtils(),
   HttpClient: () => new HttpClient(),
   AadAuthService: (c) => new AadAuthService(c('StorageRepository')),
   StorageRepository: () => {
@@ -34,10 +34,10 @@ const dependencies = {
   }
 };
 
-export function resolveDepenency(name) {
+export function inject(name) {
   const dependencyFactory = dependencies[name];
   if (!dependencyFactory) {
     throw new Error(`${name} is not registered`);
   }
-  return dependencyFactory(resolveDepenency);
+  return dependencyFactory(inject);
 }

@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import DateUtils from 'Utils/DateUtils';
 import './StatusBar.css';
-import { resolveDepenency } from 'Store/container';
-const aadAuthService = resolveDepenency('AadAuthService');
+import { inject } from 'Store/container';
+const aadAuthService = inject('AadAuthService');
+const dateUtils = inject('DateUtils');
 
 const mapStateToProps = state => {
   return {
@@ -21,7 +21,7 @@ let StatusBar = (props) => (
       {
         !props.loading ? (
           <div>
-            updated at {DateUtils.formatDateTime(props.fetchTime)} {props.autoRefresh ? '(auto)' : ''}
+            updated at {dateUtils.formatDateTime(props.fetchTime)} {props.autoRefresh ? '(auto)' : ''}
           </div>
         ) : 'Loading...'
       }

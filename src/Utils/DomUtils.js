@@ -1,4 +1,4 @@
-class DomUtils {
+export class DomUtils {
   scrollBottom(selector) {
     document.querySelector(selector).scrollTo(0, document.querySelector(selector).scrollHeight);
   }
@@ -21,5 +21,3 @@ class DomUtils {
     window.addEventListener('resize', calcViewHeight, true);
   }
 }
-const domUtils = new DomUtils();
-export default domUtils;
