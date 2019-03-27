@@ -43,7 +43,7 @@ export class ApplicationInsightsClient {
 
   buildAppUri(credentials) {
     if (credentials.appId.startsWith('subscriptions/')) {
-      return `https://management.azure.com/${credentials.appId}`;
+      return `https://management.azure.com/${credentials.appId}/api`;
     }
     return `https://api.applicationinsights.io/v1/apps/${credentials.appId}`;
   }
