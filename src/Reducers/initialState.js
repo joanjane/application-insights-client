@@ -12,6 +12,7 @@ export const initialState = () => {
         aadTenant: '',
         subscriptionId: '',
         resourceId: '',
+        authenticated: false
       },
       authenticationType: AuthenticationType.none
     },
@@ -24,6 +25,10 @@ export const initialState = () => {
     loading: false,
     error: null,
     availableApps: [],
+    aad: {
+      subscriptionsApps: {},
+      subscriptions: [],
+    },
     ui: {
       theme: 'theme-default'
     }

@@ -19,12 +19,16 @@ export class ProfileRepository {
       this.storageRepository.removeSessionData('credentials');
       const lastUsedCredentials = this.storageRepository.getLocalData('lruCredentials', true);
       if (lastUsedCredentials && lastUsedCredentials.authenticationType) {
+        lastUsedCredentials.api = lastUsedCredentials.api || {};
+        lastUsedCredentials.aad = lastUsedCredentials.aad || {};
         return lastUsedCredentials;
       }
       this.storageRepository.removeLocalData('lruCredentials');
     }
     return {
-      authenticationType: AuthenticationType.none
+      authenticationType: AuthenticationType.none,
+      api: {},
+      aad: {},
     };
   }
 

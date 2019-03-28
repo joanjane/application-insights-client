@@ -1,7 +1,7 @@
 import { combineEpics } from 'redux-observable';
-import { 
-    getLogsEpic, 
-    autoRefreshEpic 
+import {
+    getLogsEpic,
+    autoRefreshEpic
 } from './Logs';
 
 import {
@@ -15,17 +15,23 @@ import {
 import {
     changeThemeEpic,
     loadUISettingsEpic
-} from './UI'
+} from './UI';
+
+import {
+  loadSubscriptionsEpic
+} from './Profile/Account';
 
 export const rootEpic = combineEpics(
     getLogsEpic,
     autoRefreshEpic,
-    
+
     setCredentialsEpic,
     findCredentialsCandidateEpic,
     setQueryEpic,
     clearDataEpic,
     loadProfileEpic,
+
+    loadSubscriptionsEpic,
 
     changeThemeEpic,
     loadUISettingsEpic

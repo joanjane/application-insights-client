@@ -56,15 +56,27 @@ export class ApplicationInsightsClient {
   }
 
   buildHeaders(credentials) {
+    if (credentials.authenticationType === AuthenticationType.none) {
+      throw new Error('You must setup an authentication');
+    }
+
     if (credentials.authenticationType === AuthenticationType.aad) {
-      const aadAccessToken = this.aadAuthService.getToken();
-      return {
-        'Authorization': `Bearer ${aadAccessToken}`
-      };
+      return this.buildAadAuthorizationHeaders();
     }
 
     return {
       'x-api-key': credentials.api.apiKey
+    };
+  }
+
+  buildAadAuthorizationHeaders() {
+    if (!this.aadAuthService.isAuthenticated()) {
+      throw new Error('You must be authenticated to your Azure Active Directory tenant');
+    }
+
+    const aadAccessToken = this.aadAuthService.getToken();
+    return {
+      'Authorization': `Bearer ${aadAccessToken}`
     };
   }
 
@@ -115,7 +127,17 @@ export class ApplicationInsightsClient {
     const queryParams = [{ name: 'api-version', value: '2015-05-01' }];
     let uri = `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.Insights/components`;
 
-    return this.httpClient.get(uri, this.buildHeaders(null), queryParams)
+    return this.httpClient.get(uri, this.buildAadAuthorizationHeaders(), queryParams)
+      .pipe(map(r => r.response.value.map(resource => {
+        return { id: resource.id, name: resource.name };
+      })));
+  }
+
+  listSubscriptions() {
+    const queryParams = [{ name: 'api-version', value: '2015-05-01' }];
+    const uri = `https://management.azure.com/subscriptions`;
+
+    return this.httpClient.get(uri, this.buildAadAuthorizationHeaders(), queryParams)
       .pipe(map(r => r.response.value.map(resource => {
         return { id: resource.id, name: resource.name };
       })));

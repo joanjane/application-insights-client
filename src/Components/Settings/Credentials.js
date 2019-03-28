@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import {
   setCredentialsAction,
@@ -9,15 +9,14 @@ import { setAutoRefreshAction, setSearchPeriodAction } from 'Actions/Logs';
 import AuthenticationType from 'Models/AuthenticationType';
 import './Credentials.css';
 import UISettings from './UISettings';
+import AadResourcePicker from './AadResourcePicker';
 
 const mapStateToProps = state => {
   return {
     autoRefresh: state.autoRefresh,
     searchPeriod: state.searchPeriod,
     availableApps: [...state.availableApps],
-    credentials: state.credentials.authenticationType === AuthenticationType.api ?
-      state.credentials.api :
-      { }
+    credentials: {...state.credentials}
   };
 };
 
@@ -35,42 +34,33 @@ class Credentials extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      credentials: {
-        appId: props.credentials.appId,
-        apiKey: props.credentials.apiKey
-      },
+      credentials: {...props.credentials},
       availableApps: props.availableApps,
       selectedStoredCredential: '',
-      editing: props.credentials.appId === null
+      editing: props.credentials.api.appId === null
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.clearData = this.clearData.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     if (!this.state.editing && this.credentialsChanged(nextProps.credentials, this.state.credentials)) {
       this.setState({
-        credentials: {
-          appId: nextProps.credentials.appId,
-          apiKey: nextProps.credentials.apiKey
-        },
+        credentials: nextProps.credentials,
         selectedStoredCredential: ''
       });
     }
   }
 
-  handleChange(event) {
-    let { credentials } = this.state;
-    credentials = { ...credentials, [event.target.id]: event.target.value };
-    this.setState({ credentials });
+  handleChange = (event) => {
+    let { api } = this.state.credentials;
+    api = { ...api, [event.target.id]: event.target.value };
+    this.setState({ credentials: { ...this.state.credentials, api }});
   }
 
   handlePeriodChange(event) {
     this.props.setSearchPeriod(event.target.value);
   }
 
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     event.preventDefault();
     if (!this.state.editing) {
       this.setState({ editing: !this.state.editing });
@@ -89,7 +79,7 @@ class Credentials extends Component {
     this.setState({ selectedStoredCredential: appName })
   }
 
-  clearData() {
+  clearData = () => {
     if (!window.confirm('Are you sure to clear all stored data?')) {
       return;
     }
@@ -101,11 +91,11 @@ class Credentials extends Component {
   }
 
   credentialsChanged(credentials1, credentials2) {
-    return credentials1.appId !== credentials2.appId || credentials1.apiKey !== credentials2.apiKey;
+    return credentials1.api.appId !== credentials2.api.appId || credentials1.api.apiKey !== credentials2.api.apiKey;
   }
 
   validCredentials = () => {
-    return this.state.credentials.appId && this.state.credentials.apiKey;
+    return this.state.credentials.api.appId && this.state.credentials.api.apiKey;
   }
 
   renderCredentialsForm() {
@@ -113,12 +103,12 @@ class Credentials extends Component {
       <form onSubmit={this.handleSubmit}>
         <div className="ail-credentials-section ail-credentials">
           <label>Credentials</label>
-          <input className="ail-input" value={this.state.credentials.appId}
+          <input className="ail-input" value={this.state.credentials.api.appId}
             placeholder='App id'
             id="appId"
             disabled={!this.state.editing}
             onChange={(e) => this.handleChange(e)} />
-          <input className="ail-input" value={this.state.credentials.apiKey}
+          <input className="ail-input" value={this.state.credentials.api.apiKey}
             id="apiKey"
             placeholder='API key'
             disabled={!this.state.editing}
@@ -183,10 +173,16 @@ class Credentials extends Component {
     );
   }
 
+  renderApplicationPicker() {
+    return (<Fragment>
+      {false ? this.renderCredentialsForm() : <AadResourcePicker />}
+    </Fragment>);
+  }
+
   render() {
     return (
       <div>
-        {this.renderCredentialsForm()}
+        {this.renderApplicationPicker()}
         {this.renderGlobalOptions()}
         {this.renderPeriod()}
         <UISettings />

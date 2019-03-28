@@ -53,9 +53,8 @@ export class AadAuthService {
   }
 
   redirectToSso() {
-    const tenant = sessionStorage.getItem('aad.tenant');
-    const clientId = sessionStorage.getItem('aad.clientid');
-    // const audience = 'https://api.applicationinsights.io';
+    const tenant = this.storageRepository.getSessionData('aad.tenant');
+    const clientId = this.storageRepository.getSessionData('aad.clientid');
     const audience = 'https://management.azure.com/';
     const redirectUrl = `https://login.microsoftonline.com/${tenant}/oauth2/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(document.location.origin)}&resource=${encodeURIComponent(audience)}&scopes=user_impersonation`;
 

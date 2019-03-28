@@ -2,32 +2,27 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   setCredentialsAction,
-  clearDataAction,
-  tryFindApiCredentialsAction
 } from 'Actions/Profile';
-import { setAutoRefreshAction, setSearchPeriodAction } from 'Actions/Logs';
+import {
+  listSubscriptionsAction,
+  listAIAppsAction
+} from 'Actions/Profile/Account';
 import AuthenticationType from 'Models/AuthenticationType';
 import './Credentials.css';
-import UISettings from './UISettings';
 
 const mapStateToProps = state => {
   return {
-    autoRefresh: state.autoRefresh,
-    searchPeriod: state.searchPeriod,
-    availableApps: [...state.availableApps],
-    credentials: state.credentials.authenticationType === AuthenticationType.api ?
-      state.credentials.api :
-      { }
+    subscriptionsApps: {...state.aad.subscriptionsApps},
+    subscriptions: [...state.aad.subscriptions],
+    credentials: {...state.credentials}
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     setCredentials: credentials => dispatch(setCredentialsAction(credentials)),
-    clearData: () => dispatch(clearDataAction()),
-    tryFindCredentials: appName => dispatch(tryFindApiCredentialsAction(appName)),
-    setAutoRefresh: enabled => dispatch(setAutoRefreshAction(enabled)),
-    setSearchPeriod: searchPeriod => dispatch(setSearchPeriodAction(searchPeriod)),
+    listSubscriptions: () => dispatch(listSubscriptionsAction()),
+    listAIApps: subscriptionId => dispatch(listAIAppsAction(subscriptionId))
   };
 };
 
@@ -35,39 +30,40 @@ class AadResourcePicker extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      credentials: props.credentials,
-      availableApps: props.availableApps,
-      selectedStoredCredential: ''
+      credentials: props.credentials
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.clearData = this.clearData.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.props.subscriptions.length === 0) {
+      this.checkSubscriptionsLoad();
+    }
+  }
+
+  checkSubscriptionsLoad() {
+    if (this.props.credentials.authenticationType === AuthenticationType.aad && this.props.credentials.aad.authenticated) {
+      this.props.listSubscriptions();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.credentialsChanged(nextProps.credentials, this.state.credentials)) {
       this.setState({
-        credentials: {
-          appId: nextProps.credentials.appId,
-          apiKey: nextProps.credentials.apiKey
-        },
-        selectedStoredCredential: ''
+        credentials: {...nextProps.credentials}
       });
     }
   }
 
-  handleChange(event) {
-    let { credentials } = this.state;
-    credentials = { ...credentials, [event.target.id]: event.target.value };
-    this.setState({ credentials });
+  handleTenantChange = (event) => {
+    let { aad } = this.state.credentials;
+    aad = { ...aad, [event.target.id]: event.target.value };
+    this.setState({ credentials: { ...this.state.credentials, aad }});
+    this.props.setCredentials(this.state.credentials);
   }
 
-  handlePeriodChange(event) {
-    this.props.setSearchPeriod(event.target.value);
-  }
-
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     event.preventDefault();
+    this.checkSubscriptionsLoad();
     if (!this.state.editing) {
       this.setState({ editing: !this.state.editing });
       return;
@@ -76,46 +72,45 @@ class AadResourcePicker extends Component {
     this.setState({ editing: !this.state.editing });
   }
 
-  checkStoredAppCredentials(appName) {
-    this.setState({ editing: false });
-    this.props.tryFindCredentials(appName);
-    this.setState({ selectedStoredCredential: appName })
-  }
-
-  clearData() {
-    if (!window.confirm('Are you sure to clear all stored data?')) {
-      return;
-    }
-    this.props.clearData();
-  }
-
-  toggleAutoRefresh() {
-    this.props.setAutoRefresh(!this.props.autoRefresh);
-  }
-
   credentialsChanged(credentials1, credentials2) {
-    return credentials1.appId !== credentials2.appId || credentials1.apiKey !== credentials2.apiKey;
+    return credentials1.aad.aadTenant !== credentials2.aad.aadTenant
+      || credentials1.aad.resourceId !== credentials2.aad.resourceId
+      || credentials1.aad.subscriptionId !== credentials2.aad.subscriptionId;
   }
 
   validCredentials = () => {
-    return this.state.credentials.appId && this.state.credentials.apiKey;
+    return true;
+    // return this.state.credentials.aad.aadTenant
+    //   && this.state.credentials.aad.resourceId
+    //   && this.state.credentials.aad.subscriptionId;
+  }
+
+  selectResource = (resourceId) => {
+    this.setState({ credentials: {...this.state.credentials, resourceId }});
+    this.props.setCredentials(this.state.credentials);
+  }
+
+  selectSubscription = (subscriptionId) => {
+    this.setState({ credentials: {...this.state.credentials, subscriptionId }});
+    this.props.setCredentials(this.state.credentials);
   }
 
   renderCredentialsForm() {
     return (
       <form onSubmit={this.handleSubmit}>
         <div className="ail-credentials-section ail-credentials">
-          <label>Credentials</label>
-          <input className="ail-input" value={this.state.credentials.appId}
-            placeholder='App id'
-            id="appId"
+          <label>Connected AAD Tenant</label>
+          <input className="ail-input" value={this.state.credentials.aad.aadTenant}
+            placeholder='AAD Tenant (Ex: contoso.onmicrosoft.com)'
+            title='AAD Tenant (Ex: contoso.onmicrosoft.com)'
+            id="aadTenant"
             disabled={!this.state.editing}
-            onChange={(e) => this.handleChange(e)} />
-          <input className="ail-input" value={this.state.credentials.apiKey}
-            id="apiKey"
-            placeholder='API key'
-            disabled={!this.state.editing}
-            onChange={(e) => this.handleChange(e)} />
+            onChange={(e) => this.handleTenantChange(e)} />
+
+        </div>
+        {this.renderSubscriptionsDropDown()}
+        {this.renderAppsDropDown()}
+        <div>
           {
             this.state.editing ?
               <button className={`ail-btn ail-btn--success u-w100 u-mt-2 ${(!this.validCredentials() ? 'disabled' : '')}`}>
@@ -124,67 +119,50 @@ class AadResourcePicker extends Component {
               <button className={`ail-btn ail-btn--default u-w100 u-mt-2`}>Edit</button>
           }
         </div>
-        {this.renderAppsDropDown()}
       </form>
     );
   }
 
-  renderAppsDropDown() {
-    if (this.props.availableApps.length === 0) {
-      return '';
-    }
+  renderSubscriptionsDropDown() {
+    const subscriptions = this.props.subscriptions;
 
     return (
       <div className="ail-credentials-section">
-        <label>Switch apps</label>
-        <select value={this.state.selectedStoredCredential}
+        <label>Selected subscription</label>
+        <select value={this.state.credentials.aad.subscriptionId}
           className="ail-input"
-          onChange={(e) => this.checkStoredAppCredentials(e.target.value)}>
-          <option>Saved apps</option>
-          {this.props.availableApps.sort().map((appName, i) =>
-            <option key={i} value={appName}>{appName}</option>
+          onChange={(e) => this.selectSubscription(e.target.value)}>
+          <option>Select subscription</option>
+          {subscriptions.map((subscription) =>
+            <option key={subscription.id} value={subscription.id}>{subscription.name}</option>
           )}
         </select>
       </div>
     );
   }
 
-  renderGlobalOptions() {
+  renderAppsDropDown() {
+    const subscriptionApps = this.props.subscriptionsApps[this.state.credentials.aad.subscriptionId] || [];
+    if (subscriptionApps.length === 0) {
+      return '';
+    }
     return (
       <div className="ail-credentials-section">
-        <label>Settings</label>
-        <ul className="ail-btn-list">
-          <li className="ail-toggle">
-            <input className="hidden" type="checkbox" id="autorefresh" checked={this.props.autoRefresh} onChange={(e) => this.toggleAutoRefresh()} />
-            <label htmlFor="autorefresh" className="ail-btn">Auto refresh</label>
-          </li>
-          <li className="ail-btn ail-btn--default" onClick={() => this.clearData()}>Clear data</li>
-        </ul>
-      </div>
-    );
-  }
-
-  renderPeriod() {
-    return (
-      <div className="ail-credentials-section">
-        <label>Search period</label>
-        <input className="ail-input" value={this.props.searchPeriod}
-            placeholder='Specify period (P7D, PT1H...)'
-            id="searchPeriod"
-            onChange={(e) => this.handlePeriodChange(e)} />
+        <label>Selected Application</label>
+        <select value={this.state.credentials.aad.resourceId}
+          className="ail-input"
+          onChange={(e) => this.selectResource(e.target.value)}>
+          <option>Select application</option>
+          {subscriptionApps.map((app) =>
+            <option key={app.id} value={app.id}>{app.name}</option>
+          )}
+        </select>
       </div>
     );
   }
 
   render() {
-    return (
-      <div>
-        {this.renderCredentialsForm()}
-        {this.renderGlobalOptions()}
-        {this.renderPeriod()}
-        <UISettings />
-      </div>
-    );
+    return this.renderCredentialsForm();
   }
 }
 AadResourcePicker = connect(mapStateToProps, mapDispatchToProps)(AadResourcePicker);
