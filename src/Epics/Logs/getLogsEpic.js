@@ -1,7 +1,7 @@
 import { of } from 'rxjs';
 import { filter, switchMap, mergeMap, catchError, tap } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
-import { anyCredentials } from './utils';
+import { anyCredentials } from 'Epics/credentialsUtils';
 import { errorAction } from 'Actions';
 import {
   setCredentialsAction,

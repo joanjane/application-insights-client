@@ -139,7 +139,7 @@ export class ApplicationInsightsClient {
 
     return this.httpClient.get(uri, this.buildAadAuthorizationHeaders(), queryParams)
       .pipe(map(r => r.response.value.map(resource => {
-        return { id: resource.id, name: resource.name };
+        return { id: resource.subscriptionId, name: resource.displayName };
       })));
   }
 }

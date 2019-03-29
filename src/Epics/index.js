@@ -18,7 +18,8 @@ import {
 } from './UI';
 
 import {
-  loadSubscriptionsEpic
+  loadSubscriptionsEpic,
+  loadSubscriptionsAppsEpic
 } from './Profile/Account';
 
 export const rootEpic = combineEpics(
@@ -32,6 +33,7 @@ export const rootEpic = combineEpics(
     loadProfileEpic,
 
     loadSubscriptionsEpic,
+    loadSubscriptionsAppsEpic,
 
     changeThemeEpic,
     loadUISettingsEpic

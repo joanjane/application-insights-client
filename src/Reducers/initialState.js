@@ -14,7 +14,7 @@ export const initialState = () => {
         resourceId: '',
         authenticated: false
       },
-      authenticationType: AuthenticationType.none
+      authenticationType: AuthenticationType.aad
     },
     query: 'traces | sort by timestamp desc | limit 50',
     searchPeriod: '',

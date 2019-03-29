@@ -18,8 +18,3 @@ render(
 registerServiceWorker();
 
 domUtils.listenViewHeightChanges();
-
-if (process.env.REACT_APP_TENANT_ID && process.env.REACT_APP_CLIENT_ID) {
-  sessionStorage.setItem('aad.tenant', process.env.REACT_APP_TENANT_ID);
-  sessionStorage.setItem('aad.clientid', process.env.REACT_APP_CLIENT_ID);
-}

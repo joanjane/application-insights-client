@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './StatusBar.css';
 import { inject } from 'Store/container';
-const aadAuthService = inject('AadAuthService');
+import { anyCredentials } from 'Epics/credentialsUtils';
 const dateUtils = inject('DateUtils');
 
 const mapStateToProps = state => {
@@ -11,25 +11,28 @@ const mapStateToProps = state => {
     fetchTime: state.fetchTime,
     appName: state.appName,
     error: state.error,
-    loading: state.loading
+    loading: state.loading,
+    connected: anyCredentials(state.credentials)
   };
 };
 
 let StatusBar = (props) => (
   <div className="ail-footer-status">
-    <div className="ail-footer-status-item ail-footer-status--timestamp">
-      {
-        !props.loading ? (
-          <div>
-            updated at {dateUtils.formatDateTime(props.fetchTime)} {props.autoRefresh ? '(auto)' : ''}
-          </div>
-        ) : 'Loading...'
-      }
-    </div>
     {
-      aadAuthService.isAuthenticated() ?
-      <div style={{cursor: 'pointer', padding: '.5rem'}} className="ali-footer-login" onClick={() => aadAuthService.logout()}>Click here to logout</div> :
-      <div style={{cursor: 'pointer', padding: '.5rem'}} className="ali-footer-login" onClick={() => aadAuthService.redirectToSso()}>Click here to login</div>
+      props.connected ?
+        <div className="ail-footer-status-item ail-footer-status--timestamp">
+          {
+            !props.loading ? (
+              <div>
+                updated at {dateUtils.formatDateTime(props.fetchTime)} {props.autoRefresh ? '(auto)' : ''}
+              </div>
+            ) : 'Loading...'
+          }
+        </div>
+        :
+        <div className="ail-footer-status-item ail-footer-status--error">
+          You must setup an authentication and an application on the right panel to start
+        </div>
     }
     {props.error ?
       <div className="ail-footer-status-item ail-footer-status--error">
