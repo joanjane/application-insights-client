@@ -42,14 +42,19 @@ class AuthenticationModeSelector extends Component {
   render() {
     return (
       <div>
-        <button type="button" className={`ail-btn ${this.isActive(AuthenticationType.apiKey) ? 'ail-btn--success' : 'ail-btn--default'} u-mt-2`}
-          onClick={() => this.changeAuthentication(AuthenticationType.apiKey)}>
-          API Key
+        <label>Authentication Mode</label>
+        <div className="ail-btn-group">
+          <button type="button" className={`ail-btn ${this.isActive(AuthenticationType.aad) ? 'is-active' : ''} u-mt-2`}
+            title="Connect to Application Insights using an Azure Active Directory account"
+            onClick={() => this.changeAuthentication(AuthenticationType.aad)}>
+            AAD
           </button>
-          <button type="button" className={`ail-btn ${this.isActive(AuthenticationType.aad) ? 'ail-btn--success' : 'ail-btn--default'} u-mt-2`}
-          onClick={() => this.changeAuthentication(AuthenticationType.aad)}>
-          AAD
+          <button type="button" className={`ail-btn ${this.isActive(AuthenticationType.apiKey) ? 'is-active' : ''} u-mt-2`}
+            title="Connect to Application Insights using an AppID and Api key"
+            onClick={() => this.changeAuthentication(AuthenticationType.apiKey)}>
+            API Key
           </button>
+        </div>
       </div>
     );
   }

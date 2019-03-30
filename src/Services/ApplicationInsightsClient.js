@@ -49,7 +49,7 @@ export class ApplicationInsightsClient {
   buildAppUri(credentials) {
     if (credentials.authenticationType === AuthenticationType.aad) {
       return `https://management.azure.com/${credentials.aad.resourceId}/api`;
-    } else if (credentials.authenticationType === AuthenticationType.aad) {
+    } else if (credentials.authenticationType === AuthenticationType.apiKey) {
       return `https://api.applicationinsights.io/v1/apps/${credentials.api.appId}`;
     }
     throw new Error('You must setup an authentication to fetch logs');

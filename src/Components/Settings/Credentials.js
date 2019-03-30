@@ -67,9 +67,10 @@ class Credentials extends Component {
       this.setState({ editing: !this.state.editing });
       return;
     }
+    const { api } = this.state.credentials;
     this.props.setCredentials({
-      authenticationType: AuthenticationType.apiKey,
-      api: this.state.credentials
+      ...this.state.credentials,
+      api
     });
     this.setState({ editing: !this.state.editing });
   }
