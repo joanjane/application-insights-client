@@ -35,7 +35,7 @@ export class ProfileRepository {
   storeCredentials(credentials) {
     this.storageRepository.saveSessionData('credentials', credentials, true);
     this.storageRepository.saveLocalData('lruCredentials', credentials, true);
-    if (credentials.authenticationType === AuthenticationType.api && credentials.appName) {
+    if (credentials.authenticationType === AuthenticationType.apiKey && credentials.appName) {
       this.storeAppCredentials(credentials, credentials.appName);
     }
   }
@@ -77,7 +77,7 @@ export class ProfileRepository {
       return null;
     }
     return {
-      authenticationType: AuthenticationType.api,
+      authenticationType: AuthenticationType.apiKey,
       api: credentialsByApp[appName]
     };
   }

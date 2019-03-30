@@ -5,7 +5,7 @@ export function anyCredentials(credentials) {
     return false;
   } else if (credentials.authenticationType === AuthenticationType.aad) {
     return !(!credentials.aad.authenticated || !credentials.aad.aadTenant || !credentials.aad.subscriptionId || !credentials.aad.resourceId);
-  } else if (credentials.authenticationType === AuthenticationType.api) {
+  } else if (credentials.authenticationType === AuthenticationType.apiKey) {
     return !(!credentials.api.appId || !credentials.api.apiKey);
   }
 }

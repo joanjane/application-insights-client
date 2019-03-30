@@ -10,13 +10,14 @@ import AuthenticationType from 'Models/AuthenticationType';
 import './Credentials.css';
 import UISettings from './UISettings';
 import AadResourcePicker from './AadResourcePicker';
+import AuthenticationModeSelector from './AuthenticationModeSelector';
 
 const mapStateToProps = state => {
   return {
     autoRefresh: state.autoRefresh,
     searchPeriod: state.searchPeriod,
     availableApps: [...state.availableApps],
-    credentials: {...state.credentials}
+    credentials: { ...state.credentials }
   };
 };
 
@@ -34,7 +35,7 @@ class Credentials extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      credentials: {...props.credentials},
+      credentials: { ...props.credentials },
       availableApps: props.availableApps,
       selectedStoredCredential: '',
       editing: props.credentials.api.appId === null
@@ -53,7 +54,7 @@ class Credentials extends Component {
   handleChange = (event) => {
     let { api } = this.state.credentials;
     api = { ...api, [event.target.id]: event.target.value };
-    this.setState({ credentials: { ...this.state.credentials, api }});
+    this.setState({ credentials: { ...this.state.credentials, api } });
   }
 
   handlePeriodChange(event) {
@@ -67,7 +68,7 @@ class Credentials extends Component {
       return;
     }
     this.props.setCredentials({
-      authenticationType: AuthenticationType.api,
+      authenticationType: AuthenticationType.apiKey,
       api: this.state.credentials
     });
     this.setState({ editing: !this.state.editing });
@@ -166,22 +167,26 @@ class Credentials extends Component {
       <div className="ail-credentials-section">
         <label>Search period</label>
         <input className="ail-input" value={this.props.searchPeriod}
-            placeholder='Specify period (P7D, PT1H...)'
-            id="searchPeriod"
-            onChange={(e) => this.handlePeriodChange(e)} />
+          placeholder='Specify period (P7D, PT1H...)'
+          id="searchPeriod"
+          onChange={(e) => this.handlePeriodChange(e)} />
       </div>
     );
   }
 
   renderApplicationPicker() {
-    return (<Fragment>
-      {false ? this.renderCredentialsForm() : <AadResourcePicker />}
-    </Fragment>);
+    return (
+      <Fragment>
+        {this.props.credentials.authenticationType === AuthenticationType.apiKey ? this.renderCredentialsForm() : ''}
+        {this.props.credentials.authenticationType === AuthenticationType.aad ? <AadResourcePicker /> : ''}
+      </Fragment>
+    );
   }
 
   render() {
     return (
       <div>
+        <AuthenticationModeSelector />
         {this.renderApplicationPicker()}
         {this.renderGlobalOptions()}
         {this.renderPeriod()}

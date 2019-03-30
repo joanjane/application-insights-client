@@ -9,7 +9,6 @@ import {
 } from 'Actions/Profile/Account';
 import AuthenticationType from 'Models/AuthenticationType';
 import { inject } from 'Store/container';
-import './Credentials.css';
 
 const aadAuthService = inject('AadAuthService');
 
@@ -64,8 +63,8 @@ class AadResourcePicker extends Component {
   handleTenantChange = (event) => {
     let { aad } = this.state.credentials;
     aad = { ...aad, [event.target.id]: event.target.value };
-    this.setState({ credentials: { ...this.state.credentials, aad }});
-    this.props.setCredentials(this.state.credentials);
+    this.setState({ credentials: { ...this.state.credentials, aad }},
+      () => this.props.setCredentials(this.state.credentials));
   }
 
   handleSubmit = (event) => {
