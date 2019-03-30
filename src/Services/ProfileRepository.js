@@ -99,6 +99,9 @@ export class ProfileRepository {
         api: {
           appId: queryParams['app_id'],
           apiKey: queryParams['api_key'],
+        },
+        aad: {
+
         }
       };
     }

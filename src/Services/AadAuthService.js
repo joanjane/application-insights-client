@@ -9,10 +9,11 @@ export class AadAuthService {
     if (fragmentParams['error']) {
       const err = `Error: ${fragmentParams['error']}\nDetails: ${fragmentParams['error_description']}`;
       alert(err);
+      document.location.hash = '';
     } else if (fragmentParams['access_token']) {
       this.storageRepository.saveSessionData('access_token', fragmentParams['access_token']);
+      document.location.hash = '';
     }
-    document.location.hash = '';
   }
 
   getToken() {
