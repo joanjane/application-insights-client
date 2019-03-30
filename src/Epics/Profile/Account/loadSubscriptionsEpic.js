@@ -10,7 +10,7 @@ export const loadSubscriptionsEpic = (action$, state$, { inject }) => {
       ofType(LIST_AAD_SUBSCRIPTIONS),
       filter(action => {
         const { aad } = state$.value.credentials;
-        return aad.authenticated && aad.aadTenant;
+        return aad.authenticated;
       }),
       switchMap(() => {
         return applicationInsightsClient.listSubscriptions()

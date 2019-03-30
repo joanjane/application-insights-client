@@ -10,7 +10,7 @@ export const loadSubscriptionsAppsEpic = (action$, state$, { inject }) => {
       ofType(LIST_AI_APPS),
       filter(action => {
         const { aad } = state$.value.credentials;
-        return aad.authenticated && aad.aadTenant;
+        return aad.authenticated;
       }),
       switchMap((q) => {
         const subscriptionId = q.payload.subscriptionId;

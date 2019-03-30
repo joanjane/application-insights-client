@@ -9,7 +9,6 @@ export const initialState = () => {
         apiKey: '',
       },
       aad: {
-        aadTenant: '',
         subscriptionId: '',
         resourceId: '',
         authenticated: false
