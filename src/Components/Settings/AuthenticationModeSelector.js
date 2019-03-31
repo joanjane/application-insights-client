@@ -47,7 +47,7 @@ class AuthenticationModeSelector extends Component {
           <button type="button" className={`ail-btn ${this.isActive(AuthenticationType.aad) ? 'is-active' : ''} u-mt-2`}
             title="Connect to Application Insights using an Azure Active Directory account"
             onClick={() => this.changeAuthentication(AuthenticationType.aad)}>
-            AAD
+            Azure AD
           </button>
           <button type="button" className={`ail-btn ${this.isActive(AuthenticationType.apiKey) ? 'is-active' : ''} u-mt-2`}
             title="Connect to Application Insights using an AppID and Api key"

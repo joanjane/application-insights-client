@@ -129,7 +129,11 @@ export class ApplicationInsightsClient {
 
     return this.httpClient.get(uri, this.buildAadAuthorizationHeaders(), queryParams)
       .pipe(map(r => r.response.value.map(resource => {
-        return { id: resource.id, name: resource.name };
+        return {
+          id: resource.id,
+          name: resource.name,
+          appId: resource.properties.AppId
+        };
       })));
   }
 
@@ -139,7 +143,10 @@ export class ApplicationInsightsClient {
 
     return this.httpClient.get(uri, this.buildAadAuthorizationHeaders(), queryParams)
       .pipe(map(r => r.response.value.map(resource => {
-        return { id: resource.subscriptionId, name: resource.displayName };
+        return {
+          id: resource.subscriptionId,
+          name: resource.displayName
+        };
       })));
   }
 }

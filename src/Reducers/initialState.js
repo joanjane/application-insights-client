@@ -11,6 +11,7 @@ export const initialState = () => {
       aad: {
         subscriptionId: '',
         resourceId: '',
+        appId: '',
         authenticated: false
       },
       authenticationType: AuthenticationType.aad

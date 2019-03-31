@@ -72,26 +72,26 @@ class AadResourcePicker extends Component {
     this.props.setCredentials(this.state.credentials);
   }
 
-  credentialsChanged(credentials1, credentials2) {
-    return credentials1.aad.resourceId !== credentials2.aad.resourceId
-      || credentials1.aad.subscriptionId !== credentials2.aad.subscriptionId;
-  }
-
   validCredentials = () => {
     return this.state.credentials.aad.resourceId
       && this.state.credentials.aad.subscriptionId;
   }
 
   selectResource = (resourceId) => {
+    const app = this.props.subscriptionsApps[this.state.credentials.aad.subscriptionId]
+      .find(s => s.id === resourceId);
+
     let { aad } = this.state.credentials;
-    aad = { ...aad, resourceId };
+    const appId = app ? app.appId : '';
+    aad = { ...aad, resourceId, appId };
     this.props.setCredentials({...this.state.credentials, aad });
   }
 
   selectSubscription = (subscriptionId) => {
     let { aad } = this.state.credentials;
     const resourceId = '';
-    aad = { ...aad, subscriptionId, resourceId };
+    const appId = '';
+    aad = { ...aad, subscriptionId, resourceId, appId };
     this.props.setCredentials({...this.state.credentials, aad });
   }
 
@@ -145,15 +145,23 @@ class AadResourcePicker extends Component {
     );
   }
 
+  logout = () => {
+    aadAuthService.logout();
+  }
+
+  redirectToSso = () => {
+    aadAuthService.redirectToSso();
+  }
+
   renderLoginButton() {
     return (<Fragment>{
       this.props.credentials.aad.authenticated ?
-          <button type="button" className={`ail-btn ail-btn--success u-w100 u-mt-2`} onClick={() => aadAuthService.logout()}>
+          <button type="button" className={`ail-btn ail-btn--success u-w100 u-mt-2`} onClick={() => this.logout()}>
             Logout <span role="img" aria-label="lock">🔒</span>
           </button> :
           <button type="button"
             className={`ail-btn ail-btn--default u-w100 u-mt-2`}
-            onClick={() => aadAuthService.redirectToSso()}>Login <span role="img" aria-label="key">🔑</span></button>
+            onClick={() => this.redirectToSso()}>Login <span role="img" aria-label="key">🔑</span></button>
     }</Fragment>);
   }
 
