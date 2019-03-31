@@ -6,7 +6,7 @@ export class AadAuthService {
       'openid',
       'profile',
       'https://management.azure.com/user_impersonation',
-      // 'https://api5.applicationinsights.io/Data.Read' //AAD Gives an error  (AADSTS28000) if more than 1 scope. Really MSFT!?
+      // 'https://api5.applicationinsights.io/Data.Read' // AAD Gives an error (AADSTS28000) if more than 1 scope. Really MSFT!?
     ];
 
     this.checkResponseCallback();
@@ -31,7 +31,7 @@ export class AadAuthService {
   }
 
   isAuthenticated() {
-    return !!this.getToken();
+    return this.getToken() == null;
   }
 
   getHash() {
@@ -44,7 +44,6 @@ export class AadAuthService {
 
   logout() {
     this.storageRepository.removeSessionData('access_token');
-    window.location.reload();
   }
 
   parseFragmentParams() {
@@ -55,31 +54,32 @@ export class AadAuthService {
       .map(p => {
         const prop = p.split('=');
         return {
-          key: prop[0],
+          name: prop[0],
           value: decodeURIComponent(prop[1].replace(/\+/g, '%20'))
         }
       }).reduce((prev, current) => {
-        prev[current.key] = current.value;
+        prev[current.name] = current.value;
         return prev;
       }, {});
 
     return params;
   }
 
-  redirectToSso() {
+  loginRedirect() {
     const queryParams = [
-      { key: 'client_id', value: this.clientId },
-      { key: 'response_type', value: 'token' },
-      { key: 'redirect_uri', value: document.location.origin },
-      { key: 'scope', value: this.scopes.join(' ') },
+      { name: 'client_id', value: this.clientId },
+      { name: 'response_type', value: 'token' },
+      { name: 'redirect_uri', value: document.location.origin },
+      { name: 'scope', value: this.scopes.join(' ') },
+      { name: 'prompt', value: 'select_account' },
     ];
-    let tenant = 'common';
-    let redirectUrl = `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/authorize?${this.formatQuery(queryParams)}`;
+    const tenant = 'organizations';
+    const redirectUrl = `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/authorize?${this.formatQuery(queryParams)}`;
     document.location.href = redirectUrl;
   }
 
   formatQuery(queryParams) {
-    const query = queryParams.map(q => `${q.key}=${encodeURIComponent(q.value)}`).join('&');
+    const query = queryParams.map(q => `${q.name}=${encodeURIComponent(q.value)}`).join('&');
     return query;
   }
 }

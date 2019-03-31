@@ -5,12 +5,11 @@ import {
 } from 'Actions/Profile';
 import {
   listSubscriptionsAction,
-  listAIAppsAction
+  listAIAppsAction,
+  aadLoginAction,
+  aadLogoutAction,
 } from 'Actions/Profile/Account';
 import AuthenticationType from 'Models/AuthenticationType';
-import { inject } from 'Store/container';
-
-const aadAuthService = inject('AadAuthService');
 
 const mapStateToProps = state => {
   return {
@@ -24,7 +23,9 @@ const mapDispatchToProps = dispatch => {
   return {
     setCredentials: credentials => dispatch(setCredentialsAction(credentials)),
     listSubscriptions: () => dispatch(listSubscriptionsAction()),
-    listAIApps: subscriptionId => dispatch(listAIAppsAction(subscriptionId))
+    listAIApps: subscriptionId => dispatch(listAIAppsAction(subscriptionId)),
+    login: () => dispatch(aadLoginAction()),
+    logout: () => dispatch(aadLogoutAction()),
   };
 };
 
@@ -59,13 +60,6 @@ class AadResourcePicker extends Component {
     });
   }
 
-  handleTenantChange = (event) => {
-    let { aad } = this.state.credentials;
-    aad = { ...aad, [event.target.id]: event.target.value };
-    this.setState({ credentials: { ...this.state.credentials, aad }},
-      () => this.props.setCredentials(this.state.credentials));
-  }
-
   handleSubmit = (event) => {
     event.preventDefault();
     this.checkSubscriptionsLoad(this.props);
@@ -93,16 +87,6 @@ class AadResourcePicker extends Component {
     const appId = '';
     aad = { ...aad, subscriptionId, resourceId, appId };
     this.props.setCredentials({...this.state.credentials, aad });
-  }
-
-  renderCredentialsForm() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        {this.renderLoginButton()}
-        {this.renderSubscriptionsDropDown()}
-        {this.renderAppsDropDown()}
-      </form>
-    );
   }
 
   renderSubscriptionsDropDown() {
@@ -145,12 +129,12 @@ class AadResourcePicker extends Component {
     );
   }
 
-  logout = () => {
-    aadAuthService.logout();
+  login = () => {
+    this.props.login();
   }
 
-  redirectToSso = () => {
-    aadAuthService.redirectToSso();
+  logout = () => {
+    this.props.logout();
   }
 
   renderLoginButton() {
@@ -161,12 +145,18 @@ class AadResourcePicker extends Component {
           </button> :
           <button type="button"
             className={`ail-btn ail-btn--default u-w100 u-mt-2`}
-            onClick={() => this.redirectToSso()}>Login <span role="img" aria-label="key">🔑</span></button>
+            onClick={() => this.login()}>Login <span role="img" aria-label="key">🔑</span></button>
     }</Fragment>);
   }
 
   render() {
-    return this.renderCredentialsForm();
+    return (
+      <form onSubmit={this.handleSubmit}>
+        {this.renderLoginButton()}
+        {this.renderSubscriptionsDropDown()}
+        {this.renderAppsDropDown()}
+      </form>
+    );
   }
 }
 AadResourcePicker = connect(mapStateToProps, mapDispatchToProps)(AadResourcePicker);
