@@ -1,8 +1,12 @@
 import { of } from 'rxjs';
 import { switchMap, map, filter, catchError } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
-import { LIST_AAD_SUBSCRIPTIONS, subscriptionsLoadedAction } from 'Actions/Profile/Account';
 import { errorAction } from 'Actions';
+import {
+  LIST_AAD_SUBSCRIPTIONS,
+  subscriptionsLoadedAction,
+  aadSilentTokenRefreshAction
+} from 'Actions/Profile/Account';
 
 export const loadSubscriptionsEpic = (action$, state$, { inject }) => {
   const applicationInsightsClient = inject('ApplicationInsightsClient');
@@ -12,16 +16,22 @@ export const loadSubscriptionsEpic = (action$, state$, { inject }) => {
       ofType(LIST_AAD_SUBSCRIPTIONS),
       filter(action => {
         const { aad } = state$.value.credentials;
-        return aad.authenticated;
+        return aad.authenticated && !retryExceeded(action);
       }),
-      switchMap(() => {
+      switchMap((action) => {
         return applicationInsightsClient.listSubscriptions()
-          .pipe(map(subscriptions => subscriptionsLoadedAction(subscriptions)));
+          .pipe(
+            map(subscriptions => subscriptionsLoadedAction(subscriptions)),
+            catchError(r => {
+              if (r.status === 401 && !retryExceeded(action)) {
+                return of(aadSilentTokenRefreshAction(action));
+              }
+              const details = r.response && r.response.error ? ` ${r.response.error.code}: ${r.response.error.message}` : '';
+              return of(errorAction(`Error loading subscriptions => [HTTP Status ${r.status}]${details}`));
+            })
+          );
       }),
-      catchError(r => {
-        const details = r.response && r.response.error ? ` ${r.response.error.code}: ${r.response.error.message}` : '';
-        return of(errorAction(`Error loading subscriptions => [HTTP Status ${r.status}]${details}`));
-      })
-    )
-  ;
+    );
 }
+
+const retryExceeded = (action) => (+action.retry) > 1;

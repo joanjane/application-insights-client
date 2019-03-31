@@ -1,4 +1,3 @@
-import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { AAD_LOGOUT } from 'Actions/Profile/Account';
@@ -12,7 +11,7 @@ export const aadLogoutEpic = (action$, state$, { inject }) => {
       ofType(AAD_LOGOUT),
       map(() => {
         aadAuthService.logout();
-        return of(emptyAction());
+        return emptyAction();
       })
     )
   ;
