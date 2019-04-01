@@ -87,16 +87,13 @@ export class ProfileRepository {
     const queryParams = this.queryStringUtils.getParams();
     if (queryParams['app_id'] && queryParams['api_key']) {
       this.queryStringUtils.removeParams();
-      return {
+      return ensureCredentialsV2Model({
         authenticationType: AuthenticationType.apiKey,
         api: {
           appId: queryParams['app_id'],
           apiKey: queryParams['api_key'],
-        },
-        aad: {
-
         }
-      };
+      });
     }
     return null;
   }
@@ -108,7 +105,7 @@ export class ProfileRepository {
 }
 
 function ensureCredentialsV2Model(credentials) {
-  credentials = credentials || { };
+  credentials = credentials || {};
   const appId = credentials.appId || '';
   const apiKey = credentials.apiKey || '';
   let authenticationType = credentials.authenticationType ? credentials.authenticationType : AuthenticationType.none;
