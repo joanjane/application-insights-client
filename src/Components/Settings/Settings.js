@@ -2,17 +2,17 @@ import './Settings.css';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { clearDataAction } from 'Actions/Profile';
-import { setAutoRefreshAction, setSearchPeriodAction } from 'Actions/Logs';
+import { setAutoRefreshAction } from 'Actions/Logs';
 import AuthenticationType from 'Models/AuthenticationType';
 import UISettings from './UISettings';
 import AadResourcePicker from './AadResourcePicker';
 import AuthenticationModeSelector from './AuthenticationModeSelector';
 import ApiKeyCredentials from './ApiKeyCredentials';
+import SearchPeriodSetting from './SearchPeriodSetting';
 
 const mapStateToProps = state => {
   return {
     autoRefresh: state.autoRefresh,
-    searchPeriod: state.searchPeriod,
     authenticationType: state.credentials.authenticationType
   };
 };
@@ -21,15 +21,10 @@ const mapDispatchToProps = dispatch => {
   return {
     clearData: () => dispatch(clearDataAction()),
     setAutoRefresh: enabled => dispatch(setAutoRefreshAction(enabled)),
-    setSearchPeriod: searchPeriod => dispatch(setSearchPeriodAction(searchPeriod)),
   };
 };
 
 class Settings extends Component {
-
-  handlePeriodChange(event) {
-    this.props.setSearchPeriod(event.target.value);
-  }
 
   clearData = () => {
     if (!window.confirm('Are you sure to clear all stored data?')) {
@@ -57,18 +52,6 @@ class Settings extends Component {
     );
   }
 
-  renderPeriod() {
-    return (
-      <div className="ail-credentials-section">
-        <label>Search period</label>
-        <input className="ail-input" value={this.props.searchPeriod}
-          placeholder='Specify period (P7D, PT1H...)'
-          id="searchPeriod"
-          onChange={(e) => this.handlePeriodChange(e)} />
-      </div>
-    );
-  }
-
   renderApplicationPicker() {
     return (
       <Fragment>
@@ -84,7 +67,7 @@ class Settings extends Component {
         <AuthenticationModeSelector />
         {this.renderApplicationPicker()}
         {this.renderGlobalOptions()}
-        {this.renderPeriod()}
+        <SearchPeriodSetting />
         <UISettings />
       </div>
     );
