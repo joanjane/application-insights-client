@@ -69,10 +69,10 @@ export class ProfileRepository {
     if (!credentialsByApp) {
       return null;
     }
-    return {
+    return ensureCredentialsV2Model({
       authenticationType: AuthenticationType.apiKey,
       api: credentialsByApp[appName]
-    };
+    });
   }
 
   getUITheme() {
@@ -110,7 +110,7 @@ function ensureCredentialsV2Model(credentials) {
   const apiKey = credentials.apiKey || '';
   let authenticationType = credentials.authenticationType ? credentials.authenticationType : AuthenticationType.none;
   if (appId && apiKey) {
-    authenticationType = AuthenticationType.api;
+    authenticationType = AuthenticationType.apiKey;
   }
   return {
     authenticationType,
