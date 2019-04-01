@@ -146,7 +146,7 @@ export class AadAuthService {
     const queryParams = [
       { name: 'client_id', value: this.clientId },
       { name: 'response_type', value: 'token' },
-      { name: 'redirect_uri', value: document.location.origin },
+      { name: 'redirect_uri', value: `${document.location.origin}${document.location.pathname}` },
       { name: 'scope', value: this.scopes.join(' ') },
       { name: 'prompt', value: prompt },
     ];
