@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import './App.css';
 import Header from './Components/Header';
 import Log from './Components/Log';
-import Credentials from './Components/Settings/Credentials';
+import Settings from './Components/Settings/Settings';
 import QueryBox from './Components/QueryBox';
 import { loadProfileAction } from './Actions/Profile';
 import StatusBar from './Components/StatusBar';
@@ -62,7 +62,7 @@ class App extends Component {
           </div>
         </div>
         <div className="ail-sidebar">
-          <Credentials />
+          <Settings />
         </div>
       </div>
     );
