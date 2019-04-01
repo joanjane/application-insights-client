@@ -13,23 +13,16 @@ export class ProfileRepository {
     }
 
     const storedCredentials = this.storageRepository.getSessionData('credentials', true);
-    if (storedCredentials && storedCredentials.authenticationType) {
-      return storedCredentials;
+    if (storedCredentials) {
+      return ensureCredentialsV2Model(storedCredentials);
     } else {
-      this.storageRepository.removeSessionData('credentials');
       const lastUsedCredentials = this.storageRepository.getLocalData('lruCredentials', true);
-      if (lastUsedCredentials && lastUsedCredentials.authenticationType) {
-        lastUsedCredentials.api = lastUsedCredentials.api || {};
-        lastUsedCredentials.aad = lastUsedCredentials.aad || {};
-        return lastUsedCredentials;
+      if (lastUsedCredentials) {
+        return ensureCredentialsV2Model(storedCredentials);
       }
-      this.storageRepository.removeLocalData('lruCredentials');
     }
-    return {
-      authenticationType: AuthenticationType.none,
-      api: {},
-      aad: {},
-    };
+
+    return ensureCredentialsV2Model();
   }
 
   storeCredentials(credentials) {
@@ -112,4 +105,31 @@ export class ProfileRepository {
     this.storageRepository.clearSessionData();
     this.storageRepository.clearLocalData();
   }
+}
+
+function ensureCredentialsV2Model(credentials) {
+  credentials = credentials || { };
+  const appId = credentials.appId || '';
+  const apiKey = credentials.apiKey || '';
+  let authenticationType = credentials.authenticationType ? credentials.authenticationType : AuthenticationType.none;
+  if (appId && apiKey) {
+    authenticationType = AuthenticationType.api;
+  }
+  return {
+    authenticationType,
+    api: credentials.api ?
+      credentials.api :
+      {
+        appId,
+        apiKey,
+      },
+    aad: credentials.aad ?
+      credentials.aad :
+      {
+        subscriptionId: '',
+        resourceId: '',
+        appId: '',
+        authenticated: false
+      }
+  };
 }
