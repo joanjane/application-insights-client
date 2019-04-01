@@ -4,8 +4,9 @@ import { ofType } from 'redux-observable';
 import { CLEAR_DATA } from 'Actions/Profile';
 import { emptyAction } from 'Actions';
 
-export const clearDataEpic = (action$, store, { profileRepository }) =>
-  action$
+export const clearDataEpic = (action$, store, { inject }) => {
+  const profileRepository = inject('ProfileRepository');
+  return action$
     .pipe(
       ofType(CLEAR_DATA),
       switchMap(q => {
@@ -13,3 +14,4 @@ export const clearDataEpic = (action$, store, { profileRepository }) =>
         return of(emptyAction());
       })
     );
+}

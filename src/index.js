@@ -5,7 +5,9 @@ import store from './Store';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
-import DomUtils from 'Utils/DomUtils';
+import { inject } from './Store/container';
+
+const domUtils = inject('DomUtils');
 
 render(
   <Provider store={store}>
@@ -15,4 +17,4 @@ render(
 
 registerServiceWorker();
 
-DomUtils.listenViewHeightChanges();
+domUtils.listenViewHeightChanges();

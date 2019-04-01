@@ -1,14 +1,7 @@
-export default class StorageRepository {
-  constructor() {
-    const isTest = process.env.NODE_ENV === 'test';
-
-    this.localStorage = isTest ?
-      new MockStorage(mockLocalStorage) :
-      window.localStorage;
-
-    this.sessionStorage = isTest ?
-      new MockStorage(mockSessionStorage) :
-      window.sessionStorage;
+export class StorageRepository {
+  constructor(localStorage, sessionStorage) {
+    this.localStorage = localStorage;
+    this.sessionStorage = sessionStorage;
   }
 
   getSessionData(key, parseObject) {
@@ -25,6 +18,10 @@ export default class StorageRepository {
 
   saveSessionData(key, value, serializeObject) {
     this.sessionStorage.setItem(key, serializeObject ? JSON.stringify(value) : value);
+  }
+
+  removeSessionData(key) {
+    this.sessionStorage.removeItem(key);
   }
 
   clearSessionData() {
@@ -47,15 +44,16 @@ export default class StorageRepository {
     this.localStorage.setItem(key, serializeObject ? JSON.stringify(value) : value);
   }
 
+  removeLocalData(key) {
+    this.localStorage.removeItem(key);
+  }
+
   clearLocalData() {
     this.localStorage.clear();
   }
 }
 
-const mockLocalStorage = {};
-const mockSessionStorage = {};
-
-class MockStorage {
+export class MockStorage {
   constructor(data) {
     this.data = data;
   }

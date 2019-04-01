@@ -1,4 +1,4 @@
-class DateUtils {
+export class DateUtils {
   formatDate(date) {
     return `${this.formatTwoDigit(date.getFullYear())}-${this.formatTwoDigit(date.getMonth() + 1)}-${this.formatTwoDigit(date.getDate())}`;
   }
@@ -21,5 +21,3 @@ class DateUtils {
     return number;
   }
 }
-const dateUtils = new DateUtils();
-export default dateUtils;

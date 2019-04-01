@@ -4,8 +4,9 @@ import { ofType } from 'redux-observable';
 import { SET_QUERY } from 'Actions/Logs';
 import { emptyAction } from 'Actions';
 
-export const setQueryEpic = (action$, store, { profileRepository }) =>
-  action$
+export const setQueryEpic = (action$, store, { inject }) => {
+  const profileRepository = inject('ProfileRepository');
+  return action$
     .pipe(
       ofType(SET_QUERY),
       switchMap(q => {
@@ -13,3 +14,4 @@ export const setQueryEpic = (action$, store, { profileRepository }) =>
         return of(emptyAction());
       })
     );
+}

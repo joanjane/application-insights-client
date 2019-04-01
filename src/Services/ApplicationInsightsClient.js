@@ -1,29 +1,32 @@
-import httpClientFactory from './httpClientFactory';
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { buildColumnPropertyIndex, getRowMapper } from './ResponseMappers';
+import { buildColumnPropertyIndex, getRowMapper, toCamelCase } from './ResponseMappers';
+import AuthenticationType from 'Models/AuthenticationType';
 
-export default class ApplicationInsightsClient {
-  constructor() {
-    this.httpClient = httpClientFactory();
+export class ApplicationInsightsClient {
+  constructor(httpClient, aadAuthService) {
+    this.httpClient = httpClient;
+    this.aadAuthService = aadAuthService;
   }
 
   getLogs(credentials, query, timespan) {
-    const queryParams = [{ name: 'query', value: query }];
+    const queryParams = [{ name: 'query', value: query }, { name: 'api-version', value: '2018-05-01-preview' }];
     if (timespan) {
       queryParams.push({ name: 'timespan', value: timespan });
     }
-
-    return this.httpClient.get(
-      `${this.buildAppUri(credentials)}/query`,
-      this.buildHeaders(credentials),
-      queryParams
-    )
+    try {
+      return this.httpClient.get(
+        `${this.buildAppUri(credentials)}/query`,
+        this.buildHeaders(credentials),
+        queryParams
+      )
       .pipe(
         map(httpResponse => this.mapQueryResponse(httpResponse.response)),
         catchError(error => {
           console.error(error.response);
-          if (error.response && error.response.error) {
+          if (error.status === 401) {
+            return throwError(error);
+          } else if (error.response && error.response.error) {
             const reason = this.mapError('', error.response.error);
             return throwError(reason);
           } else if (typeof (error.response) === 'string') {
@@ -32,6 +35,10 @@ export default class ApplicationInsightsClient {
           return throwError(error);
         })
       );
+
+    } catch (e) {
+      return throwError(e);
+    }
   }
 
   mapError(message, error) {
@@ -42,16 +49,41 @@ export default class ApplicationInsightsClient {
   }
 
   buildAppUri(credentials) {
-    return `https://api.applicationinsights.io/v1/apps/${credentials.appId}`;
+    if (credentials.authenticationType === AuthenticationType.aad) {
+      return `https://management.azure.com/${credentials.aad.resourceId}/api`;
+    } else if (credentials.authenticationType === AuthenticationType.apiKey) {
+      return `https://api.applicationinsights.io/v1/apps/${credentials.api.appId}`;
+    }
+    throw new Error('You must setup an authentication to fetch logs');
   }
 
   buildHeaders(credentials) {
+    if (credentials.authenticationType === AuthenticationType.none) {
+      throw new Error('You must setup an authentication');
+    }
+
+    if (credentials.authenticationType === AuthenticationType.aad) {
+      return this.buildAadAuthorizationHeaders();
+    }
+
     return {
-      'x-api-key': credentials.apiKey
+      'x-api-key': credentials.api.apiKey
+    };
+  }
+
+  buildAadAuthorizationHeaders() {
+    if (!this.aadAuthService.isAuthenticated()) {
+      throw new Error('You must be authenticated to your Azure Active Directory tenant');
+    }
+
+    const aadAccessToken = this.aadAuthService.getToken();
+    return {
+      'Authorization': `Bearer ${aadAccessToken}`
     };
   }
 
   mapQueryResponse(response) {
+    response = toCamelCase(response);
     if (!response || !response.tables) {
       throw new Error('Unexpected response content from query');
     }
@@ -67,16 +99,16 @@ export default class ApplicationInsightsClient {
       var model = reponseMapper(row, colPropertiesIndex);
       return model;
     })
-    .filter(r => r !== null)
-    .sort((a, b) => {
-      if (a.timestamp === b.timestamp) {
-        return 0;
-      } else if (a.timestamp > b.timestamp) {
-        return 1;
-      } else {
-        return -1;
-      }
-    });
+      .filter(r => r !== null)
+      .sort((a, b) => {
+        if (a.timestamp === b.timestamp) {
+          return 0;
+        } else if (a.timestamp > b.timestamp) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
 
     return {
       logs: rows,
@@ -91,5 +123,32 @@ export default class ApplicationInsightsClient {
     }
     const appNameIndex = columnsIndexPropertyMap['appName'];
     return response.tables[0].rows[0][appNameIndex]
+  }
+
+  listAppInsightsAccounts(subscriptionId) {
+    const queryParams = [{ name: 'api-version', value: '2015-05-01' }];
+    let uri = `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.Insights/components`;
+
+    return this.httpClient.get(uri, this.buildAadAuthorizationHeaders(), queryParams)
+      .pipe(map(r => r.response.value.map(resource => {
+        return {
+          id: resource.id,
+          name: resource.name,
+          appId: resource.properties.AppId
+        };
+      })));
+  }
+
+  listSubscriptions() {
+    const queryParams = [{ name: 'api-version', value: '2015-05-01' }];
+    const uri = `https://management.azure.com/subscriptions`;
+
+    return this.httpClient.get(uri, this.buildAadAuthorizationHeaders(), queryParams)
+      .pipe(map(r => r.response.value.map(resource => {
+        return {
+          id: resource.subscriptionId,
+          name: resource.displayName
+        };
+      })));
   }
 }

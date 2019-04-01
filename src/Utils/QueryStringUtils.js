@@ -1,4 +1,4 @@
-class QueryStringUtils {
+export class QueryStringUtils {
   getParams() {
     if (!window.location) {
       return {};
@@ -26,5 +26,3 @@ class QueryStringUtils {
     window.history.pushState({}, '', url[0]);
   }
 }
-const queryStringUtils = new QueryStringUtils();
-export default queryStringUtils;

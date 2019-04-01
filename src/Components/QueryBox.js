@@ -4,11 +4,15 @@ import {
   setQueryAction,
   getLogsAction
 } from 'Actions/Logs';
+import {
+  anyCredentials
+} from 'Epics/credentialsUtils';
 import './QueryBox.css';
 
 const mapStateToProps = state => {
   return {
-    query: state.query
+    query: state.query,
+    connected: anyCredentials(state.credentials)
   };
 };
 
@@ -58,7 +62,7 @@ class QueryBox extends Component {
           placeholder="Write a query..."
           onKeyDown={this.onEnterPress}
           onChange={this.setQuery} />
-        <button className="ail-search" disabled={!this.state.query}>Search</button>
+        <button className="ail-search" disabled={!this.state.query || !this.props.connected}>Search</button>
       </form>
     );
   }

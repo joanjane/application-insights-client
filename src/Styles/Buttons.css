@@ -7,6 +7,7 @@
   cursor: pointer;
   text-align: center;
   font-size: 1rem;
+  outline: none;
 }
 
 .ail-btn:hover {
@@ -76,4 +77,30 @@
   border-radius: 0;
   color: var(--bg-default-alt);
   background: var(--bg-default);
+}
+
+.ail-btn-group {
+  width: 100%;
+  display: flex;
+}
+
+.ail-btn-group .ail-btn {
+  flex: 1 0 0%;
+  border-radius: 0;
+  color: var(--bg-default);
+  border-color: var(--bg-default);
+}
+
+.ail-btn-group .ail-btn.is-active,
+.ail-btn-group .ail-btn:hover {
+  background: var(--bg-default);
+  color: var(--bg-default-alt);
+}
+
+.ail-btn-group .ail-btn:hover {
+  opacity: .8;
+}
+
+.ail-btn-group .ail-btn.is-active:hover {
+  opacity: 1;
 }
