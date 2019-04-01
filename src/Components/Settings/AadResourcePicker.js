@@ -13,9 +13,9 @@ import AuthenticationType from 'Models/AuthenticationType';
 
 const mapStateToProps = state => {
   return {
-    subscriptionsApps: {...state.aad.subscriptionsApps},
+    subscriptionsApps: { ...state.aad.subscriptionsApps },
     subscriptions: [...state.aad.subscriptions],
-    credentials: {...state.credentials}
+    credentials: { ...state.credentials }
   };
 };
 
@@ -52,11 +52,11 @@ class AadResourcePicker extends Component {
         this.state.credentials.aad.subscriptionId !== nextSubscription &&
         !nextProps.subscriptionsApps[nextSubscription]
       ) {
-          this.props.listAIApps(nextSubscription);
+        this.props.listAIApps(nextSubscription);
       }
     }
     this.setState({
-      credentials: {...nextProps.credentials}
+      credentials: { ...nextProps.credentials }
     });
   }
 
@@ -78,7 +78,7 @@ class AadResourcePicker extends Component {
     let { aad } = this.state.credentials;
     const appId = app ? app.appId : '';
     aad = { ...aad, resourceId, appId };
-    this.props.setCredentials({...this.state.credentials, aad });
+    this.props.setCredentials({ ...this.state.credentials, aad });
   }
 
   selectSubscription = (subscriptionId) => {
@@ -86,7 +86,7 @@ class AadResourcePicker extends Component {
     const resourceId = '';
     const appId = '';
     aad = { ...aad, subscriptionId, resourceId, appId };
-    this.props.setCredentials({...this.state.credentials, aad });
+    this.props.setCredentials({ ...this.state.credentials, aad });
   }
 
   renderSubscriptionsDropDown() {
@@ -96,35 +96,48 @@ class AadResourcePicker extends Component {
     return (
       <div className="ail-credentials-section">
         <label>Subscription</label>
-        <select value={this.state.credentials.aad.subscriptionId}
-          className="ail-input"
-          onChange={(e) => this.selectSubscription(e.target.value)}>
-          <option value="">Select subscription</option>
-          {subscriptions.map((subscription) =>
-            <option key={subscription.id} value={subscription.id}>{subscription.name}</option>
-          )}
-        </select>
+        <div className="ail-select ail-select--refresh">
+          <select value={this.state.credentials.aad.subscriptionId}
+            className="ail-input"
+            onChange={(e) => this.selectSubscription(e.target.value)}>
+            <option value="">Select subscription</option>
+            {subscriptions.map((subscription) =>
+              <option key={subscription.id} value={subscription.id}>{subscription.name}</option>
+            )}
+          </select>
+          <button className="ail-select-refresh_btn" title="Refresh" onClick={() => this.props.listSubscriptions()}>
+            <span role="img" aria-label="Refresh">🔄</span>
+          </button>
+        </div>
       </div>
     );
   }
 
   renderAppsDropDown() {
     if (!this.state.credentials.aad.authenticated) return '';
-    const subscriptionApps = this.props.subscriptionsApps[this.state.credentials.aad.subscriptionId] || [];
-    if (subscriptionApps.length === 0) {
-      return '';
-    }
+    const { subscriptionId, resourceId } = this.state.credentials.aad;
+    const subscriptionApps = this.props.subscriptionsApps[subscriptionId] || [];
+
     return (
       <div className="ail-credentials-section">
         <label>Application Insights Resource</label>
-        <select value={this.state.credentials.aad.resourceId}
-          className="ail-input"
-          onChange={(e) => this.selectResource(e.target.value)}>
-          <option value="">Select application</option>
-          {subscriptionApps.map((app) =>
-            <option key={app.id} value={app.id}>{app.name}</option>
-          )}
-        </select>
+        <div className="ail-select ail-select--refresh">
+          <select value={resourceId}
+            className="ail-input"
+            onChange={(e) => this.selectResource(e.target.value)}>
+            <option value="">Select application</option>
+            {subscriptionApps.map((app) =>
+              <option key={app.id} value={app.id}>{app.name}</option>
+            )}
+          </select>
+          {
+            subscriptionId ?
+              <button className="ail-select-refresh_btn" title="Refresh" onClick={() => this.props.listAIApps(subscriptionId)}>
+                <span role="img" aria-label="Refresh">🔄</span>
+              </button> :
+              ''
+          }
+        </div>
       </div>
     );
   }
@@ -140,12 +153,12 @@ class AadResourcePicker extends Component {
   renderLoginButton() {
     return (<Fragment>{
       this.props.credentials.aad.authenticated ?
-          <button type="button" className={`ail-btn ail-btn--success u-w100 u-mt-2`} onClick={() => this.logout()}>
-            Logout <span role="img" aria-label="lock">🔒</span>
-          </button> :
-          <button type="button"
-            className={`ail-btn ail-btn--default u-w100 u-mt-2`}
-            onClick={() => this.login()}>Login <span role="img" aria-label="key">🔑</span></button>
+        <button type="button" className={`ail-btn ail-btn--success u-w100 u-mt-2`} onClick={() => this.logout()}>
+          Logout <span role="img" aria-label="lock">🔒</span>
+        </button> :
+        <button type="button"
+          className={`ail-btn ail-btn--default u-w100 u-mt-2`}
+          onClick={() => this.login()}>Login <span role="img" aria-label="key">🔑</span></button>
     }</Fragment>);
   }
 

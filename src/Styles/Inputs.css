@@ -10,3 +10,21 @@
 .ail-input[disabled] {
   font-style: italic;
 }
+
+.ail-select.ail-select--refresh {
+  display: flex;
+}
+
+.ail-select-refresh_btn {
+  padding: .5rem;
+  border: 1px solid white;
+  border-bottom: 1px solid black;
+  background: white;
+  cursor: pointer;
+}
+
+.ail-select-refresh_btn:active > span {
+  display: block;
+  transform: rotate(90deg);
+  transition: all .3s ease-in;
+}
