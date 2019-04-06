@@ -32,7 +32,6 @@ export class ProfileRepository {
 
   setApiKeyAccount(apiKeyAccount) {
     this.setLruData(selectors.apiKeyAccount, apiKeyAccount, true);
-    // TODO
     if (apiKeyAccount.appName) {
       this.storeAppCredentials(apiKeyAccount, apiKeyAccount.appName);
     }
@@ -142,13 +141,14 @@ export class ProfileRepository {
     const oldTheme = this.storageRepository.getLocalData('ui-theme');
     if (oldTheme) {
       this.setUITheme(oldTheme);
+      this.storageRepository.removeLocalData('ui-theme');
     }
 
     // Migrate api key app credentials
     const credentialsByApp = this.storageRepository.getLocalData('credentialsByApp', true);
     if (credentialsByApp) {
-      // TODO
       this.storageRepository.saveLocalData(selectors.apiKeyApps, credentialsByApp, true);
+      this.storageRepository.removeLocalData('credentialsByApp');
     }
 
     // Migrate credentials
@@ -165,6 +165,7 @@ export class ProfileRepository {
       if (lruCredentials.authenticationType) {
         this.setAuthenticationType(lruCredentials.authenticationType);
       }
+      this.storageRepository.removeLocalData('lruCredentials');
     }
   }
 }
