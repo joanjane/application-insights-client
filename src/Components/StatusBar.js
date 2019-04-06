@@ -2,17 +2,17 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './StatusBar.css';
 import { inject } from 'Store/container';
-import { anyCredentials } from 'Epics/credentialsUtils';
+import { anyCredentials } from 'Epics/accountUtils';
 const dateUtils = inject('DateUtils');
 
 const mapStateToProps = state => {
   return {
-    autoRefresh: state.autoRefresh,
-    fetchTime: state.fetchTime,
-    appName: state.appName,
+    autoRefresh: state.search.autoRefresh,
+    fetchTime: state.search.fetchTime,
+    appName: state.search.appName,
     error: state.error,
-    loading: state.loading,
-    connected: anyCredentials(state.credentials)
+    loading: state.search.loading,
+    connected: anyCredentials(state.account)
   };
 };
 

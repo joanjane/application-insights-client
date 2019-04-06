@@ -2,11 +2,19 @@ import AuthenticationType from 'Models/AuthenticationType';
 
 export const initialState = () => {
   return {
-    logs: [],
-    credentials: {
-      api: {
+    search: {
+        logs: [],
+        query: 'traces | sort by timestamp desc | limit 50',
+        searchPeriod: '',
+        autoRefresh: true,
+        appName: '',
+        fetchTime: null,
+        loading: false,
+    },
+    account: {
+      apiKey: {
         appId: '',
-        apiKey: '',
+        apiKey: ''
       },
       aad: {
         subscriptionId: '',
@@ -14,23 +22,20 @@ export const initialState = () => {
         appId: '',
         authenticated: false
       },
-      authenticationType: AuthenticationType.aad
+      authenticationType: AuthenticationType.aad,
+      appVaults: {
+        apiKey: {
+          availableApps: [],
+        },
+        aad: {
+          subscriptionsApps: {},
+          subscriptions: [],
+        },
+      },
     },
-    query: 'traces | sort by timestamp desc | limit 50',
-    searchPeriod: '',
-    autoRefresh: true,
-    refreshInterval: null,
-    appName: null,
-    fetchTime: null,
-    loading: false,
     error: null,
-    availableApps: [],
-    aad: {
-      subscriptionsApps: {},
-      subscriptions: [],
-    },
     ui: {
       theme: 'theme-default'
     }
-  }
-};
+  };
+}

@@ -2,7 +2,7 @@ import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { emptyAction} from 'Actions';
-import { LOAD_PROFILE } from 'Actions/Profile';
+import { LOAD_PROFILE } from 'Actions/Account';
 import { changeThemeAction} from 'Actions/UI';
 
 export const loadUISettingsEpic = (action$, store, { inject }) => {

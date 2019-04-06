@@ -39,7 +39,7 @@
   .ail--sidebar-open .ail-header-app_name {
     display: none;
   }
-  .ail--sidebar-open .ail-credentials-menu {
+  .ail--sidebar-open .ail-account-menu {
     position: fixed;
     top: 1.3rem;
     left: 1rem;
@@ -57,26 +57,26 @@
   }
 }
 
-.ail-credentials-menu .ail-dropdown-content {
+.ail-account-menu .ail-dropdown-content {
   background: var(--bg-dark);
   border-radius: 3px;
   min-width: 18rem;
   padding: .5rem;
 }
 
-.ail-credentials-section>label {
+.ail-account-section>label {
   padding-top: .5rem;
   padding-bottom: .2rem;
   display: block;
 }
 
 @media screen and (max-width: 480px) {
-  .ail-credentials-menu .ail-dropdown-toggle {
+  .ail-account-menu .ail-dropdown-toggle {
     text-align: center;
     width: 100%;
     display: block;
   }
-  .ail-credentials-menu.ail-dropdown input[type=checkbox]:checked~.ail-dropdown-content {
+  .ail-account-menu.ail-dropdown input[type=checkbox]:checked~.ail-dropdown-content {
     left: 0;
     transform: none;
     width: auto;

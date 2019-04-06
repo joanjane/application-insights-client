@@ -1,37 +1,13 @@
-import {
-  getLogsReducer,
-  setAutoRefreshReducer,
-  setLogsReducer,
-  setQueryReducer,
-  setSearchPeriodReducer
-} from './Logs';
-import {
-  clearDataReducer,
-  profileLoadedReducer,
-  setCredentialsReducer,
-  availableAppsReducer
-} from './Profile';
-import { changeThemeReducer } from './UI';
-import { initialState } from './initialState';
-import { errorReducer } from './errorReducer';
 import { combineActiveReducers } from './combineActiveReducers';
-import { aadSubscriptionsReducer, aadSubscriptionAppsReducer } from './Profile/Account';
+import { initialState } from './initialState';
+import { reducers as searchReducers } from './Search/reducers';
+import { reducers as accountReducers } from './Account/reducers';
+import { reducers as uiReducers } from './UI/reducers';
+import { errorReducer } from './errorReducer';
 
 export const rootReducer = combineActiveReducers([
-  clearDataReducer,
-  profileLoadedReducer,
-  availableAppsReducer,
-  setCredentialsReducer,
-
-  aadSubscriptionsReducer,
-  aadSubscriptionAppsReducer,
-
-  setAutoRefreshReducer,
-  setQueryReducer,
-  setSearchPeriodReducer,
-  setLogsReducer,
-  getLogsReducer,
-
-  changeThemeReducer,
+  ...searchReducers,
+  ...accountReducers,
+  ...uiReducers,
   errorReducer
 ], initialState());

@@ -6,7 +6,7 @@ import { inject } from 'Store/container';
 const dateUtils = inject('DateUtils');
 
 const mapStateToProps = state => {
-  return { logs: state.logs, fetchTime: state.fetchTime, appName: state.appName };
+  return { logs: state.search.logs, fetchTime: state.search.fetchTime, appName: state.search.appName };
 };
 
 let Log = ({ logs, fetchTime, appName }) => (

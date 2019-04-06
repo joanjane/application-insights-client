@@ -3,16 +3,16 @@ import { connect } from 'react-redux';
 import {
   setQueryAction,
   getLogsAction
-} from 'Actions/Logs';
+} from 'Actions/Search';
 import {
   anyCredentials
-} from 'Epics/credentialsUtils';
+} from 'Epics/accountUtils';
 import './QueryBox.css';
 
 const mapStateToProps = state => {
   return {
-    query: state.query,
-    connected: anyCredentials(state.credentials)
+    query: state.search.query,
+    connected: anyCredentials(state.account)
   };
 };
 

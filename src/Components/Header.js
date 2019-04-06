@@ -11,7 +11,7 @@ const Header = (props) => {
         <span className={titleIconClass} role="img" aria-labelledby="ail-header-title">💡 </span>
         <span id="ail-header-title">Application Insights Log</span>
       </strong>
-      <div className="ail-credentials-menu">
+      <div className="ail-account-menu">
         <div className={`ail-icon-menu ${sidebar ? 'open' : ''}`}
           onClick={() => toggleSidebar()}>
           <span></span>

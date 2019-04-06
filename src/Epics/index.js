@@ -1,46 +1,10 @@
 import { combineEpics } from 'redux-observable';
-import {
-    getLogsEpic,
-    autoRefreshEpic
-} from './Logs';
-
-import {
-    setCredentialsEpic,
-    findCredentialsCandidateEpic,
-    setQueryEpic,
-    clearDataEpic,
-    loadProfileEpic
-} from './Profile';
-
-import {
-    changeThemeEpic,
-    loadUISettingsEpic
-} from './UI';
-
-import {
-  loadSubscriptionsEpic,
-  loadSubscriptionsAppsEpic,
-  aadLoginEpic,
-  aadLogoutEpic,
-  aadSilentTokenRefreshEpic
-} from './Profile/Account';
+import { epics as searchEpics } from './Search/epics';
+import { epics as accountEpics } from './Account/epics';
+import { epics as uiEpics } from './UI/epics';
 
 export const rootEpic = combineEpics(
-    getLogsEpic,
-    autoRefreshEpic,
-
-    setCredentialsEpic,
-    findCredentialsCandidateEpic,
-    setQueryEpic,
-    clearDataEpic,
-    loadProfileEpic,
-
-    loadSubscriptionsEpic,
-    loadSubscriptionsAppsEpic,
-    aadLoginEpic,
-    aadLogoutEpic,
-    aadSilentTokenRefreshEpic,
-
-    changeThemeEpic,
-    loadUISettingsEpic
+    ...searchEpics,
+    ...accountEpics,
+    ...uiEpics
 );

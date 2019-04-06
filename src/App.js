@@ -5,15 +5,15 @@ import Header from './Components/Header';
 import Log from './Components/Log';
 import Settings from './Components/Settings/Settings';
 import QueryBox from './Components/QueryBox';
-import { loadProfileAction } from './Actions/Profile';
+import { loadProfileAction } from './Actions/Account';
 import StatusBar from './Components/StatusBar';
-import AuthenticationType from 'Models/AuthenticationType';
+import { anyCredentials } from 'Epics/accountUtils';
 
 const mapStateToProps = state => {
   return {
-    hasCredentials: state.credentials.authenticationType !== AuthenticationType.none,
-    appName: !state.appName && state.logs.length > 0 ? 'You must project appName property in the query' : state.appName,
-    loading: state.loading,
+    hasCredentials: anyCredentials(state.account),
+    appName: state.search.appName,
+    loading: state.search.loading,
     activeTheme: state.ui.theme
   };
 };
@@ -52,7 +52,7 @@ class App extends Component {
           <div className="ail-body">
             {
               !this.props.hasCredentials ?
-                <h1>Welcome! To start, first set your credentials on top menu.</h1> :
+                <h1>Welcome! To start, first set your account on top menu.</h1> :
                 <Log />
             }
           </div>

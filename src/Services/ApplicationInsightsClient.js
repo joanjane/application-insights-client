@@ -9,15 +9,15 @@ export class ApplicationInsightsClient {
     this.aadAuthService = aadAuthService;
   }
 
-  getLogs(credentials, query, timespan) {
+  getLogs(account, query, timespan) {
     const queryParams = [{ name: 'query', value: query }, { name: 'api-version', value: '2018-05-01-preview' }];
     if (timespan) {
       queryParams.push({ name: 'timespan', value: timespan });
     }
     try {
       return this.httpClient.get(
-        `${this.buildAppUri(credentials)}/query`,
-        this.buildHeaders(credentials),
+        `${this.buildAppUri(account)}/query`,
+        this.buildHeaders(account),
         queryParams
       )
       .pipe(
@@ -48,26 +48,26 @@ export class ApplicationInsightsClient {
     return this.mapError(`${message}${error.message}. `, error.innererror);
   }
 
-  buildAppUri(credentials) {
-    if (credentials.authenticationType === AuthenticationType.aad) {
-      return `https://management.azure.com/${credentials.aad.resourceId}/api`;
-    } else if (credentials.authenticationType === AuthenticationType.apiKey) {
-      return `https://api.applicationinsights.io/v1/apps/${credentials.api.appId}`;
+  buildAppUri(account) {
+    if (account.authenticationType === AuthenticationType.aad) {
+      return `https://management.azure.com/${account.aad.resourceId}/api`;
+    } else if (account.authenticationType === AuthenticationType.apiKey) {
+      return `https://api.applicationinsights.io/v1/apps/${account.apiKey.appId}`;
     }
     throw new Error('You must setup an authentication to fetch logs');
   }
 
-  buildHeaders(credentials) {
-    if (credentials.authenticationType === AuthenticationType.none) {
+  buildHeaders(account) {
+    if (account.authenticationType === AuthenticationType.none) {
       throw new Error('You must setup an authentication');
     }
 
-    if (credentials.authenticationType === AuthenticationType.aad) {
+    if (account.authenticationType === AuthenticationType.aad) {
       return this.buildAadAuthorizationHeaders();
     }
 
     return {
-      'x-api-key': credentials.api.apiKey
+      'x-api-key': account.apiKey.apiKey
     };
   }
 
