@@ -58,30 +58,13 @@ export class ProfileRepository {
       return;
     }
 
-    const credentialsByApp = this.getAllCredentials() || {};
-    credentialsByApp[appName] = apiKeyCredentials;
-    this.storageRepository.saveLocalData(selectors.apiKeyApps, credentialsByApp, true);
+    const apiKeyAccounts = (this.getAllApiKeyAccounts() || []).filter(c => c.appId !== apiKeyCredentials.appId);
+    apiKeyAccounts.push(apiKeyCredentials);
+    this.storageRepository.saveLocalData(selectors.apiKeyApps, apiKeyAccounts, true);
   }
 
-  getAllCredentials() {
+  getAllApiKeyAccounts() {
     return this.storageRepository.getLocalData(selectors.apiKeyApps, true);
-  }
-
-  getStoredAppNamesCredentials() {
-    const credentialsByApp = this.getAllCredentials();
-    if (!credentialsByApp) {
-      return [];
-    }
-    const apps = Object.keys(credentialsByApp);
-    return apps;
-  }
-
-  findCredentialsCanditate(appName) {
-    const credentialsByApp = this.getAllCredentials();
-    if (!credentialsByApp) {
-      return null;
-    }
-    return credentialsByApp[appName];
   }
 
   getUITheme() {
@@ -147,7 +130,8 @@ export class ProfileRepository {
     // Migrate api key app credentials
     const credentialsByApp = this.storageRepository.getLocalData('credentialsByApp', true);
     if (credentialsByApp) {
-      this.storageRepository.saveLocalData(selectors.apiKeyApps, credentialsByApp, true);
+      const apps = Object.keys(credentialsByApp).map(k => credentialsByApp[k]);
+      this.storageRepository.saveLocalData(selectors.apiKeyApps, apps, true);
       this.storageRepository.removeLocalData('credentialsByApp');
     }
 

@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import AuthenticationType from 'Models/AuthenticationType';
 import {
@@ -8,7 +8,8 @@ import {
 } from 'Actions/Account';
 import {
   setQueryAction,
-  setSearchPeriodAction
+  setSearchPeriodAction,
+  getLogsAction
 } from 'Actions/Search';
 import {
   setApiKeyAppsAction,
@@ -27,14 +28,14 @@ export const loadProfileEpic = (action$, state$, { inject }) => {
 
   return action$.pipe(
     ofType(LOAD_PROFILE),
-    switchMap(q => {
+    mergeMap(q => {
       profileRepository.runMigrations();
 
       consoleDoc.printHelpOnConsole();
       const query = profileRepository.getQuery();
       const searchPeriod = profileRepository.getSearchPeriod();
       const apiKeyAccount = profileRepository.getApiKeyAccount();
-      const availableApiKeyApps = profileRepository.getStoredAppNamesCredentials();
+      const availableApiKeyApps = profileRepository.getAllApiKeyAccounts();
       const aadAccount = profileRepository.getAADAccount();
       let aadAuthenticated = aadAuthService.isAuthenticated();
       let authenticationType = profileRepository.getAuthenticationType();
@@ -61,11 +62,8 @@ export const loadProfileEpic = (action$, state$, { inject }) => {
       }
 
       if (aadAccount) {
-        actions = [
-          ...actions,
-          setAADSubscriptionAction(aadAccount.subscriptionId),
-          setAADResourceAction(aadAccount.resourceId, aadAccount.appId),
-        ]
+        actions.push(setAADSubscriptionAction(aadAccount.subscriptionId));
+        actions.push(setAADResourceAction(aadAccount.resourceId, aadAccount.appId));
       }
 
       if (apiKeyAccount) {
@@ -75,6 +73,8 @@ export const loadProfileEpic = (action$, state$, { inject }) => {
           apiKeyAccount.appName
         ));
       }
+
+      actions.push(getLogsAction());
 
       return of(...actions);
     })

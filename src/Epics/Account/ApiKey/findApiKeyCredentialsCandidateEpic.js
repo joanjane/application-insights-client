@@ -1,26 +1,24 @@
 import { of } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { emptyAction } from 'Actions';
 import { TRY_FIND_CREDENTIALS, setApiKeyCredentialsAction } from 'Actions/Account/ApiKey';
 
-export const findApiKeyCredentialsCandidateEpic = (action$, store, { inject }) => {
-  const profileRepository = inject('ProfileRepository');
+export const findApiKeyCredentialsCandidateEpic = (action$, state$, { inject }) => {
   return action$
     .pipe(
       ofType(TRY_FIND_CREDENTIALS),
       switchMap(q => {
-        return of(profileRepository.findCredentialsCanditate(q.payload.appName))
-          .pipe(
-            map(apiKeyCredentials => {
-              return apiKeyCredentials ?
-                setApiKeyCredentialsAction(
-                  apiKeyCredentials.appId,
-                  apiKeyCredentials.apiKey,
-                  q.payload.appName) :
-                emptyAction();
-            })
-          )
+        const { appName } = q.payload;
+        const availableApps = state$.value.account.appVaults.apiKey.availableApps;
+        const apiKeyCredentials = availableApps.find(c => c.appId === appName || (c.appName && c.appName === appName));
+
+        return apiKeyCredentials ?
+          of(setApiKeyCredentialsAction(
+            apiKeyCredentials.appId,
+            apiKeyCredentials.apiKey,
+            apiKeyCredentials.appName)) :
+          of(emptyAction());
       })
     );
 }

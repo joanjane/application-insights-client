@@ -25,8 +25,8 @@ class ApiKeyCredentials extends Component {
     this.state = {
       credentials: { ...props.credentials },
       availableApps: props.availableApps,
-      selectedStoredCredential: '',
-      editing: props.credentials.appId === null
+      selectedStoredCredential: props.credentials.appId,
+      editing: !props.credentials.appId
     };
   }
 
@@ -34,7 +34,7 @@ class ApiKeyCredentials extends Component {
     if (!this.state.editing && this.accountChanged(nextProps.credentials, this.state.credentials)) {
       this.setState({
         credentials: nextProps.credentials,
-        selectedStoredCredential: ''
+        selectedStoredCredential: nextProps.credentials.appId,
       });
     }
   }
@@ -53,13 +53,15 @@ class ApiKeyCredentials extends Component {
       this.state.credentials.appId,
       this.state.credentials.apiKey,
     );
+    this.setState({ selectedStoredCredential: this.state.credentials.appId });
+
     this.toggleEdit();
   }
 
-  checkStoredAppCredentials(appName) {
+  checkStoredAppCredentials(appId) {
     this.setState({ editing: false });
-    this.props.tryFindCredentials(appName);
-    this.setState({ selectedStoredCredential: appName })
+    this.props.tryFindCredentials(appId);
+    this.setState({ selectedStoredCredential: appId })
   }
 
   accountChanged(credentials1, credentials2) {
@@ -115,8 +117,8 @@ class ApiKeyCredentials extends Component {
           className="ail-input"
           onChange={(e) => this.checkStoredAppCredentials(e.target.value)}>
           <option>Saved apps</option>
-          {this.props.availableApps.sort().map((appName, i) =>
-            <option key={i} value={appName}>{appName}</option>
+          {this.props.availableApps.sort().map((app, i) =>
+            <option key={app.appId} value={app.appId}>{app.appName}</option>
           )}
         </select>
       </div>

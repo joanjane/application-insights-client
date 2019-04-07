@@ -10,7 +10,7 @@ export const setApiKeyCredentialsEpic = (action$, store, { inject }) => {
       ofType(SET_APIKEY_CREDENTIALS),
       switchMap(q => {
         profileRepository.setApiKeyAccount(q.payload);
-        const availableApps = profileRepository.getStoredAppNamesCredentials();
+        const availableApps = profileRepository.getAllApiKeyAccounts();
         return of(setApiKeyAppsAction(availableApps));
       })
     );
