@@ -3,11 +3,17 @@ import { ConsoleDoc } from 'Utils/ConsoleDoc';
 import { QueryStringUtils } from 'Utils/QueryStringUtils';
 import { DateUtils } from 'Utils/DateUtils';
 import { ProfileRepository } from 'Services/ProfileRepository';
-import { StorageRepository, MockStorage } from 'Services/StorageRepository';
+import { StorageRepository } from 'Services/StorageRepository';
 import { ApplicationInsightsClient } from 'Services/ApplicationInsightsClient';
 import { HttpClient } from 'Services/HttpClient';
 import { AadAuthService } from 'Services/AadAuthService';
+import {
+  MockHttpClient,
+  MockAadAuthService,
+  MockStorage
+} from 'Services/Mock';
 
+const isDemo = process.env.REACT_APP_MODE === 'demo';
 const isTest = process.env.NODE_ENV === 'test';
 
 const dependencies = {
@@ -20,8 +26,8 @@ const dependencies = {
   ConsoleDoc: () => new ConsoleDoc(),
   QueryStringUtils: () => new QueryStringUtils(),
   DateUtils: () => new DateUtils(),
-  HttpClient: () => new HttpClient(),
-  AadAuthService: (c) => new AadAuthService(c('StorageRepository')),
+  AadAuthService: (c) => isTest || isDemo ? new MockAadAuthService() : new AadAuthService(c('StorageRepository')),
+  HttpClient: () => isTest || isDemo ? new MockHttpClient() : new HttpClient(),
   StorageRepository: () => {
     const localStorage = isTest ?
       new MockStorage({}) :

@@ -1,0 +1,16 @@
+{
+  "value": [
+    {
+      "id": "/subscriptions/empty",
+      "subscriptionId": "/subscriptions/empty",
+      "displayName": "EMPTY SUBSCRIPTION",
+      "state": "Enabled"
+    },
+    {
+      "id": "/subscriptions/demo",
+      "subscriptionId": "/subscriptions/demo",
+      "displayName": "DEMO SUBSCRIPTION 💡",
+      "state": "Enabled"
+    }
+  ]
+}

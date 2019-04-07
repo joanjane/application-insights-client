@@ -46,7 +46,9 @@ class AadResourcePicker extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.aad.authenticated) {
-      this.checkSubscriptionsLoad(nextProps);
+      if (nextProps.aad.authenticated !== this.props.aad.authenticated) {
+        this.checkSubscriptionsLoad(nextProps);
+      }
       const nextSubscription = nextProps.aad.subscriptionId;
       if (
         nextSubscription &&
@@ -90,7 +92,7 @@ class AadResourcePicker extends Component {
               <option key={subscription.id} value={subscription.id}>{subscription.name}</option>
             )}
           </select>
-          <button className="ail-select-refresh_btn" title="Refresh" onClick={() => this.props.listSubscriptions()}>
+          <button type="button" className="ail-select-refresh_btn" title="Refresh" onClick={() => this.props.listSubscriptions()}>
             <span role="img" aria-label="Refresh">🔄</span>
           </button>
         </div>
@@ -117,7 +119,7 @@ class AadResourcePicker extends Component {
           </select>
           {
             subscriptionId ?
-              <button className="ail-select-refresh_btn" title="Refresh" onClick={() => this.props.listAIApps(subscriptionId)}>
+              <button type="button" className="ail-select-refresh_btn" title="Refresh" onClick={() => this.props.listAIApps(subscriptionId)}>
                 <span role="img" aria-label="Refresh">🔄</span>
               </button> :
               ''

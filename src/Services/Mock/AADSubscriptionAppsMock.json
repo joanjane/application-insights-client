@@ -1,0 +1,26 @@
+{
+  "value": [
+    {
+      "id": "/subscriptions/demo/resourceGroups/demo/providers/microsoft.insights/components/ail-empty",
+      "name": "ail-empty",
+      "type": "microsoft.insights/components",
+      "kind": "web",
+      "properties": {
+        "ApplicationId": "ail-empty",
+        "AppId": "AIL-EMPTY",
+        "Name": "ail-empty"
+      }
+    },
+    {
+      "id": "/subscriptions/demo/resourceGroups/demo/providers/microsoft.insights/components/ail-demo",
+      "name": "ail-demo",
+      "type": "microsoft.insights/components",
+      "kind": "web",
+      "properties": {
+        "ApplicationId": "ail-demo",
+        "AppId": "AIL-DEMO",
+        "Name": "ail-demo"
+      }
+    }
+  ]
+}
