@@ -1,7 +1,7 @@
-import { SET_LOGS } from 'Actions/Search';
+import { searchActionTypes } from 'Actions/Search';
 
 export function setLogsReducer(state, action) {
-  if (action.type !== SET_LOGS) return;
+  if (action.type !== searchActionTypes.SET_LOGS) return;
 
   state.search.logs = action.payload.logs;
   state.search.appName = action.payload.appName;

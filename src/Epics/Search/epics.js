@@ -1,6 +1,7 @@
 import {
   autoRefreshEpic,
   getLogsEpic,
+  loadingEpic,
   setQueryEpic,
   setSearchPeriodEpic
 } from '.';
@@ -8,6 +9,7 @@ import {
 export const epics = [
   autoRefreshEpic,
   getLogsEpic,
+  loadingEpic,
   setQueryEpic,
   setSearchPeriodEpic
 ];

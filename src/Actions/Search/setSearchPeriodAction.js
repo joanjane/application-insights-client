@@ -1,4 +1,5 @@
-export const SET_SEARCH_PERIOD = 'SET_SEARCH_PERIOD';
+import { searchActionTypes } from '.';
+
 export function setSearchPeriodAction(searchPeriod) {
-  return { type: SET_SEARCH_PERIOD, payload: { searchPeriod } };
+  return { type: searchActionTypes.SET_SEARCH_PERIOD, payload: { searchPeriod } };
 }

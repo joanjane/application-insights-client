@@ -1,4 +1,4 @@
-export const CHANGE_UI_THEME = 'CHANGE_UI_THEME';
+import { uiActionTypes } from '.';
 
 export const UIThemes = [
   {
@@ -12,5 +12,5 @@ export const UIThemes = [
 ];
 
 export function changeThemeAction(theme) {
-  return { type: CHANGE_UI_THEME, payload: { theme: theme } };
+  return { type: uiActionTypes.CHANGE_UI_THEME, payload: { theme: theme } };
 }

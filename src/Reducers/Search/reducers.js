@@ -2,16 +2,14 @@ import {
   setAutoRefreshReducer,
   setQueryReducer,
   setSearchPeriodReducer,
-  getLogsReducer,
-  setLogsReducer,
-  setAppNameReducer
+  loadingReducer,
+  setLogsReducer
 } from '.';
 
 export const reducers = [
   setAutoRefreshReducer,
   setQueryReducer,
   setSearchPeriodReducer,
-  getLogsReducer,
-  setLogsReducer,
-  setAppNameReducer
+  loadingReducer,
+  setLogsReducer
 ];

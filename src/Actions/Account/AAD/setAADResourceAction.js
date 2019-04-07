@@ -1,7 +1,7 @@
-export const SET_AAD_RESOURCE = 'SET_AAD_RESOURCE';
+import { aadAccountActionTypes } from '.';
 
 export function setAADResourceAction(resourceId, appId) {
   resourceId = resourceId || '';
   appId = appId || '';
-  return { type: SET_AAD_RESOURCE, payload: { resourceId, appId }};
+  return { type: aadAccountActionTypes.SET_AAD_RESOURCE, payload: { resourceId, appId }};
 }

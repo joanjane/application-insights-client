@@ -1,5 +1,5 @@
-export const LIST_AAD_SUBSCRIPTIONS = 'LIST_AAD_SUBSCRIPTIONS';
+import { aadAccountActionTypes } from '.';
 
 export function listSubscriptionsAction() {
-  return { type: LIST_AAD_SUBSCRIPTIONS, payload: { }};
+  return { type: aadAccountActionTypes.LIST_AAD_SUBSCRIPTIONS, payload: { }};
 }

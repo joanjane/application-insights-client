@@ -1,5 +1,5 @@
-export const SET_AAD_SUBSCRIPTION = 'SET_AAD_SUBSCRIPTION';
+import { aadAccountActionTypes } from '.';
 
 export function setAADSubscriptionAction(subscriptionId) {
-  return { type: SET_AAD_SUBSCRIPTION, payload: { subscriptionId }};
+  return { type: aadAccountActionTypes.SET_AAD_SUBSCRIPTION, payload: { subscriptionId }};
 }

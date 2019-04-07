@@ -1,17 +1,17 @@
 import { map } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
-import { AAD_LOGOUT } from 'Actions/Account/AAD';
-import { emptyAction } from 'Actions';
+import { aadAccountActionTypes } from 'Actions/Account/AAD';
+import { authenticationChangedAction } from 'Actions/Account';
 
 export const aadLogoutEpic = (action$, state$, { inject }) => {
   const aadAuthService = inject('AadAuthService');
 
   return action$
     .pipe(
-      ofType(AAD_LOGOUT),
+      ofType(aadAccountActionTypes.AAD_LOGOUT),
       map(() => {
         aadAuthService.logout();
-        return emptyAction();
+        return authenticationChangedAction();
       })
     )
   ;

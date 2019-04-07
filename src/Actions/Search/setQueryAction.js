@@ -1,4 +1,5 @@
-export const SET_QUERY = 'SET_QUERY';
+import { searchActionTypes } from '.';
+
 export function setQueryAction(query) {
-  return { type: SET_QUERY, payload: { query } };
+  return { type: searchActionTypes.SET_QUERY, payload: { query } };
 }

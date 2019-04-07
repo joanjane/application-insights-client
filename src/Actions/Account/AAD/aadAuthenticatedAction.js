@@ -1,5 +1,5 @@
-export const AAD_AUTHENTICATED = 'AAD_AUTHENTICATED';
+import { aadAccountActionTypes } from '.';
 
 export function aadAuthenticatedAction(authenticated) {
-  return { type: AAD_AUTHENTICATED, payload: { authenticated } };
+  return { type: aadAccountActionTypes.AAD_AUTHENTICATED, payload: { authenticated } };
 }

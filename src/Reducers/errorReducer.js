@@ -1,6 +1,10 @@
-import { ERROR } from 'Actions';
+import { commonActionTypes } from 'Actions';
 
 export function errorReducer(state, action) {
-  if (action.type !== ERROR) return;
-  return { ...state, error: action.payload, loading: false };
+  if (action.type !== commonActionTypes.ERROR) return;
+
+  state.error = action.payload;
+  state.search.loading = false;
+
+  return { ...state };
 }

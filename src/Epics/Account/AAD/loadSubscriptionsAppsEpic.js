@@ -3,7 +3,7 @@ import { switchMap, map, filter, catchError } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { errorAction } from 'Actions';
 import {
-  LIST_AI_APPS,
+  aadAccountActionTypes,
   aiAppsLoadedAction,
   aadSilentTokenRefreshAction
 } from 'Actions/Account/AAD';
@@ -13,7 +13,7 @@ export const loadSubscriptionsAppsEpic = (action$, state$, { inject }) => {
 
   return action$
     .pipe(
-      ofType(LIST_AI_APPS),
+      ofType(aadAccountActionTypes.LIST_AI_APPS),
       filter(action => {
         const { aad } = state$.value.account;
         return aad.authenticated && !retryExceeded(action);

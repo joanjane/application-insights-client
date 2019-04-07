@@ -1,5 +1,5 @@
-export const AAD_LOGIN = 'AAD_LOGIN';
+import { aadAccountActionTypes } from '.';
 
 export function aadLoginAction() {
-  return { type: AAD_LOGIN, payload: {} };
+  return { type: aadAccountActionTypes.AAD_LOGIN, payload: {} };
 }

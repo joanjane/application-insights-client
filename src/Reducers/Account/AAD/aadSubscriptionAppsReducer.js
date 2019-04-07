@@ -1,7 +1,7 @@
-import { AI_APPS_LOADED } from 'Actions/Account/AAD';
+import { aadAccountActionTypes } from 'Actions/Account/AAD';
 
 export function aadSubscriptionAppsReducer(state, action) {
-  if (action.type !== AI_APPS_LOADED) return;
+  if (action.type !== aadAccountActionTypes.AI_APPS_LOADED) return;
 
   const { subscriptionId, apps } = action.payload;
   const subscriptionsApps = { ...state.account.appVaults.aad.subscriptionsApps }

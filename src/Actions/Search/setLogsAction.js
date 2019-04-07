@@ -1,4 +1,5 @@
-export const SET_LOGS = 'SET_LOGS';
+import { searchActionTypes } from '.';
+
 export function setLogsAction(logs) {
-  return { type: SET_LOGS, payload: logs };
+  return { type: searchActionTypes.SET_LOGS, payload: logs };
 }

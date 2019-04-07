@@ -3,7 +3,7 @@ import { mergeMap } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import AuthenticationType from 'Models/AuthenticationType';
 import {
-  LOAD_PROFILE,
+  accountActionTypes,
   setAuthenticationTypeAction
 } from 'Actions/Account';
 import {
@@ -27,7 +27,7 @@ export const loadProfileEpic = (action$, state$, { inject }) => {
   const aadAuthService = inject('AadAuthService');
 
   return action$.pipe(
-    ofType(LOAD_PROFILE),
+    ofType(accountActionTypes.LOAD_PROFILE),
     mergeMap(q => {
       profileRepository.runMigrations();
 

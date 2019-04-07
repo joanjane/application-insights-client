@@ -1,4 +1,5 @@
-export const ERROR = 'ERROR';
+import { commonActionTypes } from '.';
+
 export function errorAction(reason) {
-  return { type: ERROR, payload: reason };
+  return { type: commonActionTypes.ERROR, payload: reason };
 }

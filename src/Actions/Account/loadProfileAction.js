@@ -1,5 +1,5 @@
-export const LOAD_PROFILE = 'LOAD_PROFILE';
+import { accountActionTypes } from '.';
 
 export function loadProfileAction() {
-  return { type: LOAD_PROFILE };
+  return { type: accountActionTypes.LOAD_PROFILE };
 }

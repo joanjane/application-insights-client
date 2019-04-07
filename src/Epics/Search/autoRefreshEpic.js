@@ -1,26 +1,49 @@
 import { timer } from 'rxjs';
 import { filter, switchMap, map } from 'rxjs/operators';
 import { anyCredentials } from 'Epics/accountUtils';
-import { refreshLogsAction, SET_AUTOREFRESH, SET_LOGS } from 'Actions/Search';
+import { refreshLogsAction, searchActionTypes } from 'Actions/Search';
 import { emptyAction } from 'Actions';
-import { PROFILE_LOADED } from 'Actions/Account';
+import { accountActionTypes } from 'Actions/Account';
+import { ofType } from 'redux-observable';
+
 const refreshTimeThreshold = 30000;
 
 export const autoRefreshEpic = (action$, $state) =>
   action$
     .pipe(
-      filter(q =>
-        (q.type === SET_AUTOREFRESH && q.payload.enabled) ||
-        // set auto refresh on startup and after setting logs, queue next refresh
-        (isAutoRefreshEnabled($state) && ((q.type === SET_LOGS) || profileLoaded(q)))
+      ofType(
+        searchActionTypes.SET_AUTOREFRESH,
+        searchActionTypes.SET_LOGS,
+        accountActionTypes.PROFILE_LOADED,
+        accountActionTypes.AUTHENTICATION_CHANGED
       ),
+      filter(q => autoRefreshFilter(q, $state)),
       switchMap(q => {
         return timer(refreshTimeThreshold)
           .pipe(
-            map(t => isAutoRefreshEnabled($state) ? refreshLogsAction() : emptyAction())
+            map(t => isAutoRefreshEnabled($state.value) ? refreshLogsAction() : emptyAction())
           );
       })
     );
 
-const isAutoRefreshEnabled = ($state) => $state.value.autoRefresh && !$state.value.loading;
-const profileLoaded = (action) => action.type === PROFILE_LOADED && anyCredentials(action.payload.account);
+const isAutoRefreshEnabled = (state) => state.search.autoRefresh && !state.search.loading;
+const profileLoaded = (action) => action.type === accountActionTypes.PROFILE_LOADED && anyCredentials(action.payload.account);
+const authenticationChanged = (action, state) => action.type === accountActionTypes.AUTHENTICATION_CHANGED && anyCredentials(state.account);
+
+function autoRefreshFilter(action, $state) {
+  if (action.type === searchActionTypes.SET_AUTOREFRESH && action.payload.enabled) {
+    return true;
+  }
+
+  if (isAutoRefreshEnabled($state.value)) {
+    if (action.type === searchActionTypes.SET_LOGS) {
+      return true;
+    } else if (profileLoaded(action)) {
+      return true;
+    } else if (authenticationChanged(action, $state.value)) {
+      return true;
+    }
+  }
+
+  return false;
+}

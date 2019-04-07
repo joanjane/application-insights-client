@@ -1,5 +1,5 @@
-export const SET_AUTH_TYPE = 'SET_AUTH_TYPE';
+import { accountActionTypes } from '.';
 
 export function setAuthenticationTypeAction(authenticationType) {
-  return { type: SET_AUTH_TYPE, payload: { authenticationType } };
+  return { type: accountActionTypes.SET_AUTH_TYPE, payload: { authenticationType } };
 }

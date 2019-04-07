@@ -8,7 +8,8 @@ import {
   aadSubscriptionAppsReducer,
   setAADResourceReducer,
   setAADSubscriptionReducer,
-  aadAuthenticatedReducer
+  aadAuthenticatedReducer,
+  aadLogoutReducer
 } from './AAD';
 
 import {
@@ -27,5 +28,6 @@ export const reducers = [
   aadSubscriptionAppsReducer,
   setAADResourceReducer,
   setAADSubscriptionReducer,
-  aadAuthenticatedReducer
+  aadAuthenticatedReducer,
+  aadLogoutReducer
 ];

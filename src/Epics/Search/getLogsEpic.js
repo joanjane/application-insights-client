@@ -3,10 +3,11 @@ import { filter, switchMap, mergeMap, catchError, tap } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { anyCredentials } from 'Epics/accountUtils';
 import { errorAction, emptyAction } from 'Actions';
-import { PROFILE_LOADED } from 'Actions/Account';
+import { accountActionTypes } from 'Actions/Account';
 import {
   setLogsAction,
-  GET_LOGS,
+  searchActionTypes,
+  loadingAction,
   AUTOREFRESH_GET_LOGS_SOURCE
 } from 'Actions/Search';
 import {
@@ -21,13 +22,8 @@ export const getLogsEpic = (action$, state$, { inject }) => {
 
   return action$
     .pipe(
-      ofType(GET_LOGS, PROFILE_LOADED),
-      filter(action => {
-        const state = state$.value;
-        return anyCredentials(state.account) &&
-          !(action.payload.source === AUTOREFRESH_GET_LOGS_SOURCE && state.error)
-          && !retryExceeded(action);
-      }),
+      ofType(searchActionTypes.GET_LOGS, accountActionTypes.PROFILE_LOADED),
+      filter(action => getLogsFilter(state$, action)),
       switchMap(action => {
         // force scroll search is done by user or it is already at the end of scroll
         const forceScrollEnd = hasToScroll(action, domUtils);
@@ -59,6 +55,26 @@ export const getLogsEpic = (action$, state$, { inject }) => {
       })
     )
   ;
+}
+
+export const loadingEpic = (action$, state$, { inject }) => {
+  return action$
+    .pipe(
+      ofType(searchActionTypes.GET_LOGS, accountActionTypes.PROFILE_LOADED),
+      filter(action => getLogsFilter(state$, action)),
+      switchMap(action => {
+        return of(loadingAction(true, action.payload.source));
+      })
+    )
+  ;
+}
+
+function getLogsFilter(state$, action) {
+  const state = state$.value;
+
+  return anyCredentials(state.account) &&
+    !(action.payload.source === AUTOREFRESH_GET_LOGS_SOURCE && state.error)
+    && !retryExceeded(action);
 }
 
 function hasToScroll(action, domUtils) {

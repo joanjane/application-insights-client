@@ -1,7 +1,8 @@
-export const SET_APIKEY_APPS = 'SET_APIKEY_APPS';
+import { apiKeyAccountActionTypes } from '.';
+
 export function setApiKeyAppsAction(availableApps) {
   return {
-    type: SET_APIKEY_APPS,
+    type: apiKeyAccountActionTypes.SET_APIKEY_APPS,
     payload: {
       availableApps
     }

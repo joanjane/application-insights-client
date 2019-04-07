@@ -1,8 +1,8 @@
 import { initialState } from 'Reducers/initialState';
-import { CLEAR_DATA } from 'Actions/Account';
+import { accountActionTypes } from 'Actions/Account';
 
 export function clearDataReducer(state, action) {
-  if (action.type !== CLEAR_DATA) return;
+  if (action.type !== accountActionTypes.CLEAR_DATA) return;
 
   return { ...initialState() };
 }

@@ -1,4 +1,5 @@
-export const TRY_FIND_CREDENTIALS = 'TRY_FIND_CREDENTIALS';
+import { apiKeyAccountActionTypes } from '.';
+
 export function tryFindApiCredentialsAction(appName) {
-  return { type: TRY_FIND_CREDENTIALS, payload: { appName } };
+  return { type: apiKeyAccountActionTypes.TRY_FIND_CREDENTIALS, payload: { appName } };
 }

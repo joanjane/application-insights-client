@@ -1,4 +1,5 @@
-export const SET_AUTOREFRESH = 'SET_AUTOREFRESH';
+import { searchActionTypes } from '.';
+
 export function setAutoRefreshAction(enabled) {
-  return { type: SET_AUTOREFRESH, payload: { enabled } };
+  return { type: searchActionTypes.SET_AUTOREFRESH, payload: { enabled } };
 }

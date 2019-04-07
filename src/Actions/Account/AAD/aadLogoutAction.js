@@ -1,5 +1,5 @@
-export const AAD_LOGOUT = 'AAD_LOGOUT';
+import { aadAccountActionTypes } from '.';
 
 export function aadLogoutAction() {
-  return { type: AAD_LOGOUT, payload: {} };
+  return { type: aadAccountActionTypes.AAD_LOGOUT, payload: {} };
 }

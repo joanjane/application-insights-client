@@ -3,13 +3,13 @@ import AuthenticationType from 'Models/AuthenticationType';
 export const initialState = () => {
   return {
     search: {
-        logs: [],
-        query: 'traces | sort by timestamp desc | limit 50',
-        searchPeriod: '',
-        autoRefresh: true,
-        appName: '',
-        fetchTime: null,
-        loading: false,
+      logs: [],
+      query: 'traces | sort by timestamp desc | limit 50',
+      searchPeriod: '',
+      autoRefresh: true,
+      appName: '',
+      fetchTime: null,
+      loading: false,
     },
     account: {
       apiKey: {

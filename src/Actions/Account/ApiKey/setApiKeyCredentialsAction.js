@@ -1,4 +1,4 @@
-export const SET_APIKEY_CREDENTIALS = 'SET_APIKEY_CREDENTIALS';
+import { apiKeyAccountActionTypes } from '.';
 
 export function setApiKeyCredentialsAction(appId, apiKey, appName) {
   if (!appId || !apiKey) {
@@ -8,5 +8,5 @@ export function setApiKeyCredentialsAction(appId, apiKey, appName) {
   if (appName) {
     payload.appName = appName;
   }
-  return { type: SET_APIKEY_CREDENTIALS, payload };
+  return { type: apiKeyAccountActionTypes.SET_APIKEY_CREDENTIALS, payload };
 }

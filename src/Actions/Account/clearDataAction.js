@@ -1,4 +1,5 @@
-export const CLEAR_DATA = 'CLEAR_DATA';
+import { accountActionTypes } from '.';
+
 export function clearDataAction() {
-  return { type: CLEAR_DATA, payload: null };
+  return { type: accountActionTypes.CLEAR_DATA, payload: null };
 }

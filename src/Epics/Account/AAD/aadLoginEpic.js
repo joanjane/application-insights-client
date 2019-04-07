@@ -1,6 +1,6 @@
 import { map } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
-import { AAD_LOGIN } from 'Actions/Account/AAD';
+import { aadAccountActionTypes } from 'Actions/Account/AAD';
 import { emptyAction } from 'Actions';
 
 export const aadLoginEpic = (action$, state$, { inject }) => {
@@ -8,7 +8,7 @@ export const aadLoginEpic = (action$, state$, { inject }) => {
 
   return action$
     .pipe(
-      ofType(AAD_LOGIN),
+      ofType(aadAccountActionTypes.AAD_LOGIN),
       map(() => {
         aadAuthService.loginRedirect();
         return emptyAction();

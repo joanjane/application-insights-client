@@ -1,7 +1,7 @@
 import { mergeMap, map, filter } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { emptyAction } from 'Actions';
-import { AAD_SILENT_REFRESH } from 'Actions/Account/AAD';
+import { aadAccountActionTypes } from 'Actions/Account/AAD';
 import AuthenticationType from 'Models/AuthenticationType';
 
 export const aadSilentTokenRefreshEpic = (action$, state$, { inject }) => {
@@ -9,7 +9,7 @@ export const aadSilentTokenRefreshEpic = (action$, state$, { inject }) => {
 
   return action$
     .pipe(
-      ofType(AAD_SILENT_REFRESH),
+      ofType(aadAccountActionTypes.AAD_SILENT_REFRESH),
       filter(action => {
         const state = state$.value;
         return state.account.authenticationType === AuthenticationType.aad;
