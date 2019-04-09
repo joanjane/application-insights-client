@@ -1,8 +1,9 @@
-import { mergeMap, map, filter } from 'rxjs/operators';
+import { mergeMap, filter } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
-import { emptyAction } from 'Actions';
-import { aadAccountActionTypes } from 'Actions/Account/AAD';
+import { emptyAction, errorAction } from 'Actions';
+import { aadAccountActionTypes, aadAuthenticatedAction } from 'Actions/Account/AAD';
 import AuthenticationType from 'Models/AuthenticationType';
+import { of } from 'rxjs';
 
 export const aadSilentTokenRefreshEpic = (action$, state$, { inject }) => {
   const aadAuthService = inject('AadAuthService');
@@ -17,12 +18,17 @@ export const aadSilentTokenRefreshEpic = (action$, state$, { inject }) => {
       mergeMap((action) => {
         return aadAuthService.silentTokenRefresh()
           .pipe(
-            map(result => {
+            mergeMap(result => {
               if (!result.success) {
-                alert(`An error has occurred while refreshing token silently: ${result.errorMessage}`);
+                return of(
+                  aadAuthenticatedAction(false),
+                  errorAction(`An error has occurred while refreshing token silently: ${result.errorMessage}. Login again.`)
+                );
               }
+
               const retryAction = action.payload.retryAction;
-              return retryAction ? retryAction : emptyAction();
+              const nextAction = retryAction ? retryAction : emptyAction();
+              return of(aadAuthenticatedAction(true), nextAction);
             })
           );
       })

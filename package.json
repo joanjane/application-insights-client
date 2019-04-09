@@ -2,10 +2,11 @@
   "name": "application-insights-client",
   "version": "0.1.0",
   "dependencies": {
+    "jwt-decode": "^2.2.0",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
     "react-redux": "^5.1.0",
-    "react-scripts": "2.1.1",
+    "react-scripts": "^2.1.8",
     "redux": "^4.0.1",
     "redux-observable": "^1.0.0",
     "rxjs": "^6.3.3"

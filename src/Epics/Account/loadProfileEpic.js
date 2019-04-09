@@ -18,7 +18,8 @@ import {
 import {
   setAADSubscriptionAction,
   setAADResourceAction,
-  aadAuthenticatedAction
+  aadAuthenticatedAction,
+  aadSilentTokenRefreshAction
 } from 'Actions/Account/AAD';
 
 export const loadProfileEpic = (action$, state$, { inject }) => {
@@ -64,6 +65,9 @@ export const loadProfileEpic = (action$, state$, { inject }) => {
       if (aadAccount) {
         actions.push(setAADSubscriptionAction(aadAccount.subscriptionId));
         actions.push(setAADResourceAction(aadAccount.resourceId, aadAccount.appId));
+        if (authenticationType === AuthenticationType.aad && !aadAccount.authenticated) {
+          actions.push(aadSilentTokenRefreshAction());
+        }
       }
 
       if (apiKeyAccount) {

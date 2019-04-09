@@ -1,6 +1,7 @@
 import { fromEvent, of } from 'rxjs';
 import { filter, map, take, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import jwtDecode from 'jwt-decode';
 
 export class AadAuthService {
   constructor(storageRepository) {
@@ -124,7 +125,12 @@ export class AadAuthService {
   }
 
   isAuthenticated() {
-    return !isIfFrame() && this.getToken() != null;
+    const parsedToken = this.parseToken();
+    if(isIfFrame() || !parsedToken) {
+      return false;
+    }
+
+    return !parsedToken.isExpired()
   }
 
   getHash() {
@@ -177,6 +183,22 @@ export class AadAuthService {
   formatQuery(queryParams) {
     const query = queryParams.map(q => `${q.name}=${encodeURIComponent(q.value)}`).join('&');
     return query;
+  }
+
+  parseToken() {
+    const token = this.getToken();
+    if (!token) {
+      return null;
+    }
+
+    const parsedToken = jwtDecode(token);
+    parsedToken.expirationDate = new Date(0);
+    parsedToken.expirationDate.setUTCSeconds(parsedToken.exp);
+    parsedToken.isExpired = function () {
+      const isExpired = this.expirationDate < new Date();
+      return isExpired;
+    };
+    return parsedToken;
   }
 }
 

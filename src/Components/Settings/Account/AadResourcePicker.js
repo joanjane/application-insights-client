@@ -31,11 +31,16 @@ const mapDispatchToProps = dispatch => {
 };
 
 class AadResourcePicker extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      aad: props.aad
-    };
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.aad.authenticated) {
+      const authenticationChanged = nextProps.aad.authenticated !== this.props.aad.authenticated;
+      if (authenticationChanged) {
+        this.checkSubscriptionsLoad(nextProps);
+      }
+      if (authenticationChanged || this.props.aad.subscriptionId !== nextProps.aad.subscriptionId) {
+        this.checkAIAppsLoad(nextProps);
+      }
+    }
   }
 
   checkSubscriptionsLoad(props) {
@@ -44,27 +49,19 @@ class AadResourcePicker extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.aad.authenticated) {
-      if (nextProps.aad.authenticated !== this.props.aad.authenticated) {
-        this.checkSubscriptionsLoad(nextProps);
-      }
-      const nextSubscription = nextProps.aad.subscriptionId;
-      if (
-        nextSubscription &&
-        this.state.aad.subscriptionId !== nextSubscription &&
-        !nextProps.subscriptionsApps[nextSubscription]
-      ) {
-        this.props.listAIApps(nextSubscription);
-      }
+  checkAIAppsLoad(props) {
+    if (!props.aad.authenticated ||
+      !props.aad.subscriptionId ||
+      props.subscriptionsApps[props.aad.subscriptionId]
+    ) {
+      return;
     }
-    this.setState({
-      aad: { ...nextProps.aad }
-    });
+
+    this.props.listAIApps(props.aad.subscriptionId);
   }
 
   selectResource = (resourceId) => {
-    const app = this.props.subscriptionsApps[this.state.aad.subscriptionId]
+    const app = this.props.subscriptionsApps[this.props.aad.subscriptionId]
       .find(s => s.id === resourceId);
 
     const appId = app ? app.appId : '';
@@ -77,14 +74,14 @@ class AadResourcePicker extends Component {
   }
 
   renderSubscriptionsDropDown() {
-    if (!this.state.aad.authenticated) return '';
+    if (!this.props.aad.authenticated) return '';
     const subscriptions = this.props.subscriptions;
 
     return (
       <div className="ail-account-section">
         <label>Subscription</label>
         <div className="ail-select ail-select--refresh">
-          <select value={this.state.aad.subscriptionId}
+          <select value={this.props.aad.subscriptionId}
             className="ail-input"
             onChange={(e) => this.selectSubscription(e.target.value)}>
             <option value="">Select subscription</option>
@@ -101,8 +98,8 @@ class AadResourcePicker extends Component {
   }
 
   renderAppsDropDown() {
-    if (!this.state.aad.authenticated) return '';
-    const { subscriptionId, resourceId } = this.state.aad;
+    if (!this.props.aad.authenticated) return '';
+    const { subscriptionId, resourceId } = this.props.aad;
     const subscriptionApps = this.props.subscriptionsApps[subscriptionId] || [];
 
     return (
