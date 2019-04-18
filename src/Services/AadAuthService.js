@@ -1,4 +1,4 @@
-import { fromEvent, of } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { filter, map, take, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import jwtDecode from 'jwt-decode';
@@ -16,7 +16,6 @@ export class AadAuthService {
     this.iframeName = 'aad-silent-refresh';
     this.refreshingToken = false;
     this.tokenSubject = new Subject();
-    this.lastAcquiredToken = null;
 
     this.checkResponseCallback();
   }
@@ -27,25 +26,11 @@ export class AadAuthService {
 
     if (fragmentParams['error']) {
       const err = `Error: ${fragmentParams['error']}\nDetails: ${fragmentParams['error_description']}`;
-      if (!isIfFrame()) {
-        this.storageRepository.removeSessionData('access_token');
-        alert(err);
-      } else {
-        this.postMessageToParent({
-          type: messageTypes.refresh_token_error,
-          errorMessage: err
-        });
-      }
+      this.storageRepository.removeSessionData('access_token');
+      alert(err);
       this.setHash('');
     } else if (fragmentParams['access_token']) {
-      if (!isIfFrame()) {
-        this.storageRepository.saveSessionData('access_token', fragmentParams['access_token']);
-      } else {
-        this.postMessageToParent({
-          type: messageTypes.refresh_token_success,
-          accessToken: fragmentParams['access_token']
-        });
-      }
+      this.storageRepository.saveSessionData('access_token', fragmentParams['access_token']);
       this.setHash('');
     }
   }
@@ -57,11 +42,6 @@ export class AadAuthService {
   silentTokenRefresh(tenantId) {
     tenantId = tenantId || 'common';
 
-    if (isIfFrame()) {
-      const errorMessage = 'silentTokenRefresh should not be run in an iframe';
-      console.warn(errorMessage);
-      return of({success: false, errorMessage });
-    }
     if (this.refreshingToken) {
       console.warn('Refresh token silent is already in progress');
       return this.tokenSubject;
@@ -85,7 +65,7 @@ export class AadAuthService {
           return message && (
             message.type === messageTypes.refresh_token_success ||
             message.type === messageTypes.refresh_token_error
-            );
+          );
         }),
         map(e => JSON.parse(e.data)),
         map(message => {
@@ -130,7 +110,7 @@ export class AadAuthService {
 
   isAuthenticated() {
     const parsedToken = this.parseToken();
-    if(isIfFrame() || !parsedToken) {
+    if (!parsedToken) {
       return false;
     }
 
@@ -150,13 +130,16 @@ export class AadAuthService {
   }
 
   buildLoginUrl(tenantId, prompt) {
+    let redirectUri = `${document.location.origin}${document.location.pathname}`;
     if (!prompt) {
       prompt = 'select_account';
+    } else if (prompt === 'none') {
+      redirectUri = `${document.location.origin}${document.location.pathname}aadrefreshtokensilent.html`
     }
     const queryParams = [
       { name: 'client_id', value: this.clientId },
       { name: 'response_type', value: 'token' },
-      { name: 'redirect_uri', value: `${document.location.origin}${document.location.pathname}` },
+      { name: 'redirect_uri', value: redirectUri },
       { name: 'scope', value: this.scopes.join(' ') },
       { name: 'prompt', value: prompt },
     ];
@@ -202,14 +185,6 @@ export class AadAuthService {
       return isExpired;
     };
     return parsedToken;
-  }
-}
-
-function isIfFrame() {
-  try {
-    return window.self !== window.top;
-  } catch {
-    return true;
   }
 }
 

@@ -85,6 +85,8 @@ class AadResourcePicker extends Component {
 
   selectTenant = (tenantId) => {
     this.props.setAADTenant(tenantId);
+    this.props.setAADSubscription();
+    this.props.setAADResource();
     this.props.login();
   }
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body>
+  <script>
+    var messageTypes = {
+      refresh_token_success: 'refresh_token_success',
+      refresh_token_error: 'refresh_token_error',
+    };
+
+    function postMessageToParent(message) {
+      window.parent.postMessage(JSON.stringify(message), '*');
+    }
+
+    function parseFragmentParams() {
+      if (document.location.hash === '') {
+        return null;
+      }
+      var params = document.location.hash.substring(1).split('&')
+        .map(p => {
+          var prop = p.split('=');
+          return {
+            name: prop[0],
+            value: decodeURIComponent(prop[1].replace(/\+/g, '%20'))
+          }
+        }).reduce((prev, current) => {
+          prev[current.name] = current.value;
+          return prev;
+        }, {});
+
+      return params;
+    }
+
+    var fragmentParams = parseFragmentParams();
+    if (fragmentParams['error']) {
+      var err = 'Error: ' + fragmentParams['error'] + '. Details: ' + fragmentParams['error_description'];
+      sessionStorage.removeItem('access_token');
+      sessionStorage.setItem('aad.error', err);
+      postMessageToParent({
+        type: messageTypes.refresh_token_error,
+        errorMessage: err
+      });
+    } else if (fragmentParams['access_token']) {
+      sessionStorage.setItem('access_token', fragmentParams['access_token']);
+      postMessageToParent({
+        type: messageTypes.refresh_token_success,
+        accessToken: fragmentParams['access_token']
+      });
+    }
+  </script>
+</body>
+
+</html>
