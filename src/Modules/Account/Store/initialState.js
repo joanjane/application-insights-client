@@ -7,7 +7,7 @@ export const initialState = (state) => {
       apiKey: ''
     },
     aad: {
-      tenantId: 'common',
+      tenantId: 'organizations',
       subscriptionId: '',
       resourceId: '',
       appId: '',
@@ -21,7 +21,7 @@ export const initialState = (state) => {
       aad: {
         subscriptionsApps: {},
         subscriptions: [],
-        tenants: [{id: 'common', name: 'common'}]
+        tenants: [{id: 'organizations', name: 'organizations (default)'}]
       },
     },
   };

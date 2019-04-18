@@ -5,7 +5,7 @@ export function aadSilentTokenRefreshAction(retryAction) {
 
   if (retryAction) {
     const retry = retryAction.retry ? retryAction.retry + 1 : 1;
-    payload.retryAction = {...retryAction, retry };
+    payload.retryAction = { type: retryAction.type, payload: retryAction.payload, retry };
   }
 
   return {

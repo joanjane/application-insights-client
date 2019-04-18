@@ -27,7 +27,8 @@ export const aadSilentTokenRefreshEpic = (action$, state$, { inject }) => {
               }
 
               const retryAction = action.payload.retryAction;
-              const nextAction = retryAction ? retryAction : emptyAction();
+              const retry =  retryAction && retryAction.retry || 1;
+              const nextAction = retryAction && retry < 1 ? retryAction : emptyAction();
               return of(aadAuthenticatedAction(true), nextAction);
             })
           );

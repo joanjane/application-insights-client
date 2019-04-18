@@ -40,7 +40,7 @@ export class AadAuthService {
   }
 
   silentTokenRefresh(tenantId) {
-    tenantId = tenantId || 'common';
+    tenantId = tenantId || 'organizations';
 
     if (this.refreshingToken) {
       console.warn('Refresh token silent is already in progress');
@@ -99,7 +99,7 @@ export class AadAuthService {
   }
 
   loginRedirect(tenantId) {
-    tenantId = tenantId || 'common';
+    tenantId = tenantId || 'organizations';
     const redirectUrl = this.buildLoginUrl(tenantId);
     document.location.href = redirectUrl;
   }

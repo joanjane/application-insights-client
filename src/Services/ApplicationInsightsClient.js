@@ -159,7 +159,7 @@ export class ApplicationInsightsClient {
     const tenants = this.httpClient.get(uri, this.buildAadAuthorizationHeaders(), queryParams)
       .pipe(
         map(r => [
-          { id: 'common', name: 'common' },
+          { id: 'organizations', name: 'organizations (default)' },
           ...r.response.value.map(resource => {
             return {
               id: resource.tenantId,
