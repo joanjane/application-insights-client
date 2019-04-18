@@ -1,4 +1,4 @@
-import AuthenticationType from 'Models/AuthenticationType';
+import { AuthenticationType } from 'Modules/Account/Models';
 
 export class ProfileRepository {
   constructor(storageRepository, queryStringUtils) {

@@ -1,11 +1,11 @@
+import './index.css';
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import store from './Store';
-import './index.css';
-import App from './App';
 import registerServiceWorker from './registerServiceWorker';
-import { inject } from './Store/container';
+import store from 'Store';
+import { inject } from 'Store/container';
+import App from 'Components/App';
 
 const domUtils = inject('DomUtils');
 

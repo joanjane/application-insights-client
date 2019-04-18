@@ -1,7 +1,7 @@
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { buildColumnPropertyIndex, getRowMapper, toCamelCase } from './ResponseMappers';
-import AuthenticationType from 'Models/AuthenticationType';
+import { AuthenticationType } from 'Modules/Account/Models';
 
 export class ApplicationInsightsClient {
   constructor(httpClient, aadAuthService) {
@@ -20,21 +20,21 @@ export class ApplicationInsightsClient {
         this.buildHeaders(account),
         queryParams
       )
-      .pipe(
-        map(httpResponse => this.mapQueryResponse(httpResponse.response)),
-        catchError(error => {
-          console.error(error.response);
-          if (error.status === 401) {
+        .pipe(
+          map(httpResponse => this.mapQueryResponse(httpResponse.response)),
+          catchError(error => {
+            console.error(error.response);
+            if (error.status === 401) {
+              return throwError(error);
+            } else if (error.response && error.response.error) {
+              const reason = this.mapError('', error.response.error);
+              return throwError(reason);
+            } else if (typeof (error.response) === 'string') {
+              return throwError(`${error.status}: ${error.response}`);
+            }
             return throwError(error);
-          } else if (error.response && error.response.error) {
-            const reason = this.mapError('', error.response.error);
-            return throwError(reason);
-          } else if (typeof (error.response) === 'string') {
-            return throwError(`${error.status}: ${error.response}`);
-          }
-          return throwError(error);
-        })
-      );
+          })
+        );
 
     } catch (e) {
       return throwError(e);
@@ -150,5 +150,25 @@ export class ApplicationInsightsClient {
           name: resource.displayName
         };
       })));
+  }
+
+  listTenants() {
+    const queryParams = [{ name: 'api-version', value: '2016-06-01' }];
+    const uri = `https://management.azure.com/tenants`;
+
+    const tenants = this.httpClient.get(uri, this.buildAadAuthorizationHeaders(), queryParams)
+      .pipe(
+        map(r => [
+          { id: 'common', name: 'common' },
+          ...r.response.value.map(resource => {
+            return {
+              id: resource.tenantId,
+              name: resource.tenantId
+            };
+          })
+        ])
+      );
+
+    return tenants;
   }
 }

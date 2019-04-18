@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './StatusBar.css';
 import { inject } from 'Store/container';
-import { anyCredentials } from 'Epics/accountUtils';
+import { anyCredentials } from 'Modules/Account/Epics/accountUtils';
 const dateUtils = inject('DateUtils');
 
 const mapStateToProps = state => {

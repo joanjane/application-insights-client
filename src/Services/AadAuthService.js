@@ -16,6 +16,7 @@ export class AadAuthService {
     this.iframeName = 'aad-silent-refresh';
     this.refreshingToken = false;
     this.tokenSubject = new Subject();
+    this.lastAcquiredToken = null;
 
     this.checkResponseCallback();
   }
@@ -53,7 +54,9 @@ export class AadAuthService {
     this.storageRepository.removeSessionData('access_token');
   }
 
-  silentTokenRefresh() {
+  silentTokenRefresh(tenantId) {
+    tenantId = tenantId || 'common';
+
     if (isIfFrame()) {
       const errorMessage = 'silentTokenRefresh should not be run in an iframe';
       console.warn(errorMessage);
@@ -66,7 +69,7 @@ export class AadAuthService {
     this.refreshingToken = true;
     this.createIFrameIfNotExists();
 
-    const redirectUrl = this.buildLoginUrl('none');
+    const redirectUrl = this.buildLoginUrl(tenantId, 'none');
     setTimeout(() => window.open(redirectUrl, this.iframeName), 1000);
     return fromEvent(window, 'message')
       .pipe(
@@ -115,8 +118,9 @@ export class AadAuthService {
     }
   }
 
-  loginRedirect() {
-    const redirectUrl = this.buildLoginUrl();
+  loginRedirect(tenantId) {
+    tenantId = tenantId || 'common';
+    const redirectUrl = this.buildLoginUrl(tenantId);
     document.location.href = redirectUrl;
   }
 
@@ -145,7 +149,7 @@ export class AadAuthService {
     window.parent.postMessage(JSON.stringify(message), '*');
   }
 
-  buildLoginUrl(prompt) {
+  buildLoginUrl(tenantId, prompt) {
     if (!prompt) {
       prompt = 'select_account';
     }
@@ -156,8 +160,7 @@ export class AadAuthService {
       { name: 'scope', value: this.scopes.join(' ') },
       { name: 'prompt', value: prompt },
     ];
-    const tenant = 'organizations';
-    const redirectUrl = `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/authorize?${this.formatQuery(queryParams)}`;
+    const redirectUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize?${this.formatQuery(queryParams)}`;
     return redirectUrl;
   }
 
