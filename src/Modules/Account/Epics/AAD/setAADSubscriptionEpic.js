@@ -9,6 +9,7 @@ export const setAADSubscriptionEpic = (action$, state$, { inject }) => {
   return action$
     .pipe(
       ofType(
+        aadAccountActionTypes.AAD_AUTHENTICATED,
         aadAccountActionTypes.SET_AAD_TENANT,
         aadAccountActionTypes.SET_AAD_SUBSCRIPTION,
         aadAccountActionTypes.SET_AAD_RESOURCE,

@@ -38,6 +38,6 @@ export const aadSilentTokenRefreshEpic = (action$, state$, { inject }) => {
 function getRetryAction(action) {
   const retryAction = action.payload.retryAction;
   const nextAction = retryAction ? { ...retryAction } : emptyAction();
-  retryAction.retry++;
+  nextAction.retry++;
   return nextAction;
 }

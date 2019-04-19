@@ -10,7 +10,7 @@ const mapStateToProps = state => {
     autoRefresh: state.search.autoRefresh,
     fetchTime: state.search.fetchTime,
     appName: state.search.appName,
-    error: state.error,
+    error: state.errors[state.errors.length - 1],
     loading: state.search.loading,
     connected: anyCredentials(state.account)
   };
@@ -36,7 +36,7 @@ let StatusBar = (props) => (
     }
     {props.error ?
       <div className="ail-footer-status-item ail-footer-status--error">
-        {props.error}
+        {props.error.message}
       </div> : ''
     }
   </div>

@@ -4,6 +4,7 @@ export function aadLogoutReducer(state, action) {
   if (action.type !== aadAccountActionTypes.AAD_LOGOUT) return;
 
   state.account.aad = {
+    tenantId: '',
     subscriptionId: '',
     resourceId: '',
     appId: '',

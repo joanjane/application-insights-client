@@ -7,7 +7,7 @@ export function setLogsReducer(state, action) {
   state.search.appName = action.payload.appName;
   state.search.fetchTime = action.payload.fetchTime;
   state.search.loading = false;
-  state.error = null;
+  state.errors = [];
 
   return { ...state };
 }

@@ -2,20 +2,17 @@ import { of } from 'rxjs';
 import { filter, switchMap, mergeMap, catchError, tap } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { anyCredentials } from 'Modules/Account/Epics/accountUtils';
-import { errorAction, emptyAction } from 'Modules/Shared/Actions';
+import { emptyAction } from 'Modules/Shared/Actions';
 import { accountActionTypes } from 'Modules/Account/Actions';
-import { retryExceeded } from 'Modules/Shared/retryExceeded';
 import {
   setLogsAction,
   searchActionTypes,
   loadingAction,
   AUTOREFRESH_GET_LOGS_SOURCE
 } from 'Modules/Search/Actions';
-import {
-  aadSilentTokenRefreshAction
-} from 'Modules/Account/Actions/AAD';
 import { AuthenticationType } from 'Modules/Account/Models';
 import { setApiKeyCredentialsAction } from 'Modules/Account/Actions/ApiKey';
+import { handleError } from 'Modules/Shared/Epics/handleError';
 
 export const getLogsEpic = (action$, state$, { inject }) => {
   const applicationInsightsClient = inject('ApplicationInsightsClient');
@@ -24,7 +21,7 @@ export const getLogsEpic = (action$, state$, { inject }) => {
   return action$
     .pipe(
       ofType(searchActionTypes.GET_LOGS, accountActionTypes.PROFILE_LOADED),
-      filter(action => getLogsFilter(state$, action)),
+      filter(action => getLogsFilter(state$)),
       switchMap(action => {
         // force scroll search is done by user or it is already at the end of scroll
         const forceScrollEnd = hasToScroll(action, domUtils);
@@ -37,15 +34,8 @@ export const getLogsEpic = (action$, state$, { inject }) => {
               setCredentialsAction(state, logs.appName))
             ),
             catchError(err => {
-              if (err.status === 401) {
-                return of(
-                  isAadAuth(state$.value) && !retryExceeded(action) ?
-                  aadSilentTokenRefreshAction(action) :
-                  errorAction('Error on app insights query 401 - Unauthorized')
-                  );
-              }
-              let reason = typeof (err) === 'string' ? err : err.message
-              return of(errorAction(reason || 'Error when getting logs'));
+              let reason = (typeof (err) === 'string' ? err : err.message) || 'Error when getting logs';
+              return handleError(err, action, reason, state);
             }),
             tap(() => {
               if (forceScrollEnd) {
@@ -58,11 +48,11 @@ export const getLogsEpic = (action$, state$, { inject }) => {
   ;
 }
 
-export const loadingEpic = (action$, state$, { inject }) => {
+export const loadingEpic = (action$, state$) => {
   return action$
     .pipe(
       ofType(searchActionTypes.GET_LOGS, accountActionTypes.PROFILE_LOADED),
-      filter(action => getLogsFilter(state$, action)),
+      filter(action => getLogsFilter(state$)),
       switchMap(action => {
         return of(loadingAction(true, action.payload.source));
       })
@@ -70,11 +60,10 @@ export const loadingEpic = (action$, state$, { inject }) => {
   ;
 }
 
-function getLogsFilter(state$, action) {
+function getLogsFilter(state$) {
   const state = state$.value;
 
-  return anyCredentials(state.account) &&
-    !(action.payload.source === AUTOREFRESH_GET_LOGS_SOURCE && state.error);
+  return anyCredentials(state.account);
 }
 
 function hasToScroll(action, domUtils) {
@@ -87,5 +76,3 @@ function setCredentialsAction(state, appName) {
     setApiKeyCredentialsAction(state.account.apiKey.appId, state.account.apiKey.apiKey, appName) :
     emptyAction()
 }
-
-const isAadAuth = (state) => state.account.authenticationType === AuthenticationType.aad;

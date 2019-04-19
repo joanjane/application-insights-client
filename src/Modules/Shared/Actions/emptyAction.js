@@ -1,3 +1,3 @@
 export function emptyAction() {
-  return { type: 'never', payload: { } };
+  return { type: 'never', payload: { }, retry: 0 };
 }

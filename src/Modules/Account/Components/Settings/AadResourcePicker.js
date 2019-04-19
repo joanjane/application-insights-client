@@ -91,7 +91,6 @@ class AadResourcePicker extends Component {
   }
 
   renderTenantsDropDown() {
-    if (!this.props.aad.authenticated) return '';
     const tenants = this.props.tenants;
 
     return (
@@ -182,7 +181,8 @@ class AadResourcePicker extends Component {
         </button> :
         <button type="button"
           className={`ail-btn ail-btn--default u-w100 u-mt-2`}
-          onClick={() => this.login()}>Login <span role="img" aria-label="key">🔑</span></button>
+          onClick={() => this.login()}
+          disabled={this.props.aad.tenantId == null}>Login <span role="img" aria-label="key">🔑</span></button>
     }</Fragment>);
   }
 
