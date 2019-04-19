@@ -2,6 +2,7 @@ import { of } from 'rxjs';
 import { switchMap, map, filter, catchError } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { errorAction } from 'Modules/Shared/Actions';
+import { retryExceeded } from 'Modules/Shared/retryExceeded';
 import {
   aadAccountActionTypes,
   aiAppsLoadedAction,
@@ -16,7 +17,7 @@ export const loadSubscriptionsAppsEpic = (action$, state$, { inject }) => {
       ofType(aadAccountActionTypes.LIST_AI_APPS),
       filter(action => {
         const { aad } = state$.value.account;
-        return aad.authenticated && !retryExceeded(action);
+        return aad.authenticated;
       }),
       switchMap((action) => {
         const subscriptionId = action.payload.subscriptionId;
@@ -35,4 +36,3 @@ export const loadSubscriptionsAppsEpic = (action$, state$, { inject }) => {
     );
 }
 
-const retryExceeded = (action) => (+action.retry) > 1;

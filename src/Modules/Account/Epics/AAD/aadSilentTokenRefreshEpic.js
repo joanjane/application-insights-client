@@ -26,13 +26,18 @@ export const aadSilentTokenRefreshEpic = (action$, state$, { inject }) => {
                 );
               }
 
-              const retryAction = action.payload.retryAction;
-              const retry =  retryAction && retryAction.retry || 1;
-              const nextAction = retryAction && retry < 1 ? retryAction : emptyAction();
+              const nextAction = getRetryAction(action);
               return of(aadAuthenticatedAction(true), nextAction);
             })
           );
       })
     )
   ;
+}
+
+function getRetryAction(action) {
+  const retryAction = action.payload.retryAction;
+  const nextAction = retryAction ? { ...retryAction } : emptyAction();
+  retryAction.retry++;
+  return nextAction;
 }

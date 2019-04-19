@@ -4,6 +4,7 @@ import { ofType } from 'redux-observable';
 import { anyCredentials } from 'Modules/Account/Epics/accountUtils';
 import { errorAction, emptyAction } from 'Modules/Shared/Actions';
 import { accountActionTypes } from 'Modules/Account/Actions';
+import { retryExceeded } from 'Modules/Shared/retryExceeded';
 import {
   setLogsAction,
   searchActionTypes,
@@ -40,7 +41,7 @@ export const getLogsEpic = (action$, state$, { inject }) => {
                 return of(
                   isAadAuth(state$.value) && !retryExceeded(action) ?
                   aadSilentTokenRefreshAction(action) :
-                  errorAction('Error 401 - Unauthorized')
+                  errorAction('Error on app insights query 401 - Unauthorized')
                   );
               }
               let reason = typeof (err) === 'string' ? err : err.message
@@ -73,8 +74,7 @@ function getLogsFilter(state$, action) {
   const state = state$.value;
 
   return anyCredentials(state.account) &&
-    !(action.payload.source === AUTOREFRESH_GET_LOGS_SOURCE && state.error)
-    && !retryExceeded(action);
+    !(action.payload.source === AUTOREFRESH_GET_LOGS_SOURCE && state.error);
 }
 
 function hasToScroll(action, domUtils) {
@@ -89,4 +89,3 @@ function setCredentialsAction(state, appName) {
 }
 
 const isAadAuth = (state) => state.account.authenticationType === AuthenticationType.aad;
-const retryExceeded = (action) => (+action.retry) > 1;
