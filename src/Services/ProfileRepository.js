@@ -22,6 +22,10 @@ export class ProfileRepository {
     this.setLruData(selectors.aadAccount, aadAccount, true);
   }
 
+  removeAADAccount() {
+    this.removeLruData(selectors.aadAccount);
+  }
+
   getApiKeyAccount() {
     const queryCredentials = this.getApiKeyCredentialsFromQuery();
     if (queryCredentials) {
@@ -58,13 +62,18 @@ export class ProfileRepository {
       return;
     }
 
-    const apiKeyAccounts = (this.getAllApiKeyAccounts() || []).filter(c => c.appId !== apiKeyCredentials.appId);
+    let apiKeyAccounts = (this.getAllApiKeyAccounts() || []).filter(c => c.appId !== apiKeyCredentials.appId);
     apiKeyAccounts.push(apiKeyCredentials);
+    apiKeyAccounts = apiKeyAccounts.sort(sortByApiKeyAccountName);
     this.storageRepository.saveLocalData(selectors.apiKeyApps, apiKeyAccounts, true);
   }
 
   getAllApiKeyAccounts() {
-    return this.storageRepository.getLocalData(selectors.apiKeyApps, true);
+    const apiKeyAccounts = this.storageRepository.getLocalData(selectors.apiKeyApps, true);
+    if (!apiKeyAccounts) {
+      return apiKeyAccounts;
+    }
+    return apiKeyAccounts.sort(sortByApiKeyAccountName);
   }
 
   getUITheme() {
@@ -109,6 +118,11 @@ export class ProfileRepository {
     }
 
     return data;
+  }
+
+  removeLruData(key) {
+    this.storageRepository.removeSessionData(key);
+    this.storageRepository.removeLocalData(`lru.${key}`);
   }
 
   runMigrations() {
@@ -163,3 +177,10 @@ const selectors = {
   apiKeyAccount: 'account.apiKey',
   uiTheme: 'ui.theme'
 };
+
+
+function sortByApiKeyAccountName(a,b) {
+  if (a.appName < b.appName) return -1;
+  if (a.appName > b.appName) return 1;
+  return 0;
+}
