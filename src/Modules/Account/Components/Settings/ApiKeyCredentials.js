@@ -118,7 +118,7 @@ class ApiKeyCredentials extends Component {
           onChange={(e) => this.checkStoredAppCredentials(e.target.value)}>
           <option>Saved apps</option>
           {this.props.availableApps.sort().map((app, i) =>
-            <option key={app.appId} value={app.appId}>{app.appName}</option>
+            <option key={`${i}${app.appId}`} value={app.appId}>{app.appName}</option>
           )}
         </select>
       </div>

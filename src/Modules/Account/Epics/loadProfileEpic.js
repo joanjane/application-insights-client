@@ -74,7 +74,7 @@ export const loadProfileEpic = (action$, state$, { inject }) => {
         }
       }
 
-      if (apiKeyAccount) {
+      if (apiKeyAccount && apiKeyAccount.appId && apiKeyAccount.apiKey) {
         actions.push(setApiKeyCredentialsAction(
           apiKeyAccount.appId,
           apiKeyAccount.apiKey,
