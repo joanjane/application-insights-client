@@ -35,13 +35,16 @@ export class AadAuthService {
     }
   }
 
-  logout() {
+  logout(tenantId) {
     this.storageRepository.removeSessionData('access_token');
+    const logoutUrl = this.buildLogoutUrl(tenantId);
+
+    setTimeout(() => {
+      document.location.href = logoutUrl;
+    }, 1000);
   }
 
   silentTokenRefresh(tenantId) {
-    tenantId = tenantId || 'organizations';
-
     if (this.refreshingToken) {
       console.warn('Refresh token silent is already in progress');
       return this.tokenSubject;
@@ -99,7 +102,6 @@ export class AadAuthService {
   }
 
   loginRedirect(tenantId) {
-    tenantId = tenantId || 'organizations';
     const redirectUrl = this.buildLoginUrl(tenantId);
     document.location.href = redirectUrl;
   }
@@ -130,11 +132,14 @@ export class AadAuthService {
   }
 
   buildLoginUrl(tenantId, prompt) {
-    let redirectUri = `${document.location.origin}${document.location.pathname}`;
+    if (!tenantId) {
+      tenantId = 'organizations';
+    }
+    let redirectUri = this.getAppUrl();
     if (!prompt) {
       prompt = 'select_account';
     } else if (prompt === 'none') {
-      redirectUri = `${document.location.origin}${document.location.pathname}aadrefreshtokensilent.html`
+      redirectUri = `${redirectUri}aadrefreshtokensilent.html`
     }
     const queryParams = [
       { name: 'client_id', value: this.clientId },
@@ -145,6 +150,20 @@ export class AadAuthService {
     ];
     const redirectUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize?${this.formatQuery(queryParams)}`;
     return redirectUrl;
+  }
+
+  buildLogoutUrl(tenantId) {
+    tenantId = tenantId || 'organizations';
+    const queryParams = [{
+      name: 'post_logout_redirect_uri',
+      value: this.getAppUrl()
+    }];
+    const ssoSignOutUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/logout?${this.formatQuery(queryParams)}`;
+    return ssoSignOutUrl;
+  }
+
+  getAppUrl() {
+    return `${document.location.origin}${document.location.pathname}`;
   }
 
   parseFragmentParams() {

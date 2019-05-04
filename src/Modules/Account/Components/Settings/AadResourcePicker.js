@@ -48,7 +48,7 @@ class AadResourcePicker extends Component {
   }
 
   checkTenantsLoad(props) {
-    if (props.aad.authenticated && props.tenants.length === 1) {
+    if (props.aad.authenticated && props.tenants.length === 0) {
       this.props.listTenants();
     }
   }
@@ -92,6 +92,9 @@ class AadResourcePicker extends Component {
 
   renderTenantsDropDown() {
     const tenants = this.props.tenants;
+    if (tenants.length === 0) {
+      return;
+    }
 
     return (
       <div className="ail-account-section">

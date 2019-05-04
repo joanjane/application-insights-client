@@ -2,28 +2,44 @@ import { AuthenticationType } from 'Modules/Account/Models';
 
 export const initialState = (state) => {
   state.account = {
-    apiKey: {
-      appId: '',
-      apiKey: ''
-    },
-    aad: {
-      tenantId: 'organizations',
-      subscriptionId: '',
-      resourceId: '',
-      appId: '',
-      authenticated: false
-    },
     authenticationType: AuthenticationType.aad,
+    apiKey: apiKeyAccountInitialState(),
+    aad: aadAccountInitialState(),
     appVaults: {
-      apiKey: {
-        availableApps: [],
-      },
-      aad: {
-        subscriptionsApps: {},
-        subscriptions: [],
-        tenants: [{id: 'organizations', name: 'organizations (default)'}]
-      },
+      apiKey: apiKeyAppVaultInitialState(),
+      aad: aadAppVaultInitialState(),
     },
   };
   return state;
+}
+
+export function apiKeyAccountInitialState() {
+  return {
+    appId: '',
+    apiKey: ''
+  };
+}
+
+export function apiKeyAppVaultInitialState() {
+  return {
+    availableApps: [],
+  };
+}
+
+export function aadAppVaultInitialState() {
+  return {
+    subscriptionsApps: {},
+    subscriptions: [],
+    tenants: []
+  };
+}
+
+export function aadAccountInitialState() {
+  return {
+    tenantId: '',
+    subscriptionId: '',
+    resourceId: '',
+    appId: '',
+    authenticated: false
+  };
 }

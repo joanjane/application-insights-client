@@ -153,20 +153,18 @@ export class ApplicationInsightsClient {
   }
 
   listTenants() {
-    const queryParams = [{ name: 'api-version', value: '2016-06-01' }];
+    const queryParams = [{ name: 'api-version', value: '2017-08-01' }];
     const uri = `https://management.azure.com/tenants`;
 
     const tenants = this.httpClient.get(uri, this.buildAadAuthorizationHeaders(), queryParams)
       .pipe(
-        map(r => [
-          { id: 'organizations', name: 'organizations (default)' },
-          ...r.response.value.map(resource => {
+        map(r => r.response.value.map(resource => {
             return {
               id: resource.tenantId,
-              name: resource.tenantId
+              name: resource.displayName
             };
           })
-        ])
+        )
       );
 
     return tenants;

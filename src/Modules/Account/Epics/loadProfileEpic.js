@@ -69,8 +69,8 @@ export const loadProfileEpic = (action$, state$, { inject }) => {
         }
         actions.push(setAADSubscriptionAction(aadAccount.subscriptionId));
         actions.push(setAADResourceAction(aadAccount.resourceId, aadAccount.appId));
-        if (authenticationType === AuthenticationType.aad && !aadAccount.authenticated) {
-          actions.push(aadSilentTokenRefreshAction());
+        if (authenticationType === AuthenticationType.aad && !aadAuthenticated) {
+          actions.push(aadSilentTokenRefreshAction(getLogsAction()));
         }
       }
 
