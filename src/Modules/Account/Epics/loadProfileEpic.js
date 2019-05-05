@@ -39,6 +39,8 @@ export const loadProfileEpic = (action$, state$, { inject }) => {
       const apiKeyAccount = profileRepository.getApiKeyAccount();
       const availableApiKeyApps = profileRepository.getAllApiKeyAccounts();
       const aadAccount = profileRepository.getAADAccount();
+
+      const tenantId = aadAuthService.getAuthenticatedTenant() || (aadAccount && aadAccount.tenantId);
       let aadAuthenticated = aadAuthService.isAuthenticated();
       let authenticationType = profileRepository.getAuthenticationType();
 
@@ -64,11 +66,22 @@ export const loadProfileEpic = (action$, state$, { inject }) => {
       }
 
       if (aadAccount) {
-        if (aadAccount.tenantId) {
-          actions.push(setAADTenantAction(aadAccount.tenantId));
+        if (tenantId) {
+          actions.push(setAADTenantAction(tenantId));
         }
-        actions.push(setAADSubscriptionAction(aadAccount.subscriptionId));
-        actions.push(setAADResourceAction(aadAccount.resourceId, aadAccount.appId));
+
+        if (aadAccount.tenantId === tenantId) {
+          if (aadAccount.subscriptionId) {
+            actions.push(setAADSubscriptionAction(aadAccount.subscriptionId));
+          }
+          if (aadAccount.resourceId && aadAccount.appId) {
+            actions.push(setAADResourceAction(aadAccount.resourceId, aadAccount.appId));
+          }
+        } else {
+          actions.push(setAADSubscriptionAction());
+          actions.push(setAADResourceAction());
+        }
+
         if (authenticationType === AuthenticationType.aad && !aadAuthenticated) {
           actions.push(aadSilentTokenRefreshAction(getLogsAction()));
         }

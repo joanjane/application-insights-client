@@ -16,7 +16,7 @@ export const aadLogoutEpic = (action$, state$, { inject }) => {
         profileRepository.removeAADAccount();
         aadAuthService.logout();
         return of(
-          setAADTenantAction('organizations'),
+          setAADTenantAction(''),
           setAADSubscriptionAction(''),
           setAADResourceAction('', ''),
           authenticationChangedAction()

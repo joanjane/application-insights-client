@@ -205,6 +205,11 @@ export class AadAuthService {
     };
     return parsedToken;
   }
+
+  getAuthenticatedTenant() {
+    const tokenClaims = this.parseToken();
+    return tokenClaims && tokenClaims.tid;
+  }
 }
 
 const messageTypes = {
