@@ -23,7 +23,7 @@ export class ApplicationInsightsClient {
         .pipe(
           map(httpResponse => this.mapQueryResponse(httpResponse.response)),
           catchError(error => {
-            console.error(error.response);
+            console.error(error);
             if (error.status === 401) {
               return throwError(error);
             } else if (error.response && error.response.error) {
@@ -73,7 +73,7 @@ export class ApplicationInsightsClient {
 
   buildAadAuthorizationHeaders() {
     if (!this.aadAuthService.isAuthenticated()) {
-      throw new Error('You must be authenticated to your Azure Active Directory tenant');
+      console.warn('AzureAD request not being authenticated');
     }
 
     const aadAccessToken = this.aadAuthService.getToken();
